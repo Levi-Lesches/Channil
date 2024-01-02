@@ -1,15 +1,8 @@
 import "package:flutter/material.dart";
 
+import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/widgets.dart";
-
-Widget textField(TextEditingController controller, String hint) => TextField(
-  controller: controller,
-  decoration: InputDecoration(
-    border: const OutlineInputBorder(),
-    hintText: hint,
-  ),
-);
 
 class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
   @override
@@ -49,31 +42,19 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
   );
 
   List<Widget> _authInfo(BusinessBuilder model) => [
-    textField(model.nameController, "Company Name"),
+    ChannilTextField(controller: model.nameController, hint: "Company Name"),
     const SizedBox(height: 16),
-    textField(model.emailController, "Email"),
-    const SizedBox(height: 16),
-    Row(children: [
-      SizedBox(width: 200, child: ListTile(
-        title: const Text("Authentication"),
-        subtitle: Text(model.authStatus),
-      ),),
-      // const Spacer(),
-      OutlinedButton(
-        onPressed: model.authenticate, 
-        child: const Text("Sign in with Google"),
-      ),
-    ],),
+    AuthenticationWidget(onPressed: model.authenticate, status: model.authStatus),
   ];
 
   List<Widget> _companyInfo(BusinessBuilder model) => [
-    textField(model.industryController, "Industry"),
+    ChannilTextField(controller: model.industryController, hint: "Industry"),
     const SizedBox(height: 16),
-    textField(model.locationController, "Location"),
+    ChannilTextField(controller: model.locationController, hint: "Location"),
     const SizedBox(height: 16),
-    textField(model.socialController, "Social Media"),
+    ChannilTextField(controller: model.socialController, hint: "Social Media"),
     const SizedBox(height: 16),
-    textField(model.websiteController, "Website"),
+    ChannilTextField(controller: model.websiteController, hint: "Website"),
     const SizedBox(height: 16),
   ];
 
@@ -107,12 +88,4 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
       ),
     ),
   ];
-}
-
-extension <E> on List<E> {
-  Iterable<(int, E)> get enumerate sync* {
-    for (var i = 0; i < length; i++) {
-      yield (i, this[i]);
-    }
-  }
 }

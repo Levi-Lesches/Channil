@@ -2,8 +2,12 @@ import "package:flutter/material.dart";
 
 export "package:go_router/go_router.dart";
 
-export "src/widgets/generic/reactive_widget.dart";
+export "src/widgets/atomic/image.dart";
+
+export "src/widgets/generic/auth.dart";
 export "src/widgets/generic/logo.dart";
+export "src/widgets/generic/reactive_widget.dart";
+export "src/widgets/generic/text_field.dart";
 
 /// Helpful methods on [BuildContext].
 extension ContextUtils on BuildContext {

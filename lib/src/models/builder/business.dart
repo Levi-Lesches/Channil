@@ -5,7 +5,6 @@ import "../model.dart";
 
 class BusinessBuilder extends BuilderModel<Business> {  
   final nameController = TextEditingController();
-  final emailController = TextEditingController();
   final industryController = TextEditingController();
   final locationController = TextEditingController();
   final socialController = TextEditingController();
@@ -16,11 +15,11 @@ class BusinessBuilder extends BuilderModel<Business> {
   List<String> additionalImages = [];
   
   String authStatus = "Pending";
-  bool authenticated = false;
+  String? email;
   int pageIndex = 0;
 
   bool get isPageReady => switch (pageIndex) {
-    0 => authenticated,
+    0 => email != null,
     1 => industryController.text.isNotEmpty
       && locationController.text.isNotEmpty
       && socialController.text.isNotEmpty,
@@ -30,7 +29,6 @@ class BusinessBuilder extends BuilderModel<Business> {
 
   BusinessBuilder() {
     nameController.addListener(notifyListeners);
-    emailController.addListener(notifyListeners);
     industryController.addListener(notifyListeners);
     locationController.addListener(notifyListeners);
     socialController.addListener(notifyListeners);
@@ -40,7 +38,6 @@ class BusinessBuilder extends BuilderModel<Business> {
   @override
   void dispose() {
     nameController.removeListener(notifyListeners);
-    emailController.removeListener(notifyListeners);
     industryController.removeListener(notifyListeners);
     locationController.removeListener(notifyListeners);
     socialController.removeListener(notifyListeners);
@@ -63,8 +60,8 @@ class BusinessBuilder extends BuilderModel<Business> {
     notifyListeners();
     await Future<void>.delayed(const Duration(seconds: 1));
     authStatus = "Authenticated";
+    email = "info@business.com";
     notifyListeners();
-    authenticated = true;
   }
 
   Future<void> uploadLogo() async {
@@ -95,7 +92,7 @@ class BusinessBuilder extends BuilderModel<Business> {
   @override
   Business get value => Business(
     name: nameController.text,
-    email: emailController.text,
+    email: email!,
     industry: industryController.text,
     location: locationController.text,
     socialMediaLink: socialController.text,
