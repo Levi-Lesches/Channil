@@ -146,10 +146,6 @@ class AthleteBuilder extends BuilderModel<Athlete> {
     notifyListeners();
   }
 
-  Future<void> save() async {
-
-  }
-
   Future<void> replaceImage(int index) async {
     profilePics[index] = ImageWithCaption(
       imageUrl: "https://picsum.photos/200",
@@ -194,5 +190,9 @@ class AthleteBuilder extends BuilderModel<Athlete> {
   void toggleTos(bool input) {
     acceptTos = input;
     notifyListeners();
+  }
+
+  Future<void> save() async {
+
   }
 }
