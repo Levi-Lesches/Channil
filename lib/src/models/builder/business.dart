@@ -59,8 +59,8 @@ class BusinessBuilder extends BuilderModel<Business> {
     authStatus = "Loading...";
     notifyListeners();
     await Future<void>.delayed(const Duration(seconds: 1));
-    authStatus = "Authenticated";
     email = "info@business.com";
+    authStatus = "Authenticated as $email";
     notifyListeners();
   }
 

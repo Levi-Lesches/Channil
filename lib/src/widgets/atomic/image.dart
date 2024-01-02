@@ -1,4 +1,3 @@
-import "dart:async";
 import "package:flutter/material.dart";
 
 import "package:channil/widgets.dart";
@@ -28,25 +27,17 @@ class _ImagePickerState extends State<ImagePicker> {
   void initState() {
     super.initState();
     image = widget.image;
-    if (image != null) controller.text = image!.caption;
-    controller.addListener(onChanged);
   }
 
   @override
   void dispose() {
-    controller.removeListener(onChanged);
     super.dispose();
   }
 
   @override
   void didUpdateWidget(ImagePicker oldWidget) {
     image = widget.image;
-    Timer.run(() => controller.text = image?.caption ?? "");
     super.didUpdateWidget(oldWidget);
-  }
-
-  void onChanged() {
-    widget.onChanged(controller.text);
   }
   
   @override
@@ -62,7 +53,11 @@ class _ImagePickerState extends State<ImagePicker> {
             children: [
               Image.network(image!.imageUrl, height: 150, width: 150),
               const Spacer(),
-              ChannilTextField(controller: controller, hint: "Caption"),
+              ChannilTextField(
+                controller: controller, 
+                hint: "Caption",
+                onChanged: widget.onChanged,
+              ),
             ],
           ),
         ),

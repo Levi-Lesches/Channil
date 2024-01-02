@@ -21,7 +21,6 @@ class AthleteBuilder extends BuilderModel<Athlete> {
       TextEditingController(),
   ];
 
-  
   String authStatus = "Pending";
   String? email;
   String? gradYearError;
@@ -46,7 +45,7 @@ class AthleteBuilder extends BuilderModel<Athlete> {
       && followerCountController.text.isNotEmpty
       && followerCount != null,
     2 => profilePics.every((pic) => pic != null && pic.caption.isNotEmpty),
-    3 => prompts.length == 2,
+    3 => prompts.length >= 2,
     4 => true,  // deal preferences are not mandatory
     5 => acceptTos,
     _ => true,  // should not happen but safer to not throw
@@ -114,11 +113,13 @@ class AthleteBuilder extends BuilderModel<Athlete> {
     gradYear = int.tryParse(gradYearController.text.trim());
     if (gradYearController.text.isEmpty) {
       gradYearError = null;
-    } else if (gradYear == null) {
-      gradYearError = "Invalid integer";
-    } else if (gradYear! < 0) {
+    } else if (gradYear != null && gradYear! < 0) {
       gradYearError = "Can't graduate in a negative year";
       gradYear = null;
+    } else if (gradYear != null && gradYear! >= 0) {
+      gradYearError = null;
+    } else {
+      gradYearError = "Invalid integer";
     }
     notifyListeners();
   }
@@ -140,9 +141,10 @@ class AthleteBuilder extends BuilderModel<Athlete> {
 
   Future<void> authenticate() async {
     authStatus = "Loading...";
+    notifyListeners();
     await Future<void>.delayed(const Duration(seconds: 1));
-    authStatus = "Authenticated";
     email = "athlete@gmail.com";
+    authStatus = "Authenticated as $email";
     notifyListeners();
   }
 
