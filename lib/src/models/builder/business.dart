@@ -152,6 +152,7 @@ class BusinessBuilder extends BuilderModel<Business> {
   }) async {
     loadingProgress = null;
     final task = services.cloudStorage.uploadImage(
+      isBusiness: true,
       uid: uid!, 
       localFile: File(localFilename),
       filename: cloudFilename,

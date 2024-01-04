@@ -32,9 +32,10 @@ class CloudStorageService extends Service {
   Task uploadImage({
     required String uid, 
     required File localFile,
+    required bool isBusiness,
     required String filename,
   }) {
-    final cloudFile = root.child("userAssets/$uid/images/$filename");
+    final cloudFile = root.child("userAssets/$uid-${isBusiness ? 'business' : 'athlete'}/images/$filename");
     return cloudFile.putFile(localFile);
   }
 

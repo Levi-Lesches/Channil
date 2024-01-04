@@ -253,6 +253,7 @@ class AthleteBuilder extends BuilderModel<Athlete> {
       final filename = "$index.$extension";
       final task = services.cloudStorage.uploadImage(
         uid: uid!, 
+        isBusiness: false,
         localFile: File(image.imageUrl),
         filename: filename,
       );
