@@ -1,5 +1,9 @@
-import "package:channil/data.dart";
+import "dart:async";
+import "dart:io";
 import "package:flutter/material.dart";
+
+import "package:channil/data.dart";
+import "package:channil/services.dart";
 
 import "../model.dart";
 
@@ -22,20 +26,27 @@ class AthleteBuilder extends BuilderModel<Athlete> {
       TextEditingController(),
   ];
 
-  String authStatus = "Pending";
   String? email;
+  String? uid;
   String? gradYearError;
   String? followerCountError;
   int? gradYear;
   int? followerCount;
-  int pageIndex = 0;
   bool enableNotifications = false;
   bool acceptTos = false;
+
+  int pageIndex = 0;
+  bool isLoading = false;
+  String authStatus = "Pending";
+  String? loadingStatus;
+  double? loadingProgress;
+  String? errorStatus;
 
   @override
   bool get isReady => switch (pageIndex) {
     0 => firstController.text.isNotEmpty
       && lastController.text.isNotEmpty
+      && uid != null
       && email != null,
     1 => collegeController.text.isNotEmpty
       && gradYearController.text.isNotEmpty
@@ -66,6 +77,7 @@ class AthleteBuilder extends BuilderModel<Athlete> {
   
   @override
   Athlete get value => Athlete(
+    id: uid!,
     first: firstController.text,
     last: lastController.text,
     email: email!,
@@ -76,7 +88,7 @@ class AthleteBuilder extends BuilderModel<Athlete> {
       pronouns: pronounsController.text,
       socialMedia: socialMediaController.text,
       followerCount: followerCount!,
-      profileImagesUrls: profilePics as List<ImageWithCaption>,
+      profilePics: List<ImageWithCaption>.from(profilePics),
       prompts: prompts,
       dealPreferences: dealPreferences,
     ),
@@ -144,18 +156,38 @@ class AthleteBuilder extends BuilderModel<Athlete> {
 
   Future<void> authenticate() async {
     authStatus = "Loading...";
+    email = null; 
     notifyListeners();
-    await Future<void>.delayed(const Duration(seconds: 1));
-    email = "athlete@gmail.com";
-    authStatus = "Authenticated as $email";
-    notifyListeners();
+    await services.auth.signOut();
+    final FirebaseUser? user;
+    try {
+      user = await services.auth.signIn();
+    } catch (error) {
+      authStatus = "Error signing in";
+      notifyListeners();
+      return;
+    }
+    if (user == null) {
+      authStatus = "Pending";
+      notifyListeners();
+    } else {
+      email = user.email;
+      uid = user.uid;
+      authStatus = "Authenticated as $email";
+      notifyListeners();
+    }
   }
 
   Future<void> replaceImage(int index) async {
-    profilePics[index] = ImageWithCaption(
-      imageUrl: "https://picsum.photos/200",
-      caption: "",
-    );
+    final imagePaths = await services.files.pickImages();
+    if (imagePaths == null) return;
+    for (final (i, path) in imagePaths.enumerate.take(6)) {
+      profilePics[index + i] = ImageWithCaption(
+        type: ImageType.file,
+        imageUrl: path,
+        caption: "",
+      );
+    }
     notifyListeners();
   }
 
@@ -197,7 +229,69 @@ class AthleteBuilder extends BuilderModel<Athlete> {
     notifyListeners();
   }
 
-  Future<void> save() async {
+  void onTaskUpdate(TaskSnapshot snapshot) {
+    if (snapshot.state == TaskState.error) {
+      errorStatus = "Could not upload photo. Check your internet and try again";
+    } else {
+      loadingProgress = snapshot.progress;
+    }
+    notifyListeners();
+  }
 
+  Future<void> saveImages() async {
+    isLoading = true;
+    errorStatus = null;
+    loadingStatus = "Uploading photos...";
+    notifyListeners();
+
+    for (final (index, image) in profilePics.enumerate) {
+      // [!] Images are uploaded on page 2 and are not null
+      loadingStatus = "Uploading photo ${index + 1}/6...";
+      loadingProgress = null;
+      notifyListeners();
+      final extension = File(image!.imageUrl).uri.pathSegments.last.split(".").last;
+      final filename = "$index.$extension";
+      final task = services.cloudStorage.uploadImage(
+        uid: uid!, 
+        localFile: File(image.imageUrl),
+        filename: filename,
+      );
+      try {
+        await task.monitor(onTaskUpdate);
+        // Replace image URL with Firebase URL 
+        image.imageUrl = await services.cloudStorage.getImageUrl(uid: uid!, filename: filename);
+        image.type = ImageType.network;
+      } catch (error) {
+        errorStatus = "Could not upload photo. Please check your internet and try again";
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
+  Future<void> saveProfile() async {
+    isLoading = true;
+    errorStatus = null;
+    loadingProgress = null;
+    loadingStatus = "Uploading profile...";
+    notifyListeners();
+
+    try { 
+      final athlete = value;
+      await services.database.saveAthlete(athlete);
+    } catch (error) {
+      isLoading = false;
+      errorStatus = "Could not save profile";
+      notifyListeners();
+      return;
+    }
+  }
+
+  Future<void> save() async {
+    await saveImages();
+    await saveProfile();
+    errorStatus = null;
+    isLoading = false;
+    notifyListeners();
   }
 }

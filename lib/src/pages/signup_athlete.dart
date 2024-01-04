@@ -45,6 +45,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
   );
 
   List<Widget> _basicInfo(AthleteBuilder model) => [
+    const SizedBox(height: 16),
     ChannilTextField(controller: model.firstController, hint: "First name"),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.lastController, hint: "Last name"),
@@ -78,6 +79,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
         onTap: () => model.replaceImage(index),
         onChanged: (caption) => model.updateCaption(index, caption),
         key: ValueKey(index),
+        hasCaption: true,
       ),),
     ],),
     const SizedBox(height: 16),
@@ -87,6 +89,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
         onTap: () => model.replaceImage(index),
         onChanged: (caption) => model.updateCaption(index, caption),
         key: ValueKey(index),
+        hasCaption: true,
       ),),
     ],),
   ];
@@ -129,11 +132,15 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
       value: model.enableNotifications, 
       onChanged: (input) => model.toggleNotifications(input ?? false),
     ),
-    const SizedBox(height: 16),
+    // const SizedBox(height: 16),
     CheckboxListTile(
       title: const Text("Accept the Terms of Service"),
       value: model.acceptTos, 
       onChanged: (input) => model.toggleTos(input ?? false),
     ),
+    const SizedBox(height: 24),
+    if (model.isLoading) LinearProgressIndicator(value: model.loadingProgress),
+    if (model.loadingStatus != null) Text(model.loadingStatus!),
+    if (model.errorStatus != null) Text(model.errorStatus!, style: TextStyle(color: context.colorScheme.error)),
   ];
 }

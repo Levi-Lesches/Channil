@@ -1,18 +1,34 @@
 import "package:channil/data.dart";
 
 class Athlete {
-  late final String id;
+  final String id;
   final String first;
   final String last;
   final String email;
   final AthleteProfile profile;
 
   Athlete({
-    required this.first, 
-    required this.last, 
-    required this.email, 
-    required this.profile, 
+    required this.id,
+    required this.first,
+    required this.last,
+    required this.email,
+    required this.profile,
   });
+
+  Json toJson() => {
+    "id": id,
+    "first": first,
+    "last": last,
+    "email": email,
+    "profile": profile.toJson(),
+  };
+
+  Athlete.fromJson(Json json) : 
+    id = json["id"],
+    first = json["first"],
+    last = json["last"],
+    email = json["email"],
+    profile = AthleteProfile.fromJson(json["profile"]);
 }
 
 class AthleteProfile {
@@ -22,7 +38,7 @@ class AthleteProfile {
   final String pronouns;
   final String socialMedia;
   final int followerCount;
-  final List<ImageWithCaption> profileImagesUrls;
+  final List<ImageWithCaption> profilePics;
   final Map<String, String> prompts;
   final Set<String> dealPreferences;
 
@@ -33,10 +49,39 @@ class AthleteProfile {
     required this.pronouns,
     required this.socialMedia,
     required this.followerCount,
-    required this.profileImagesUrls,
+    required this.profilePics,
     required this.prompts,
     required this.dealPreferences,
   });
+
+  Json toJson() => {
+    "college": college,
+    "graduationYear": graduationYear,
+    "sport": sport,
+    "pronouns": pronouns,
+    "socialMedia": socialMedia,
+    "followerCount": followerCount,
+    "profilePics": [
+      for (final image in profilePics) 
+        image.toJson(),
+     ],
+    "prompts": prompts,
+    "dealPreferences": dealPreferences.toList(),
+  };
+
+  AthleteProfile.fromJson(Map<String, dynamic> json) :
+    college = json["college"],
+    graduationYear = json["graduationYear"],
+    sport = json["sport"],
+    pronouns = json["pronouns"],
+    socialMedia = json["socialMedia"],
+    followerCount = json["followerCount"],
+    profilePics = [
+      for (final imageJson in json["profilePics"])
+        ImageWithCaption.fromJson(imageJson),
+    ],
+    prompts = Map<String, String>.from(json["prompts"]),
+    dealPreferences = Set<String>.from(json["dealPreferences"]);
 }
 
 const allPrompts = [

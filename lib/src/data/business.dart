@@ -1,5 +1,7 @@
+import "utils.dart";
+
 class Business {
-  late final String id;
+  final String id;
   final String name;
   final String email;
   final String industry;
@@ -12,6 +14,7 @@ class Business {
   final List<String> additionalImageUrls;
 
   Business({
+    required this.id,
     required this.name,
     required this.email,
     required this.industry,
@@ -22,4 +25,29 @@ class Business {
     required this.productImageUrl,
     required this.additionalImageUrls,
   });
+
+  Business.fromJson(Json json) : 
+    id = json["id"],
+    name = json["name"],
+    email = json["email"],
+    industry = json["industry"],
+    location = json["location"],
+    socialMediaLink = json["socialMediaLink"],
+    website = json["website"],
+    logoUrl = json["logoUrl"],
+    productImageUrl = json["productImageUrl"],
+    additionalImageUrls = json["additionalImageUrls"];
+  
+  Json toJson() => {
+    "id": id,
+    "name": name,
+    "email": email,
+    "industry": industry,
+    "location": location,
+    "socialMediaLink": socialMediaLink,
+    "website": website,
+    "logoUrl": logoUrl,
+    "productImageUrl": productImageUrl,
+    "additionalImageUrls": additionalImageUrls,
+  };
 }
