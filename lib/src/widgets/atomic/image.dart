@@ -55,6 +55,7 @@ class _ImagePickerState extends State<ImagePicker> {
           child: Center(
             child: Text(
               "Select a photo", 
+              textAlign: TextAlign.center,
               style: context.textTheme.titleLarge?.copyWith(color: context.colorScheme.onPrimaryContainer),
             ),
           ),
@@ -80,7 +81,6 @@ class _ImagePickerState extends State<ImagePicker> {
               ImageType.file => Image.file(File(image!.imageUrl), fit: BoxFit.cover, height: 150, width: 150),
             },),
             if (widget.hasCaption) ...[
-              const Spacer(),
               const SizedBox(height: 4),
               ChannilTextField(
                 controller: controller, 
