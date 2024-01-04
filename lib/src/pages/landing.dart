@@ -14,6 +14,7 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
   
   @override
   Widget build(BuildContext context, LandingViewModel model) => Scaffold(
+    appBar: AppBar(),
     body: Center(
       child: Padding(padding: const EdgeInsets.symmetric(horizontal: 48),  child: Column(
         children: [
