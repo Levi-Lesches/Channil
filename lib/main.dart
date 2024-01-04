@@ -1,12 +1,14 @@
 import "package:flutter/material.dart";
-
-import "package:channil/pages.dart";
-import "package:channil/widgets.dart";
 import "package:flutter/services.dart";
 
-void main() {
+import "package:channil/pages.dart";
+import "package:channil/services.dart";
+import "package:channil/widgets.dart";
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  await services.init();
   runApp(const MyApp());
 }
 

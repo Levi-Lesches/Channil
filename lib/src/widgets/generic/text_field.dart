@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-// import "package:flutter/services.dart";
 
 class ChannilTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -25,12 +24,13 @@ class ChannilTextField extends StatelessWidget {
     controller: controller,
     onChanged: onChanged,
     autofocus: autofocus,
+    textCapitalization: TextCapitalization.sentences,
+    keyboardType: type,
+    textInputAction: action,
     decoration: InputDecoration(
       border: const OutlineInputBorder(),
       labelText: hint,
       errorText: error,
     ),
-    keyboardType: type,
-    textInputAction: action,
   );
 }

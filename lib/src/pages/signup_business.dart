@@ -20,11 +20,11 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
         onPressed: model.prevPage,
         child: const Text("Back"),
       ),
-      if (model.pageIndex == 2) OutlinedButton(
-        onPressed: model.isPageReady ? model.save : null,
+      if (model.pageIndex == 3) OutlinedButton(
+        onPressed: model.isReady ? model.save : null,
         child: const Text("Save"),
       ) else OutlinedButton(
-        onPressed: model.isPageReady ? model.nextPage : null,
+        onPressed: model.isReady ? model.nextPage : null,
         child: const Text("Next"),
       ),
     ],
@@ -35,6 +35,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
         ListView(children: _authInfo(model)),
         ListView(children: _companyInfo(model)),
         ListView(children: _uploadImages(context, model)),
+        ListView(children: _confirm(context, model)),
       ],
     ),
   );
@@ -62,6 +63,14 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 16),
     Text("Add a company logo", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
+    if (model.logoPath != null) ImagePicker(
+      image: model.logoPath == null ? null : ImageWithCaption.fromFile(model.logoPath!),
+      onTap: () { },
+      onChanged: (caption) { },
+      key: ValueKey(model.logoPath),
+      hasCaption: false,
+    ),
+    const SizedBox(height: 8),
     OutlinedButton(
       onPressed: model.uploadLogo,
       child: const Text("Select image"),
@@ -69,6 +78,14 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 24),
     Text("Add a product image", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
+    if (model.productImagePath != null) ImagePicker(
+      image: model.productImagePath == null ? null : ImageWithCaption.fromFile(model.productImagePath!),
+      onTap: () { },
+      onChanged: (caption) { },
+      key: ValueKey(model.productImagePath),
+      hasCaption: false,
+    ),
+    const SizedBox(height: 8),
     OutlinedButton(
       onPressed: model.uploadProductImage,
       child: const Text("Select image"),
@@ -78,15 +95,34 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 12),
     OutlinedButton(
       onPressed: model.uploadAdditionalImage,
-      child: const Text("Select image"),
+      child: const Text("Select images"),
     ),
-    for (final (index, image) in model.additionalImages.enumerate) ListTile(
-      title: const Text("Image"),
-      leading: Image.network(image, key: ValueKey(index)),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete),
-        onPressed: () => model.deleteAdditionalImage(index),
-      ),
+    for (final (index, image) in model.additionalImages.enumerate) Row(
+      children: [
+        Expanded(child: SizedBox(
+          height: 150, 
+          child: ImagePicker(
+            image: ImageWithCaption.fromFile(image),
+            onTap: () { },
+            onChanged: (caption) { },
+            key: ValueKey(image),
+            hasCaption: false,
+          ),
+        ),),
+        OutlinedButton(
+          onPressed: () => model.deleteAdditionalImage(index),
+          key: ValueKey(image),
+          child: const Text("Delete"),
+        ),
+      ],
     ),
+  ];
+
+  List<Widget> _confirm(BuildContext context, BusinessBuilder model) => [
+    Center(child: Text("Confirm and Save", style: context.textTheme.displaySmall)),
+    const SizedBox(height: 24),
+    if (model.isLoading) LinearProgressIndicator(value: model.loadingProgress),
+    if (model.loadingStatus != null) Text(model.loadingStatus!),
+    if (model.errorStatus != null) Text(model.errorStatus!, style: TextStyle(color: context.colorScheme.error)),
   ];
 }
