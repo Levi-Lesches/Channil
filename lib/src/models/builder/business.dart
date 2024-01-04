@@ -4,6 +4,7 @@ import "package:channil/data.dart";
 import "../model.dart";
 
 class BusinessBuilder extends BuilderModel<Business> {  
+  final pageController = PageController();
   final nameController = TextEditingController();
   final industryController = TextEditingController();
   final locationController = TextEditingController();
@@ -19,7 +20,7 @@ class BusinessBuilder extends BuilderModel<Business> {
   int pageIndex = 0;
 
   bool get isPageReady => switch (pageIndex) {
-    0 => email != null,
+    0 => nameController.text.isNotEmpty && email != null,
     1 => industryController.text.isNotEmpty
       && locationController.text.isNotEmpty
       && socialController.text.isNotEmpty,
@@ -47,11 +48,13 @@ class BusinessBuilder extends BuilderModel<Business> {
 
   void nextPage() {
     pageIndex++;
+    pageController.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
     notifyListeners();
   }
 
   void prevPage() {
     pageIndex--;
+    pageController.previousPage(duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
     notifyListeners();
   }
   

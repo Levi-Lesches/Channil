@@ -10,14 +10,13 @@ class AuthenticationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(children: [
-    SizedBox(width: 200, child: ListTile(
+    Expanded(child: SizedBox(width: 150, child: ListTile(
       title: const Text("Authentication"),
       subtitle: Text(status),
-    ),),
-    const Spacer(),
-    OutlinedButton(
+    ),),),
+    SizedBox(width: 200, child: OutlinedButton(
       onPressed: onPressed, 
       child: const Text("Sign in with Google"),
-    ),
+    ),),
   ],);
 }

@@ -4,46 +4,44 @@ import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/widgets.dart";
 
+import "signup_base.dart";
+
 class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
   @override
   AthleteBuilder createModel() => AthleteBuilder();
   
   @override
   Widget build(BuildContext context, AthleteBuilder model) => Scaffold(
-    body: Center(child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 500),
-      child: ListView(children: [
-        const Center(child: ChannilLogo()),
-        const SizedBox(height: 75),
-
-        if (model.pageIndex == 0) ..._basicInfo(model)
-        else if (model.pageIndex == 1) ..._athleteProfile(model)
-        else if (model.pageIndex == 2) ..._profilePics(context, model)
-        else if (model.pageIndex == 3) ..._prompts(context, model)
-        else if (model.pageIndex == 4) ..._deals(context, model)
-        else if (model.pageIndex == 5) ..._confirm(context, model),
-        const SizedBox(height: 16),
-
-        ButtonBar(
-          children: [
-            if (model.pageIndex == 0) OutlinedButton(
-              onPressed: context.pop,
-              child: const Text("Cancel"),
-            ) else OutlinedButton(
-              onPressed: model.prevPage,
-              child: const Text("Back"),
-            ),
-            if (model.pageIndex == 5) OutlinedButton(
-              onPressed: model.isReady ? model.save : null,
-              child: const Text("Save"),
-            ) else OutlinedButton(
-              onPressed: model.isReady ? model.nextPage : null,
-              child: const Text("Next"),
-            ),
-          ],
+    body: SignUpPage(
+      buttons: [
+        if (model.pageIndex == 0) OutlinedButton(
+          onPressed: context.pop,
+          child: const Text("Cancel"),
+        ) else OutlinedButton(
+          onPressed: model.prevPage,
+          child: const Text("Back"),
         ),
-      ],),
-    ),),
+        if (model.pageIndex == 5) OutlinedButton(
+          onPressed: model.isReady ? model.save : null,
+          child: const Text("Save"),
+        ) else OutlinedButton(
+          onPressed: model.isReady ? model.nextPage : null,
+          child: const Text("Next"),
+        ),
+      ],
+      child: PageView(
+        controller: model.pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          ListView(children: _basicInfo(model)),
+          ListView(children: _athleteProfile(model)),
+          ListView(children: _profilePics(context, model)),
+          ListView(children: _prompts(context, model)),
+          ListView(children: _deals(context, model)),
+          ListView(children: _confirm(context, model),),
+        ],
+      ),
+    ),
   );
 
   List<Widget> _basicInfo(AthleteBuilder model) => [
@@ -55,9 +53,10 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
   ];
 
   List<Widget> _athleteProfile(AthleteBuilder model) => [
-    ChannilTextField(controller: model.collegeController, hint: "College"),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.gradYearController, hint: "Graduation Year", error: model.gradYearError),
+    ChannilTextField(controller: model.collegeController, hint: "College", autofocus: true),
+    const SizedBox(height: 16),
+    ChannilTextField(controller: model.gradYearController, hint: "Graduation Year", type: TextInputType.number, error: model.gradYearError),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.sportController, hint: "Sport"),
     const SizedBox(height: 16),
@@ -65,7 +64,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     const SizedBox(height: 16),
     ChannilTextField(controller: model.socialMediaController, hint: "Social Media"),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.followerCountController, hint: "Follower count", error: model.followerCountError),
+    ChannilTextField(controller: model.followerCountController, hint: "Follower count", error: model.followerCountError, type: TextInputType.number, action: TextInputAction.done),
   ];
 
   List<Widget> _profilePics(BuildContext context, AthleteBuilder model) => [
@@ -74,21 +73,21 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     Text("Tap a box to select a photo from your gallery", textAlign: TextAlign.center, style: context.textTheme.labelLarge),
     const SizedBox(height: 16),
     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      for (final index in [0, 1, 2]) ImagePicker(
+      for (final index in [0, 1, 2]) Expanded(child: ImagePicker(
         image: model.profilePics[index],
         onTap: () => model.replaceImage(index),
         onChanged: (caption) => model.updateCaption(index, caption),
         key: ValueKey(index),
-      ),
+      ),),
     ],),
     const SizedBox(height: 16),
     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      for (final index in [3, 4, 5]) ImagePicker(
+      for (final index in [3, 4, 5]) Expanded(child: ImagePicker(
         image: model.profilePics[index],
         onTap: () => model.replaceImage(index),
         onChanged: (caption) => model.updateCaption(index, caption),
         key: ValueKey(index),
-      ),
+      ),),
     ],),
   ];
 
@@ -97,7 +96,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     const SizedBox(height: 16),
     for (final (index, prompt) in allPrompts.enumerate) ...[
       Text(prompt), 
-      ChannilTextField(controller: model.promptControllers[index], hint: ""),
+      ChannilTextField(controller: model.promptControllers[index]),
       const SizedBox(height: 12),
     ],
   ];

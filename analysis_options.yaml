@@ -51,3 +51,5 @@ linter:
     
     # Temporarily disabled until we are ready to document
     public_member_api_docs: false
+    # Temporarily disabled until we are ready to work on them
+    flutter_style_todos: false

@@ -4,6 +4,10 @@ import "package:channil/models.dart";
 import "package:channil/pages.dart";
 import "package:channil/widgets.dart";
 
+extension on Widget {
+  Widget widen() => SizedBox(width: double.infinity, child: this);
+}
+
 class LandingPage extends ReactiveWidget<LandingViewModel> {
   @override
   LandingViewModel createModel() => LandingViewModel();
@@ -11,7 +15,7 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
   @override
   Widget build(BuildContext context, LandingViewModel model) => Scaffold(
     body: Center(
-      child: Column(
+      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 48),  child: Column(
         children: [
           const SizedBox(height: 48),
           const ChannilLogo(),
@@ -23,25 +27,40 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
           if (model.state == 0) ...[
             OutlinedButton(
               onPressed: model.signIn,
-              child: const Text("Sign in with Google"),
-            ),
+              child: Text(
+                "Sign in with Google", 
+                style: context.textTheme.titleLarge?.copyWith(fontSize: 20),
+              ),
+            ).widen(),
             const SizedBox(height: 8),
-            const Text("or"),
+            Text(
+              "or",
+              style: context.textTheme.titleLarge?.copyWith(fontSize: 20),
+            ),
             const SizedBox(height: 8),
             OutlinedButton(
               onPressed: model.next,
-              child: const Text("Sign up"),
-            ),
+              child: Text(
+                "Sign up", 
+                style: context.textTheme.titleLarge?.copyWith(fontSize: 20),
+              ),
+            ).widen(),
           ] else if (model.state == 1) ...[
             OutlinedButton(
               onPressed: () => context.pushNamed(Routes.signUpAthlete),
-              child: const Text("Athlete"),
-            ),
+              child: Text(
+                "Athlete", 
+                style: context.textTheme.titleLarge?.copyWith(fontSize: 20),
+              ),
+            ).widen(),
             const SizedBox(height: 24),
             OutlinedButton(
               onPressed: () => context.pushNamed(Routes.signUpBusiness),
-              child: const Text("Business"),
-            ),
+              child: Text(
+                "Business", 
+                style: context.textTheme.titleLarge?.copyWith(fontSize: 20),
+              ),
+            ).widen(),
             const SizedBox(height: 24),
             TextButton(
               onPressed: model.back,
@@ -51,6 +70,6 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
           const Spacer(),
         ],
       ),
-    ),
+    ),),
   );
 }

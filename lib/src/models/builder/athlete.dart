@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "../model.dart";
 
 class AthleteBuilder extends BuilderModel<Athlete> {
+  final pageController = PageController();
   final firstController = TextEditingController();
   final lastController = TextEditingController();
   final collegeController = TextEditingController();
@@ -53,11 +54,13 @@ class AthleteBuilder extends BuilderModel<Athlete> {
 
   void nextPage() {
     pageIndex++;
+    pageController.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
     notifyListeners();
   }
 
   void prevPage() {
     pageIndex--;
+    pageController.previousPage(duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
     notifyListeners();
   }
   

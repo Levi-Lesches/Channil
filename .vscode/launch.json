@@ -9,6 +9,12 @@
       "request": "launch",
       "type": "dart",
       "args": ["-d", "windows"]
+    },
+    {
+      "name": "Mobile",
+      "request": "launch",
+      "type": "dart",
+      "args": ["-d", "28181FDH200GUQ"]
     }
   ]
 }

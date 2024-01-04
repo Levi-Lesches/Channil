@@ -16,6 +16,7 @@ class Routes {
 final router = GoRouter(
   initialLocation: Routes.landing,
   routes: [
+    // TODO: Make login, signUpAthlete, and signUpBusiness top-level routes
     GoRoute(
       path: "/",
       builder: (_, __) => LandingPage(),

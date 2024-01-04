@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1092469922144",
+    "project_id": "channil",
+    "storage_bucket": "channil.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092469922144:android:bd38d290fccc28184ba605",
+        "android_client_info": {
+          "package_name": "com.example.channil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5s0tEy9EFGvYSEAlLf3pjpckwrOVsarQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
