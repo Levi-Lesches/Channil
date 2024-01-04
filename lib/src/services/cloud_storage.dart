@@ -35,12 +35,12 @@ class CloudStorageService extends Service {
     required bool isBusiness,
     required String filename,
   }) {
-    final cloudFile = root.child("userAssets/$uid-${isBusiness ? 'business' : 'athlete'}/images/$filename");
+    final cloudFile = root.child("userAssets/$uid/${isBusiness ? 'business' : 'athlete'}/images/$filename");
     return cloudFile.putFile(localFile);
   }
 
-  Future<String> getImageUrl({required String uid, required String filename}) async {
-    final file = root.child("userAssets/$uid/images/$filename");
+  Future<String> getImageUrl({required String uid, required String filename, required bool isBusiness}) async {
+    final file = root.child("userAssets/$uid/${isBusiness ? 'business' : 'athlete'}/images/$filename");
     return file.getDownloadURL();
   }
 }

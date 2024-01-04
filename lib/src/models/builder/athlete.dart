@@ -178,6 +178,32 @@ class AthleteBuilder extends BuilderModel<Athlete> {
     }
   }
 
+  Future<String?> uploadImage({
+    required String localFilename,
+    required String cloudFilename,
+  }) async {
+    loadingProgress = null;
+    final task = services.cloudStorage.uploadImage(
+      isBusiness: false,
+      uid: uid!, 
+      localFile: File(localFilename),
+      filename: cloudFilename,
+    );
+    try {
+      await task.monitor(onTaskUpdate);
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+      return await services.cloudStorage.getImageUrl(
+        uid: uid!, 
+        isBusiness: false,
+        filename: cloudFilename,
+      );
+    } catch (error) {
+      errorStatus = "Could not upload photo. Please check your internet and try again";
+      notifyListeners();
+      return null;
+    }
+  }
+
   Future<void> replaceImage(int index) async {
     final imagePaths = await services.files.pickImages();
     if (imagePaths == null) return;
@@ -245,28 +271,16 @@ class AthleteBuilder extends BuilderModel<Athlete> {
     notifyListeners();
 
     for (final (index, image) in profilePics.enumerate) {
-      // [!] Images are uploaded on page 2 and are not null
       loadingStatus = "Uploading photo ${index + 1}/6...";
       loadingProgress = null;
       notifyListeners();
-      final extension = File(image!.imageUrl).uri.pathSegments.last.split(".").last;
+      if (image == null) continue;
+      final extension = image.imageUrl.extension;
       final filename = "$index.$extension";
-      final task = services.cloudStorage.uploadImage(
-        uid: uid!, 
-        isBusiness: false,
-        localFile: File(image.imageUrl),
-        filename: filename,
-      );
-      try {
-        await task.monitor(onTaskUpdate);
-        // Replace image URL with Firebase URL 
-        image.imageUrl = await services.cloudStorage.getImageUrl(uid: uid!, filename: filename);
-        image.type = ImageType.network;
-      } catch (error) {
-        errorStatus = "Could not upload photo. Please check your internet and try again";
-        notifyListeners();
-        return;
-      }
+      final url = await uploadImage(localFilename: image.imageUrl, cloudFilename: filename);
+      if (url == null) return;
+      image.imageUrl = url;
+      image.type = ImageType.network;
     }
   }
 

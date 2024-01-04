@@ -96,7 +96,7 @@ class BusinessBuilder extends BuilderModel<Business> {
     }
   }
 
-  Future<void> uploadLogo() async {
+  Future<void> uploadLogo() async {    
     logoPath = await services.files.pickImage();
     if (logoPath == null) return;
     notifyListeners();
@@ -159,7 +159,11 @@ class BusinessBuilder extends BuilderModel<Business> {
     );
     try {
       await task.monitor(onTaskUpdate);
-      return await services.cloudStorage.getImageUrl(uid: uid!, filename: cloudFilename);
+      return await services.cloudStorage.getImageUrl(
+        uid: uid!, 
+        isBusiness: true,
+        filename: cloudFilename,
+      );
     } catch (error) {
       errorStatus = "Could not upload photo. Please check your internet and try again";
       notifyListeners();

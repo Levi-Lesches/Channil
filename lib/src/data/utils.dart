@@ -7,3 +7,7 @@ extension ListUtils<E> on List<E> {
     }
   }
 }
+
+extension StringUtils on String {
+  String get extension => Uri.parse(this).pathSegments.last.split(".").last;
+}

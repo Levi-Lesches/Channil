@@ -64,7 +64,9 @@ class _ImagePickerState extends State<ImagePicker> {
       : Card(
         child: Column(
           children: [
-            Expanded(child: switch (image!.type) {
+            Expanded(child: InkWell(
+              onTap: widget.onTap,
+              child: switch (image!.type) {
               ImageType.network => Image.network(
                 image!.imageUrl, 
                 fit: BoxFit.cover, 
@@ -79,9 +81,9 @@ class _ImagePickerState extends State<ImagePicker> {
                 },
               ),
               ImageType.file => Image.file(File(image!.imageUrl), fit: BoxFit.cover, height: 150, width: 150),
-            },),
+            },),),
             if (widget.hasCaption) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: 12),
               ChannilTextField(
                 controller: controller, 
                 hint: "Caption",
