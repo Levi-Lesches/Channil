@@ -1,3 +1,5 @@
+import "dart:typed_data";
+
 import "package:file_picker/file_picker.dart";
 
 import "service.dart";
@@ -9,36 +11,28 @@ class FilesService extends Service {
   @override
   Future<void> dispose() async { }
 
-  Future<String?> pickImage() async {
+  Future<Uint8List?> pickImage() async {
     final result = await FilePicker.platform.pickFiles(
-      dialogTitle: "Pick an image",
+      dialogTitle: "Select an image",
       type: FileType.image,
-      allowCompression: false,
+      withData: true,
     );
     if (result == null) return null;
-    return result.paths.first!;
+    if (result.files.isEmpty) return null;
+    return result.files.first.bytes!;
   }
 
-  // Future<Uint8List?> pickImage2() async {
-  //   final result = await FilePicker.platform.pickFiles(
-  //     dialogTitle: "Pick an image",
-  //     type: FileType.image,
-  //     allowCompression: false,
-  //   );
-  //   if (result == null) return null;
-  //   if (result.files.isEmpty) return null;
-  //   return result.files.first.bytes;
-  // }
-
-  Future<List<String>?> pickImages() async {
+  Future<List<Uint8List>?> pickImages() async {
     final result = await FilePicker.platform.pickFiles(
-      dialogTitle: "Pick your profile pictures",
+      dialogTitle: "Select images",
       type: FileType.image,
       allowMultiple: true,
+      withData: true,
+      readSequential: true,
     );
     if (result == null) return null;
     return [
-      for (final path in result.paths) path!,
+      for (final file in result.files) file.bytes!,
     ];
   }
 }

@@ -22,7 +22,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
           child: const Text("Back"),
         ),
         if (model.pageIndex == 5) OutlinedButton(
-          onPressed: model.isReady ? model.save : null,
+          onPressed: model.isReady && !model.isLoading ? model.save : null,
           child: const Text("Save"),
         ) else OutlinedButton(
           onPressed: model.isReady ? model.nextPage : null,
@@ -34,7 +34,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
         physics: const NeverScrollableScrollPhysics(),
         children: [
           ListView(children: _basicInfo(model)),
-          ListView(children: _athleteProfile(model)),
+          ListView(shrinkWrap: true, children: _athleteProfile(model)),
           ListView(children: _profilePics(context, model)),
           ListView(children: _prompts(context, model)),
           ListView(children: _deals(context, model)),
@@ -50,22 +50,33 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     const SizedBox(height: 16),
     ChannilTextField(controller: model.lastController, hint: "Last name"),
     const SizedBox(height: 16),
-    AuthenticationWidget(onPressed: model.authenticate, status: model.authStatus),
+    AuthenticationWidget(onPressed: model.authenticateWithGoogle, status: model.authStatus),
   ];
 
   List<Widget> _athleteProfile(AthleteBuilder model) => [
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.collegeController, hint: "College", autofocus: true),
+    ChannilTextField(controller: model.collegeController, hint: "College"),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.gradYearController, hint: "Graduation Year", type: TextInputType.number, error: model.gradYearError),
+    ChannilTextField(controller: model.gradYearController, hint: "Graduation Year", type: TextInputType.number),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.sportController, hint: "Sport"),
+    Row(children: [
+      Expanded(child: DropdownMenu(
+        label: const Text("Sport"),
+        expandedInsets: EdgeInsets.zero,
+        controller: model.sportController,
+        onSelected: (sport) => model.sport = sport,
+        dropdownMenuEntries: [
+          for (final sport in Sport.values) 
+            DropdownMenuEntry(value: sport, label: sport.displayName),
+        ],
+      ),),
+    ],),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.pronounsController, hint: "Pronouns"),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.socialMediaController, hint: "Social Media"),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.followerCountController, hint: "Follower count", error: model.followerCountError, type: TextInputType.number, action: TextInputAction.done),
+    ChannilTextField(controller: model.followerCountController, hint: "Follower count", type: TextInputType.number, action: TextInputAction.done),
   ];
 
   List<Widget> _profilePics(BuildContext context, AthleteBuilder model) => [
@@ -75,49 +86,85 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     const SizedBox(height: 16),
     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       for (final index in [0, 1, 2]) Expanded(child: ImagePicker(
-        image: model.profilePics[index],
-        onTap: () => model.replaceImage(index),
-        onChanged: (caption) => model.updateCaption(index, caption),
-        key: ValueKey(index),
-        hasCaption: true,
+        model.profilePics[index],
+        profileModel: model,
+        captionController: model.captionControllers[index],
+        onPressedOverride: model.showPrompt ? () => showPrompt(context, model) : null,
       ),),
     ],),
     const SizedBox(height: 16),
     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       for (final index in [3, 4, 5]) Expanded(child: ImagePicker(
-        image: model.profilePics[index],
-        onTap: () => model.replaceImage(index),
-        onChanged: (caption) => model.updateCaption(index, caption),
-        key: ValueKey(index),
-        hasCaption: true,
+        model.profilePics[index],
+        profileModel: model,
+        captionController: model.captionControllers[index],
+        onPressedOverride: model.showPrompt ? () => showPrompt(context, model) : null,
       ),),
     ],),
   ];
 
+  Future<void> showPrompt(BuildContext context, AthleteBuilder model) {
+    model.showPrompt = false;
+    return  showDialog(
+      context: context, 
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text("Remember!"),
+        content: const Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: "You're creating your brand!\n\n"),
+              TextSpan(
+                text: "Choose",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: " professional pictures that best represent you and your brand. Consider ",
+              ),
+              TextSpan(
+                text: "avoiding",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: " pictures including illegal substances, profanity, and excessive skin exposure.",
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(child: const Text("Ok"), onPressed: () => Navigator.of(context).pop()),
+        ],
+      ),
+    );
+  }
+
   List<Widget> _prompts(BuildContext context, AthleteBuilder model) => [
     Text("Choose at least two prompts", style: context.textTheme.titleLarge, textAlign: TextAlign.center),
     const SizedBox(height: 16),
-    for (final (index, prompt) in allPrompts.enumerate) ...[
-      Text(prompt), 
-      ChannilTextField(controller: model.promptControllers[index]),
+    for (final (prompt, controller) in zip(allPrompts, model.promptControllers)) ...[
+      Text(prompt, style: controller.text.isEmpty ? null : const TextStyle(fontWeight: FontWeight.bold)), 
+      ChannilTextField(
+        controller: controller, 
+        enabled: controller.text.isNotEmpty || model.numPrompts < 2,
+        hint: controller.text.isEmpty && model.numPrompts >= 2 ? "Only two prompts can be answered" : null,
+      ),
       const SizedBox(height: 12),
     ],
   ];
 
   List<Widget> _deals(BuildContext context, AthleteBuilder model) => [
-    Text("Deal Preferences", style: context.textTheme.titleLarge, textAlign: TextAlign.center,),
+    Text("Deal Preferences", style: context.textTheme.titleLarge, textAlign: TextAlign.center),
     const SizedBox(height: 4),
     Text("Select all of your preferences", style: context.textTheme.bodyLarge, textAlign: TextAlign.center,),
     const SizedBox(height: 12),
-    Wrap(
-      alignment: WrapAlignment.center,
-      runSpacing: 8,
-      spacing: 8,
+    GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      childAspectRatio: 0.5,
       children: [
-        for (final dealType in allDealTypes) FilterChip(
-          label: Text(dealType),
-          selected: model.dealPreferences.contains(dealType),
-          onSelected: (selected) => model.updateDealType(dealType, selected: selected),
+        for (final category in DealCategory.values) CategoryPicker(
+          category: category,
+          isPicked: model.dealPreferences.contains(category),
+          onChanged: (selected) => model.updateDealType(category, selected: selected),
         ),
       ],
     ),

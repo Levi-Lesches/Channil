@@ -5,10 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "channil",
+      "name": "Windows",
       "request": "launch",
       "type": "dart",
       "args": ["-d", "windows"]
+    },
+    {
+      "name": "Web",
+      "request": "launch",
+      "type": "dart",
+      "args": ["-d", "chrome"]
     },
     {
       "name": "Mobile",

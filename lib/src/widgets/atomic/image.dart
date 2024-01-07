@@ -1,97 +1,94 @@
-import "dart:io";
 import "package:flutter/material.dart";
+import "package:flutter/foundation.dart";
 
+import "package:channil/models.dart";
 import "package:channil/widgets.dart";
-import "package:channil/data.dart";
 
-class ImagePicker extends StatefulWidget {
-  final ImageWithCaption? image;
-  final VoidCallback onTap;
-  final ValueChanged<String> onChanged;
-  final bool hasCaption;
+class ImagePicker extends ReusableReactiveWidget<ImageUploader> {
+  final ProfileBuilder<dynamic> profileModel;
+  final TextEditingController? captionController;
+  final AsyncCallback? onPressedOverride;
+  const ImagePicker(
+    super.model, {
+      required this.profileModel,
+      this.captionController,
+      this.onPressedOverride,
+    }
+  );
   
-  const ImagePicker({
-    required this.image, 
-    required this.onTap,
-    required this.onChanged,
-    required this.hasCaption,
-    super.key,
-  });
-
-  @override
-  State<ImagePicker> createState() => _ImagePickerState();
-}
-
-class _ImagePickerState extends State<ImagePicker> {
-  ImageWithCaption? image;
-  final controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    image = widget.image;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(ImagePicker oldWidget) {
-    image = widget.image;
-    super.didUpdateWidget(oldWidget);
-  }
+  bool get hasCaption => captionController != null;
   
-  @override
-  Widget build(BuildContext context) => Center(child: SizedBox(
-    height: widget.hasCaption ? 250 : 150, 
-    width: 150, 
-    child: image == null
-      ? Card(
-        color: context.colorScheme.primaryContainer, 
-        child: InkWell(
-          onTap: widget.onTap,
-          child: Center(
-            child: Text(
-              "Select a photo", 
-              textAlign: TextAlign.center,
-              style: context.textTheme.titleLarge?.copyWith(color: context.colorScheme.onPrimaryContainer),
-            ),
-          ),
+  Widget getChild(BuildContext context, ImageState state) => switch(state) {
+    ImageStateEmpty() => Text(
+      "Select a photo", 
+      textAlign: TextAlign.center,
+      style: context.textTheme.titleLarge,    
+    ),
+    ImageStateLoading(progress: final progress) => Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircularProgressIndicator(
+          value: progress,
         ),
-      )
-      : Card(
-        child: Column(
+        const SizedBox(height: 4),
+        if (progress == null) const Text("Pending...") 
+        else const Text("Uploading..."),
+      ],
+    ),
+    ImageStateError(errorText: final errorText) => Text(
+      errorText,
+      textAlign: TextAlign.center,
+      style: context.textTheme.bodyLarge?.copyWith(color: context.colorScheme.error),
+    ),
+    ImageStateOk(image: final image) => Image.network(
+      image.url, 
+      fit: BoxFit.cover, 
+      height: 150, 
+      width: 150,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child; 
+        if (loadingProgress.expectedTotalBytes == null) return const CircularProgressIndicator();
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(child: InkWell(
-              onTap: widget.onTap,
-              child: switch (image!.type) {
-              ImageType.network => Image.network(
-                image!.imageUrl, 
-                fit: BoxFit.cover, 
-                height: 150, 
-                width: 150,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child; 
-                  if (loadingProgress.expectedTotalBytes == null) return const LinearProgressIndicator();
-                  return LinearProgressIndicator(
-                    value: loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!,
-                  );
-                },
-              ),
-              ImageType.file => Image.file(File(image!.imageUrl), fit: BoxFit.cover, height: 150, width: 150),
-            },),),
-            if (widget.hasCaption) ...[
-              const SizedBox(height: 12),
-              ChannilTextField(
-                controller: controller, 
-                hint: "Caption",
-                onChanged: widget.onChanged,
-              ),
-            ],
+            CircularProgressIndicator(
+              value: loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!,
+            ),
+            const SizedBox(height: 4),
+            const Text("Downloading..."),
           ],
+        );
+      },
+      errorBuilder: (context, error, stackTrace) => Text("Could not load image", style: TextStyle(color: context.colorScheme.error)),
+    ),
+  };
+  
+  @override
+  Widget build(BuildContext context, ImageUploader model) => Center(child: SizedBox(
+    height: hasCaption ? 300 : 200, 
+    child: Card(
+      child: Column(children: [
+        Expanded(child: InkWell(
+          onTap: () async {
+            if (onPressedOverride != null) {
+              await onPressedOverride!();
+            }
+            await model.onTap();
+          },
+          child: Center(child: getChild(context, model.state)),
+        ),),
+        if (model.getImage() != null) TextButton(
+          onPressed: () => model.setImage(null),
+          child: const Text("Clear"), 
         ),
-      ),
+        if (hasCaption) ...[
+          const SizedBox(height: 12),
+          ChannilTextField(
+            controller: captionController!, 
+            hint: "Caption",
+          ),
+        ],
+      ],),
+    ),
   ),);
 }

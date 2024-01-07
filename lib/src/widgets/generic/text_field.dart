@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 
 class ChannilTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -8,12 +9,14 @@ class ChannilTextField extends StatelessWidget {
   final TextInputType? type;
   final TextInputAction action;
   final bool autofocus;
+  final bool enabled;
 
   const ChannilTextField({
     required this.controller,
     this.hint,
     this.action = TextInputAction.next,
     this.autofocus = false,
+    this.enabled = true,
     this.type,
     this.onChanged,
     this.error,
@@ -27,6 +30,11 @@ class ChannilTextField extends StatelessWidget {
     textCapitalization: TextCapitalization.sentences,
     keyboardType: type,
     textInputAction: action,
+    enabled: enabled,
+    inputFormatters: [
+      if (type == TextInputType.number) 
+        FilteringTextInputFormatter.allow(RegExp(r"\d")),
+    ],
     decoration: InputDecoration(
       border: const OutlineInputBorder(),
       labelText: hint,

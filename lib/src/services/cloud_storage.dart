@@ -1,27 +1,25 @@
 export "package:firebase_storage/firebase_storage.dart";
 
 import "dart:async";
-import "dart:io";
+import "dart:typed_data";
+
 import "package:firebase_storage/firebase_storage.dart";
 
+import "package:channil/data.dart";
 import "service.dart";
+  
+typedef CloudStorageDir = Reference;
   
 extension TaskSnapshotUtils on TaskSnapshot {
   double get progress => bytesTransferred / totalBytes;
-}
-
-extension TaskUtils on Task {
-  Future<void> monitor(void Function(TaskSnapshot) onProgress) async {
-    final subscription = snapshotEvents.listen(onProgress, cancelOnError: true);
-    await snapshotEvents.first; 
-    await timeout(const Duration(seconds: 10));
-    await subscription.cancel();
-  }
 }
   
 class CloudStorageService extends Service {
   late final firebase = FirebaseStorage.instance;
   late final root = firebase.ref();
+
+  Reference getAssetsDir({required String uid, required bool isBusiness}) => 
+    root.child("userAssets/$uid/${isBusiness ? 'business' : 'athlete'}");
 
   @override
   Future<void> init() async { }
@@ -29,18 +27,20 @@ class CloudStorageService extends Service {
   @override
   Future<void> dispose() async { }
 
-  Task uploadImage({
-    required String uid, 
-    required File localFile,
-    required bool isBusiness,
+  Future<ChannilImage> uploadImage({
+    required CloudStorageDir dir,
+    required Uint8List data,
     required String filename,
-  }) {
-    final cloudFile = root.child("userAssets/$uid/${isBusiness ? 'business' : 'athlete'}/images/$filename");
-    return cloudFile.putFile(localFile);
-  }
-
-  Future<String> getImageUrl({required String uid, required String filename, required bool isBusiness}) async {
-    final file = root.child("userAssets/$uid/${isBusiness ? 'business' : 'athlete'}/images/$filename");
-    return file.getDownloadURL();
+    required void Function(TaskSnapshot) onProgress,
+  }) async {
+    final file = dir.child("images/$filename");
+    final task = file.putData(data);
+    final subscription = task.snapshotEvents.listen(onProgress, cancelOnError: true);
+    await task.snapshotEvents.first;
+    await task.timeout(const Duration(seconds: 10));
+    await subscription.cancel();
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    final url = await file.getDownloadURL();
+    return ChannilImage(url: url);
   }
 }

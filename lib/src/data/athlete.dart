@@ -34,13 +34,13 @@ class Athlete {
 class AthleteProfile {
   final String college;
   final int graduationYear;
-  final String sport;
+  final Sport sport;
   final String pronouns;
   final String socialMedia;
   final int followerCount;
-  final List<ImageWithCaption> profilePics;
+  final List<ChannilImage> profilePics;
   final Map<String, String> prompts;
-  final Set<String> dealPreferences;
+  final Set<DealCategory> dealPreferences;
 
   AthleteProfile({
     required this.college,
@@ -57,7 +57,7 @@ class AthleteProfile {
   Json toJson() => {
     "college": college,
     "graduationYear": graduationYear,
-    "sport": sport,
+    "sport": sport.name,
     "pronouns": pronouns,
     "socialMedia": socialMedia,
     "followerCount": followerCount,
@@ -66,22 +66,24 @@ class AthleteProfile {
         image.toJson(),
      ],
     "prompts": prompts,
-    "dealPreferences": dealPreferences.toList(),
+    "dealPreferences": [for (final preference in dealPreferences) preference.name],
   };
 
   AthleteProfile.fromJson(Map<String, dynamic> json) :
     college = json["college"],
     graduationYear = json["graduationYear"],
-    sport = json["sport"],
+    sport = Sport.values.byName(json["sport"]),
     pronouns = json["pronouns"],
     socialMedia = json["socialMedia"],
     followerCount = json["followerCount"],
     profilePics = [
       for (final imageJson in json["profilePics"])
-        ImageWithCaption.fromJson(imageJson),
+        ChannilImage.fromJson(imageJson),
     ],
     prompts = Map<String, String>.from(json["prompts"]),
-    dealPreferences = Set<String>.from(json["dealPreferences"]);
+    dealPreferences = {
+      for (final name in json["categories"]) DealCategory.values.byName(name),
+    };
 }
 
 const allPrompts = [
@@ -95,13 +97,4 @@ const allPrompts = [
   r"If I was given $1,000 to spend all in one store, it would be...",
   "A weakness in my sport that I wish was a strength is...",
   "My favorite hobby outside of sports is...",
-];
-
-const allDealTypes = [
-  "Athletic Gear",
-  "Flowers",
-  "Product",
-  "Niche",
-  "Clothing",
-  "Lifestyle",
 ];

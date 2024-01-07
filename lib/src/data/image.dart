@@ -1,34 +1,20 @@
 import "utils.dart";
 
-enum ImageType {
-  file, 
-  network,
-}
+class ChannilImage {
+  String url;
+  String? caption;
 
-class ImageWithCaption {
-  ImageType type;
-  String imageUrl;
-  String caption;
-
-  ImageWithCaption({
-    required this.imageUrl, 
-    required this.caption,
-    required this.type,
+  ChannilImage({
+    required this.url, 
+    this.caption,
   });
 
-  ImageWithCaption.fromFile(String path) : 
-    type = ImageType.file,
-    imageUrl = path,
-    caption = "";
-
-  ImageWithCaption.fromJson(Json json) : 
-    imageUrl = json["imageUrl"],
-    caption = json["caption"],
-    type = ImageType.values[json["type"]];
+  ChannilImage.fromJson(Json json) : 
+    url = json["url"],
+    caption = json["caption"];
 
   Json toJson() => {
-    "imageUrl": imageUrl,
+    "url": url,
     "caption": caption,
-    "type": type.index,
   };
 }

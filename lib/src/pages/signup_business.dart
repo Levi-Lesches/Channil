@@ -1,6 +1,6 @@
+import "package:channil/data.dart";
 import "package:flutter/material.dart";
 
-import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/widgets.dart";
 
@@ -20,8 +20,8 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
         onPressed: model.prevPage,
         child: const Text("Back"),
       ),
-      if (model.pageIndex == 3) OutlinedButton(
-        onPressed: model.isReady ? model.save : null,
+      if (model.pageIndex == 4) OutlinedButton(
+        onPressed: model.isReady && !model.isLoading ? model.save : null,
         child: const Text("Save"),
       ) else OutlinedButton(
         onPressed: model.isReady ? model.nextPage : null,
@@ -35,6 +35,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
         ListView(children: _authInfo(model)),
         ListView(children: _companyInfo(model)),
         ListView(children: _uploadImages(context, model)),
+        ListView(children: _selectSports(context, model)),
         ListView(children: _confirm(context, model)),
       ],
     ),
@@ -44,12 +45,24 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 16),
     ChannilTextField(controller: model.nameController, hint: "Company Name"),
     const SizedBox(height: 16),
-    AuthenticationWidget(onPressed: model.authenticate, status: model.authStatus),
+    AuthenticationWidget(onPressed: model.authenticateWithGoogle, status: model.authStatus),
   ];
 
   List<Widget> _companyInfo(BusinessBuilder model) => [
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.industryController, hint: "Industry"),
+    Row(children: [
+      Expanded(child: DropdownMenu(
+        label: const Text("Industry"),
+        expandedInsets: EdgeInsets.zero,
+        controller: model.industryController,
+        onSelected: (industry) => model.industry = industry,
+        dropdownMenuEntries: [
+          for (final category in DealCategory.values) 
+            DropdownMenuEntry(value: category, label: category.displayName),
+        ],
+      ),),
+    ],),
+    // ChannilTextField(controller: model.industryController, hint: "Industry"),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.locationController, hint: "Location"),
     const SizedBox(height: 16),
@@ -63,56 +76,63 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 16),
     Text("Add a company logo", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
-    if (model.logoPath != null) ImagePicker(
-      image: model.logoPath == null ? null : ImageWithCaption.fromFile(model.logoPath!),
-      onTap: () { },
-      onChanged: (caption) { },
-      key: ValueKey(model.logoPath),
-      hasCaption: false,
+    if (model.logo.state is! ImageStateEmpty) ImagePicker(
+      model.logo,
+      profileModel: model,
     ),
     const SizedBox(height: 8),
     OutlinedButton(
-      onPressed: model.uploadLogo,
+      onPressed: model.logo.onTap,
       child: const Text("Select image"),
     ),
     const SizedBox(height: 24),
     Text("Add a product image", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
-    if (model.productImagePath != null) ImagePicker(
-      image: model.productImagePath == null ? null : ImageWithCaption.fromFile(model.productImagePath!),
-      onTap: () { },
-      onChanged: (caption) { },
-      key: ValueKey(model.productImagePath),
-      hasCaption: false,
+    if (model.productImage.state is! ImageStateEmpty) ImagePicker(
+      model.productImage,
+      profileModel: model,
     ),
     const SizedBox(height: 8),
     OutlinedButton(
-      onPressed: model.uploadProductImage,
+      onPressed: model.productImage.onTap,
       child: const Text("Select image"),
     ),
     const SizedBox(height: 24),
     Text("Add additional images", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
     OutlinedButton(
-      onPressed: model.uploadAdditionalImage,
+      onPressed: model.additionalImages[0].onTap,
       child: const Text("Select images"),
     ),
-    for (final (index, image) in model.additionalImages.enumerate) Row(
+    const SizedBox(height: 8),
+    Row(children: [
+      for (final index in [0, 1]) Expanded(child: ImagePicker(
+        model.additionalImages[index],
+        profileModel: model,
+      ),),
+    ],),
+    const SizedBox(height: 8),
+    Row(children: [
+      for (final index in [2, 3]) Expanded(child: ImagePicker(
+        model.additionalImages[index],
+        profileModel: model,
+      ),),
+    ],),
+  ];
+
+  List<Widget> _selectSports(BuildContext context, BusinessBuilder model) => [
+    Text("Select your preferred sports", style: context.textTheme.headlineMedium, textAlign: TextAlign.center),
+    const SizedBox(height: 16),
+    Wrap(
+      runSpacing: 8,
+      spacing: 8,
+      runAlignment: WrapAlignment.center,
+      alignment: WrapAlignment.center,
       children: [
-        Expanded(child: SizedBox(
-          height: 150, 
-          child: ImagePicker(
-            image: ImageWithCaption.fromFile(image),
-            onTap: () { },
-            onChanged: (caption) { },
-            key: ValueKey(image),
-            hasCaption: false,
-          ),
-        ),),
-        OutlinedButton(
-          onPressed: () => model.deleteAdditionalImage(index),
-          key: ValueKey(image),
-          child: const Text("Delete"),
+        for (final sport in Sport.values) FilterChip.elevated(
+          label: Text(sport.displayName), 
+          onSelected: (value) => model.toggleSport(sport, isSelected: value), 
+          selected: model.sports.contains(sport),
         ),
       ],
     ),

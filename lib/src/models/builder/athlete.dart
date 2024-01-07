@@ -1,14 +1,12 @@
-import "dart:async";
-import "dart:io";
+import "dart:typed_data";
+
 import "package:flutter/material.dart";
 
 import "package:channil/data.dart";
+import "package:channil/models.dart";
 import "package:channil/services.dart";
 
-import "../model.dart";
-
-class AthleteBuilder extends BuilderModel<Athlete> {
-  final pageController = PageController();
+class AthleteBuilder extends ProfileBuilder<Athlete> {
   final firstController = TextEditingController();
   final lastController = TextEditingController();
   final collegeController = TextEditingController();
@@ -17,64 +15,90 @@ class AthleteBuilder extends BuilderModel<Athlete> {
   final pronounsController = TextEditingController();
   final socialMediaController = TextEditingController();
   final followerCountController = TextEditingController();
-  final List<ImageWithCaption?> profilePics = List.filled(6, null);
-  final Map<String, String> prompts = {};
-  final Set<String> dealPreferences = {};
+  final promptControllers = [
+    for (final _ in allPrompts) TextEditingController(),
+  ];
+  final captionControllers = List.generate(6, (_) => TextEditingController());
 
-  final List<TextEditingController> promptControllers = [
-    for (final _ in allPrompts) 
-      TextEditingController(),
+  bool showPrompt = true;
+  Sport? sport;
+
+  AthleteBuilder() {
+    for (final imageModel in profilePics) {
+      imageModel.addListener(notifyListeners);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final imageModel in profilePics) {
+      imageModel.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  List<TextEditingController> get allControllers => [
+    firstController, lastController, collegeController, gradYearController,
+    sportController, pronounsController, socialMediaController, followerCountController,
+    ...captionControllers, ...promptControllers,
   ];
 
-  String? email;
-  String? uid;
-  String? gradYearError;
-  String? followerCountError;
-  int? gradYear;
-  int? followerCount;
+  @override
+  bool get isBusiness => false;
+
+  final Set<DealCategory> dealPreferences = {};
+
   bool enableNotifications = false;
   bool acceptTos = false;
 
-  int pageIndex = 0;
-  bool isLoading = false;
-  String authStatus = "Pending";
-  String? loadingStatus;
-  double? loadingProgress;
-  String? errorStatus;
+  late final profilePics = [ 
+    for (int index = 0; index < 6; index++) MultipleImageUploader(
+      filename: "$index", 
+      handleMultiple: (images) => updateProfilePics(images, index),
+      getDir: getCloudDir,
+    ),
+  ];
+
+  Future<void> updateProfilePics(List<Uint8List> images, int startIndex) => MultipleImageUploader.uploadMultiple(
+    models: profilePics, images: images, startIndex: startIndex,
+  );
 
   @override
-  bool get isReady => switch (pageIndex) {
+  bool isPageReady(int page) => switch (page) {
     0 => firstController.text.isNotEmpty
       && lastController.text.isNotEmpty
       && uid != null
       && email != null,
     1 => collegeController.text.isNotEmpty
       && gradYearController.text.isNotEmpty
-      && gradYear != null
       && sportController.text.isNotEmpty
       && pronounsController.text.isNotEmpty
       && socialMediaController.text.isNotEmpty
       && followerCountController.text.isNotEmpty
-      && followerCount != null,
-    2 => profilePics.every((pic) => pic != null && pic.caption.isNotEmpty),
-    3 => prompts.length >= 2,
+      && sport != null,
+    2 => profilePics.every((model) => model.getImage() != null),
+    3 => numPrompts == 2,
     4 => true,  // deal preferences are not mandatory
     5 => acceptTos,
     _ => true,  // should not happen but safer to not throw
   };
 
-  void nextPage() {
-    pageIndex++;
-    pageController.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
-    notifyListeners();
-  }
-
-  void prevPage() {
-    pageIndex--;
-    pageController.previousPage(duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
-    notifyListeners();
+  List<ChannilImage> getProfilePics() {
+    final result = <ChannilImage>[];
+    for (final (index, model) in profilePics.enumerate) {
+      final image = model.getImage()!;
+      final caption = captionControllers[index].text;
+      image.caption = caption.isEmpty ? null : caption;
+      result.add(image);
+    }
+    return result;
   }
   
+  int get numPrompts => promptControllers.where(
+    (controller) => controller.text.isNotEmpty,
+  ).length;
+
   @override
   Athlete get value => Athlete(
     id: uid!,
@@ -83,158 +107,22 @@ class AthleteBuilder extends BuilderModel<Athlete> {
     email: email!,
     profile: AthleteProfile(
       college: collegeController.text,
-      graduationYear: gradYear!,
-      sport: sportController.text,
+      graduationYear: int.parse(gradYearController.text),
+      sport: sport!,  // TODO <--
       pronouns: pronounsController.text,
       socialMedia: socialMediaController.text,
-      followerCount: followerCount!,
-      profilePics: List<ImageWithCaption>.from(profilePics),
-      prompts: prompts,
+      followerCount: int.parse(followerCountController.text),
+      profilePics: getProfilePics(),
+      prompts: {
+        for (final (prompt, controller) in zip(allPrompts, promptControllers))
+          if (controller.text.isNotEmpty)
+            prompt: controller.text,
+      },
       dealPreferences: dealPreferences,
     ),
   );
 
-  AthleteBuilder() {
-    // Parse numbers
-    gradYearController.addListener(gradYearListener);
-    followerCountController.addListener(followerCountListener);
-    // Listen for prompts that have been filled out
-    for (final (index, controller) in promptControllers.enumerate) {
-      controller.addListener(() => updatePrompt(index));
-    }
-    // Everything else
-    firstController.addListener(notifyListeners);
-    lastController.addListener(notifyListeners);
-    collegeController.addListener(notifyListeners);
-    sportController.addListener(notifyListeners);
-    pronounsController.addListener(notifyListeners);
-    socialMediaController.addListener(notifyListeners);
-  }
-
-  @override
-  void dispose() {
-    gradYearController.removeListener(gradYearListener);
-    followerCountController.removeListener(followerCountListener);
-    firstController.removeListener(notifyListeners);
-    lastController.removeListener(notifyListeners);
-    collegeController.removeListener(notifyListeners);
-    sportController.removeListener(notifyListeners);
-    pronounsController.removeListener(notifyListeners);
-    socialMediaController.removeListener(notifyListeners);
-    super.dispose();
-  }
-
-  void gradYearListener() {
-    gradYear = int.tryParse(gradYearController.text.trim());
-    if (gradYearController.text.isEmpty) {
-      gradYearError = null;
-    } else if (gradYear != null && gradYear! < 0) {
-      gradYearError = "Can't graduate in a negative year";
-      gradYear = null;
-    } else if (gradYear != null && gradYear! >= 0) {
-      gradYearError = null;
-    } else {
-      gradYearError = "Invalid integer";
-    }
-    notifyListeners();
-  }
-
-  void followerCountListener() {
-    followerCount = int.tryParse(followerCountController.text.trim());
-    if (followerCountController.text.isEmpty) {
-      followerCountError = null;
-    } else if (followerCount != null && followerCount! < 0) {
-      followerCountError = "Can't have negative followers";
-      followerCount = null;
-    } else if (followerCount != null && followerCount! >= 0) {
-      followerCountError = null;
-    } else {
-      followerCountError = "Invalid integer";
-    } 
-    notifyListeners();
-  }
-
-  Future<void> authenticate() async {
-    authStatus = "Loading...";
-    email = null; 
-    notifyListeners();
-    await services.auth.signOut();
-    final FirebaseUser? user;
-    try {
-      user = await services.auth.signIn();
-    } catch (error) {
-      authStatus = "Error signing in";
-      notifyListeners();
-      return;
-    }
-    if (user == null) {
-      authStatus = "Pending";
-      notifyListeners();
-    } else {
-      email = user.email;
-      uid = user.uid;
-      authStatus = "Authenticated as $email";
-      notifyListeners();
-    }
-  }
-
-  Future<String?> uploadImage({
-    required String localFilename,
-    required String cloudFilename,
-  }) async {
-    loadingProgress = null;
-    final task = services.cloudStorage.uploadImage(
-      isBusiness: false,
-      uid: uid!, 
-      localFile: File(localFilename),
-      filename: cloudFilename,
-    );
-    try {
-      await task.monitor(onTaskUpdate);
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-      return await services.cloudStorage.getImageUrl(
-        uid: uid!, 
-        isBusiness: false,
-        filename: cloudFilename,
-      );
-    } catch (error) {
-      errorStatus = "Could not upload photo. Please check your internet and try again";
-      notifyListeners();
-      return null;
-    }
-  }
-
-  Future<void> replaceImage(int index) async {
-    final imagePaths = await services.files.pickImages();
-    if (imagePaths == null) return;
-    for (final (i, path) in imagePaths.enumerate.take(6)) {
-      profilePics[index + i] = ImageWithCaption(
-        type: ImageType.file,
-        imageUrl: path,
-        caption: "",
-      );
-    }
-    notifyListeners();
-  }
-
-  void updateCaption(int index, String caption) {
-    profilePics[index]?.caption = caption;
-    notifyListeners();
-  }
-
-  void updatePrompt(int index) {
-    final controller = promptControllers[index];
-    final response = controller.text.trim();
-    final prompt = allPrompts[index];
-    if (response.isEmpty) {
-      prompts.remove(prompt);
-    } else {
-      prompts[prompt] = controller.text;
-    }
-    notifyListeners();
-  }
-
-  void updateDealType(String dealType, {required bool selected}) {
+  void updateDealType(DealCategory dealType, {required bool selected}) {
     if (selected) {
       dealPreferences.add(dealType);
     } else {
@@ -255,57 +143,20 @@ class AthleteBuilder extends BuilderModel<Athlete> {
     notifyListeners();
   }
 
-  void onTaskUpdate(TaskSnapshot snapshot) {
-    if (snapshot.state == TaskState.error) {
-      errorStatus = "Could not upload photo. Check your internet and try again";
-    } else {
-      loadingProgress = snapshot.progress;
-    }
-    notifyListeners();
-  }
-
-  Future<void> saveImages() async {
-    isLoading = true;
-    errorStatus = null;
-    loadingStatus = "Uploading photos...";
-    notifyListeners();
-
-    for (final (index, image) in profilePics.enumerate) {
-      loadingStatus = "Uploading photo ${index + 1}/6...";
-      loadingProgress = null;
-      notifyListeners();
-      if (image == null) continue;
-      final extension = image.imageUrl.extension;
-      final filename = "$index.$extension";
-      final url = await uploadImage(localFilename: image.imageUrl, cloudFilename: filename);
-      if (url == null) return;
-      image.imageUrl = url;
-      image.type = ImageType.network;
-    }
-  }
-
-  Future<void> saveProfile() async {
-    isLoading = true;
-    errorStatus = null;
-    loadingProgress = null;
-    loadingStatus = "Uploading profile...";
-    notifyListeners();
-
-    try { 
-      final athlete = value;
-      await services.database.saveAthlete(athlete);
-    } catch (error) {
-      isLoading = false;
-      errorStatus = "Could not save profile";
-      notifyListeners();
-      return;
-    }
-  }
-
+  @override
   Future<void> save() async {
-    await saveImages();
-    await saveProfile();
+    isLoading = true;
+    loadingProgress = null;
     errorStatus = null;
+    loadingStatus = "Uploading profile...";
+    
+    try { 
+      await services.database.saveAthlete(value);
+    } catch (error) {
+      errorStatus = "Could not save profile";
+      rethrow;
+    }
+    
     isLoading = false;
     notifyListeners();
   }
