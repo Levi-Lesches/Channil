@@ -31,8 +31,8 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     notifyListeners();
   }
 
-  // -------------------- Text fields -------------------- 
-  List<TextEditingController> get allControllers;
+  // -------------------- Lifecycle -------------------- 
+
   ProfileBuilder() {
     final user = services.auth.user;
     updateUser(user);
@@ -62,6 +62,14 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   String? uid;
   String authStatus = "Pending";
 
+  void updateUser(FirebaseUser? user) {
+    if (user == null) return;
+    email = user.email;
+    uid = user.uid;
+    authStatus = "Authenticated as $email";
+    notifyListeners();
+  }
+
   Future<void> signInGoogleMobile() async {
     authStatus = "Loading...";
     email = null; 
@@ -83,14 +91,6 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     }
   }
 
-  void updateUser(FirebaseUser? user) {
-    if (user == null) return;
-    email = user.email;
-    uid = user.uid;
-    authStatus = "Authenticated as $email";
-    notifyListeners();
-  }
-
   // Needed for Web
   Future<void> _onUserChanged(GoogleAccount? account) async {
     if (account == null) return;
@@ -110,6 +110,7 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   CloudStorageDir getCloudDir() => services.cloudStorage.getAssetsDir(uid: uid!, isBusiness: isBusiness);
   bool get isBusiness;
 
+  List<TextEditingController> get allControllers;
   final socialModels = [
     for (final platform in SocialMediaPlatform.values)
       SocialMediaBuilder(platform),
