@@ -10,15 +10,13 @@ class BusinessBuilder extends ProfileBuilder<Business> {
   final nameController = TextEditingController();
   final industryController = TextEditingController();
   final locationController = TextEditingController();
-  final socialController = TextEditingController();
   final websiteController = TextEditingController();
   final Set<Sport> sports = {};
   DealCategory? industry;
 
   @override
   List<TextEditingController> get allControllers => [
-    nameController, industryController, locationController, 
-    socialController, websiteController,
+    nameController, industryController, locationController, websiteController,
   ];
 
   @override
@@ -66,7 +64,7 @@ class BusinessBuilder extends ProfileBuilder<Business> {
     1 => industryController.text.isNotEmpty
       && industry != null
       && locationController.text.isNotEmpty
-      && socialController.text.isNotEmpty,
+      && socialModels.any((social) => social.isReady),
     2 => logo.getImage() != null,
     3 => true,
     4 => true,
@@ -90,7 +88,10 @@ class BusinessBuilder extends ProfileBuilder<Business> {
     email: email!,
     industry: industry!,
     location: locationController.text,
-    socialMediaLink: socialController.text,
+    socials: [
+      for (final socialModel in socialModels) 
+        if (socialModel.isReady) socialModel.value,
+    ],
     website: websiteController.text.isEmpty ? null : websiteController.text,
     sports: sports,
     logo: logo.getImage()!,

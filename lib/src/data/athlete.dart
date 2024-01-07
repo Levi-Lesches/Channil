@@ -36,8 +36,7 @@ class AthleteProfile {
   final int graduationYear;
   final Sport sport;
   final String pronouns;
-  final String socialMedia;
-  final int followerCount;
+  final List<SocialMediaProfile> socials;
   final List<ChannilImage> profilePics;
   final Map<String, String> prompts;
   final Set<DealCategory> dealPreferences;
@@ -47,8 +46,7 @@ class AthleteProfile {
     required this.graduationYear,
     required this.sport,
     required this.pronouns,
-    required this.socialMedia,
-    required this.followerCount,
+    required this.socials,
     required this.profilePics,
     required this.prompts,
     required this.dealPreferences,
@@ -59,8 +57,9 @@ class AthleteProfile {
     "graduationYear": graduationYear,
     "sport": sport.name,
     "pronouns": pronouns,
-    "socialMedia": socialMedia,
-    "followerCount": followerCount,
+    "socials": [
+      for (final social in socials) social.toJson(),
+    ],
     "profilePics": [
       for (final image in profilePics) 
         image.toJson(),
@@ -74,8 +73,10 @@ class AthleteProfile {
     graduationYear = json["graduationYear"],
     sport = Sport.values.byName(json["sport"]),
     pronouns = json["pronouns"],
-    socialMedia = json["socialMedia"],
-    followerCount = json["followerCount"],
+    socials = [
+      for (final socialJson in json["socials"]) 
+        SocialMediaProfile.fromJson(socialJson),
+    ],
     profilePics = [
       for (final imageJson in json["profilePics"])
         ChannilImage.fromJson(imageJson),

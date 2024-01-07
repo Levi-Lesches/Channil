@@ -1,8 +1,10 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 
+import "package:channil/data.dart";
+import "package:channil/models.dart";
 import "package:channil/services.dart";
-
-import "../model.dart";
 
 abstract class ProfileBuilder<T> extends BuilderModel<T> {
   // -------------------- Page handling --------------------  
@@ -11,6 +13,8 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   final pageController = PageController();
   int pageIndex = 0;
   bool isPageReady(int page);
+
+  StreamSubscription<GoogleAccount?>? _authSubscription;
 
   @override
   bool get isReady => isPageReady(pageIndex);
@@ -30,9 +34,15 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   // -------------------- Text fields -------------------- 
   List<TextEditingController> get allControllers;
   ProfileBuilder() {
+    final user = services.auth.user;
+    updateUser(user);
     for (final controller in allControllers) {
       controller.addListener(notifyListeners);
     }
+    for (final socialModel in socialModels) {
+      socialModel.addListener(notifyListeners);
+    }
+    _authSubscription = services.auth.google.onCurrentUserChanged.listen(_onUserChanged);
   }
 
   @override
@@ -40,6 +50,10 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     for (final controller in allControllers) {
       controller.dispose();
     }
+    for (final socialModel in socialModels) {
+      socialModel.dispose();
+    }
+    _authSubscription?.cancel();
     super.dispose();
   }
   
@@ -48,7 +62,7 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   String? uid;
   String authStatus = "Pending";
 
-  Future<void> authenticateWithGoogle() async {
+  Future<void> signInGoogleMobile() async {
     authStatus = "Loading...";
     email = null; 
     notifyListeners();
@@ -56,6 +70,7 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     final FirebaseUser? user;
     try {
       user = await services.auth.signIn();
+      updateUser(user);
     } catch (error) {
       authStatus = "Error signing in";
       notifyListeners();
@@ -65,11 +80,23 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
       authStatus = "Cancelled";
       notifyListeners();
     } else {
-      email = user.email;
-      uid = user.uid;
-      authStatus = "Authenticated as $email";
-      notifyListeners();
     }
+  }
+
+  void updateUser(FirebaseUser? user) {
+    if (user == null) return;
+    email = user.email;
+    uid = user.uid;
+    authStatus = "Authenticated as $email";
+    notifyListeners();
+  }
+
+  // Needed for Web
+  Future<void> _onUserChanged(GoogleAccount? account) async {
+    if (account == null) return;
+    final user = await services.auth.signInWithGoogleWeb(account);
+    if (user == null) return;
+    updateUser(user);
   }
 
   // -------------------- Loading --------------------  
@@ -82,4 +109,9 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   Future<void> save();
   CloudStorageDir getCloudDir() => services.cloudStorage.getAssetsDir(uid: uid!, isBusiness: isBusiness);
   bool get isBusiness;
+
+  final socialModels = [
+    for (final platform in SocialMediaPlatform.values)
+      SocialMediaBuilder(platform),
+  ];
 }

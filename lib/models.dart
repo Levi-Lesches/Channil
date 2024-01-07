@@ -4,3 +4,4 @@ export "src/models/builder/athlete.dart";
 export "src/models/builder/business.dart";
 export "src/models/builder/image.dart";
 export "src/models/builder/profile.dart";
+export "src/models/builder/social.dart";

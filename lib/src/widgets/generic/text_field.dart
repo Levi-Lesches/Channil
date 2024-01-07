@@ -8,6 +8,7 @@ class ChannilTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final TextInputType? type;
   final TextInputAction action;
+  final TextCapitalization capitalization;
   final bool autofocus;
   final bool enabled;
 
@@ -17,6 +18,7 @@ class ChannilTextField extends StatelessWidget {
     this.action = TextInputAction.next,
     this.autofocus = false,
     this.enabled = true,
+    this.capitalization = TextCapitalization.sentences,
     this.type,
     this.onChanged,
     this.error,
@@ -27,7 +29,7 @@ class ChannilTextField extends StatelessWidget {
     controller: controller,
     onChanged: onChanged,
     autofocus: autofocus,
-    textCapitalization: TextCapitalization.sentences,
+    textCapitalization: capitalization,
     keyboardType: type,
     textInputAction: action,
     enabled: enabled,

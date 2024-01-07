@@ -16,7 +16,9 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
   Widget build(BuildContext context, LandingViewModel model) => Scaffold(
     appBar: AppBar(),
     body: Center(
-      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 48),  child: Column(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 48), 
+        child: SizedBox(width: 500, child: Column(
         children: [
           const SizedBox(height: 48),
           const ChannilLogo(),
@@ -26,13 +28,11 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
           ],
           const Spacer(flex: 3),
           if (model.state == 0) ...[
-            OutlinedButton(
-              onPressed: model.signIn,
-              child: Text(
-                "Sign in with Google", 
-                style: context.textTheme.titleLarge?.copyWith(fontSize: 20),
-              ),
-            ).widen(),
+            GoogleAuthButton(
+              onMobile: model.signIn,
+              signUp: false,
+              status: "Sign into your account",
+            ),
             const SizedBox(height: 8),
             Text(
               "or",
@@ -70,7 +70,7 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
           ],
           const Spacer(),
         ],
-      ),
+      ),),
     ),),
   );
 }

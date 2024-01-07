@@ -34,7 +34,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
         physics: const NeverScrollableScrollPhysics(),
         children: [
           ListView(children: _basicInfo(model)),
-          ListView(shrinkWrap: true, children: _athleteProfile(model)),
+          ListView(children: _athleteProfile(context, model)),
           ListView(children: _profilePics(context, model)),
           ListView(children: _prompts(context, model)),
           ListView(children: _deals(context, model)),
@@ -50,10 +50,10 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     const SizedBox(height: 16),
     ChannilTextField(controller: model.lastController, hint: "Last name"),
     const SizedBox(height: 16),
-    AuthenticationWidget(onPressed: model.authenticateWithGoogle, status: model.authStatus),
+    GoogleAuthButton(onMobile: model.signInGoogleMobile, status: model.authStatus, signUp: true, key: const ValueKey("Athlete")),
   ];
 
-  List<Widget> _athleteProfile(AthleteBuilder model) => [
+  List<Widget> _athleteProfile(BuildContext context, AthleteBuilder model) => [
     const SizedBox(height: 16),
     ChannilTextField(controller: model.collegeController, hint: "College"),
     const SizedBox(height: 16),
@@ -74,9 +74,9 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     const SizedBox(height: 16),
     ChannilTextField(controller: model.pronounsController, hint: "Pronouns"),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.socialMediaController, hint: "Social Media"),
-    const SizedBox(height: 16),
-    ChannilTextField(controller: model.followerCountController, hint: "Follower count", type: TextInputType.number, action: TextInputAction.done),
+    Text("Socials (Fill in at least one)", style: context.textTheme.titleMedium),
+    for (final socialModel in model.socialModels) 
+      SocialMediaWidget(socialModel),
   ];
 
   List<Widget> _profilePics(BuildContext context, AthleteBuilder model) => [

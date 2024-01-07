@@ -6,6 +6,7 @@ import "package:google_sign_in/google_sign_in.dart";
 import "service.dart";
 
 typedef FirebaseUser = User;
+typedef GoogleAccount = GoogleSignInAccount;
 
 class AuthService extends Service {
   // Must be late so it happens after FirebaseService.init
@@ -22,9 +23,18 @@ class AuthService extends Service {
   FirebaseUser? get user => firebase.currentUser;
 
   Future<FirebaseUser?> signIn() async {
-    // await firebase.signInWithProvider(GoogleAuthProvider());
     final account = await google.signIn();
     if (account == null) return null;
+    final auth = await account.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: auth.accessToken,
+      idToken: auth.idToken,
+    );
+    await firebase.signInWithCredential(credential);
+    return user;
+  }
+
+  Future<FirebaseUser?> signInWithGoogleWeb(GoogleSignInAccount account) async {
     final auth = await account.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: auth.accessToken,

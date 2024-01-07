@@ -13,8 +13,6 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
   final gradYearController = TextEditingController();
   final sportController = TextEditingController();
   final pronounsController = TextEditingController();
-  final socialMediaController = TextEditingController();
-  final followerCountController = TextEditingController();
   final promptControllers = [
     for (final _ in allPrompts) TextEditingController(),
   ];
@@ -40,7 +38,7 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
   @override
   List<TextEditingController> get allControllers => [
     firstController, lastController, collegeController, gradYearController,
-    sportController, pronounsController, socialMediaController, followerCountController,
+    sportController, pronounsController,
     ...captionControllers, ...promptControllers,
   ];
 
@@ -74,8 +72,7 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
       && gradYearController.text.isNotEmpty
       && sportController.text.isNotEmpty
       && pronounsController.text.isNotEmpty
-      && socialMediaController.text.isNotEmpty
-      && followerCountController.text.isNotEmpty
+      && socialModels.any((model) => model.isReady)
       && sport != null,
     2 => profilePics.every((model) => model.getImage() != null),
     3 => numPrompts == 2,
@@ -110,8 +107,11 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
       graduationYear: int.parse(gradYearController.text),
       sport: sport!,  // TODO <--
       pronouns: pronounsController.text,
-      socialMedia: socialMediaController.text,
-      followerCount: int.parse(followerCountController.text),
+      socials: [
+        for (final socialModel in socialModels)
+          if (socialModel.isReady)
+            socialModel.value,
+      ],
       profilePics: getProfilePics(),
       prompts: {
         for (final (prompt, controller) in zip(allPrompts, promptControllers))

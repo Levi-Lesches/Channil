@@ -33,7 +33,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
       controller: model.pageController,
       children: [
         ListView(children: _authInfo(model)),
-        ListView(children: _companyInfo(model)),
+        ListView(children: _companyInfo(context, model)),
         ListView(children: _uploadImages(context, model)),
         ListView(children: _selectSports(context, model)),
         ListView(children: _confirm(context, model)),
@@ -45,10 +45,10 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 16),
     ChannilTextField(controller: model.nameController, hint: "Company Name"),
     const SizedBox(height: 16),
-    AuthenticationWidget(onPressed: model.authenticateWithGoogle, status: model.authStatus),
+    GoogleAuthButton(onMobile: model.signInGoogleMobile, status: model.authStatus, signUp: true, key: const ValueKey("Business")),
   ];
 
-  List<Widget> _companyInfo(BusinessBuilder model) => [
+  List<Widget> _companyInfo(BuildContext context, BusinessBuilder model) => [
     const SizedBox(height: 16),
     Row(children: [
       Expanded(child: DropdownMenu(
@@ -62,14 +62,14 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
         ],
       ),),
     ],),
-    // ChannilTextField(controller: model.industryController, hint: "Industry"),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.locationController, hint: "Location"),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.socialController, hint: "Social Media"),
+    ChannilTextField(controller: model.websiteController, hint: "Website", type: TextInputType.url, capitalization: TextCapitalization.none),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.websiteController, hint: "Website"),
-    const SizedBox(height: 16),
+    Text("Social media profiles (Choose at least one)", style: context.textTheme.titleMedium),
+    for (final socialModel in model.socialModels) 
+      SocialMediaWidget(socialModel),
   ];
 
   List<Widget> _uploadImages(BuildContext context, BusinessBuilder model) => [

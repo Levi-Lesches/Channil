@@ -5,8 +5,8 @@ class Business {
   final String name;
   final String email;
   final DealCategory industry;
+  final List<SocialMediaProfile> socials;
   final String location;
-  final String socialMediaLink;
   final String? website;
   final Set<Sport> sports;
   
@@ -20,7 +20,7 @@ class Business {
     required this.email,
     required this.industry,
     required this.location,
-    required this.socialMediaLink,
+    required this.socials,
     required this.website,
     required this.sports,
     required this.logo,
@@ -34,7 +34,10 @@ class Business {
     email = json["email"],
     industry = DealCategory.values.byName(json["industry"]),
     location = json["location"],
-    socialMediaLink = json["socialMediaLink"],
+    socials = [
+      for (final socialJson in json["socialMedia"])
+      SocialMediaProfile.fromJson(socialJson),
+    ],
     website = json["website"],
     sports = {
       for (final sport in json["sports"]) Sport.values.byName(sport),
@@ -52,7 +55,9 @@ class Business {
     "email": email,
     "industry": industry.name,
     "location": location,
-    "socialMediaLink": socialMediaLink,
+    "socials": [
+      for (final social in socials) social.toJson(),
+    ],
     "website": website,
     "sports": [
       for (final sport in sports) sport.name,
