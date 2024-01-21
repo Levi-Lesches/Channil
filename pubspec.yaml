@@ -28,13 +28,33 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/facebook.png
-    - assets/instagram.png
-    - assets/linkedin.png
-    - assets/channil_square.png
-    - assets/channil_rectangle.png
-    - assets/tiktok.jpg
-    - assets/x.webp
+    - assets/categories/athletic_gear.png
+    - assets/categories/education.png
+    - assets/categories/fashion.png
+    - assets/categories/food.png
+    - assets/categories/health_wellness.png
+    - assets/categories/home_goods.png
+    - assets/categories/lifestyle.png
+    - assets/categories/tech.png
+    - assets/logos/instagram.png
+    - assets/logos/linkedin.png
+    - assets/logos/channil_square.png
+    - assets/logos/channil_rectangle.png
+    - assets/logos/facebook.png
+    - assets/logos/tiktok.jpg
+    - assets/logos/x.webp
+    - assets/sports/baseball.png
+    - assets/sports/basketball.png
+    - assets/sports/cross_country.png
+    - assets/sports/golf.png
+    - assets/sports/lacrosse.png
+    - assets/sports/soccer.png
+    - assets/sports/softball.png
+    - assets/sports/swimming.png
+    - assets/sports/tennis.png
+    - assets/sports/track.png
+    - assets/sports/volleyball.png
+    - assets/sports/wrestling.png
     
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

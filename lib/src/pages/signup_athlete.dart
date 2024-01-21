@@ -46,22 +46,24 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
 
   List<Widget> _basicInfo(AthleteBuilder model) => [
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.firstController, hint: "First name"),
+    ChannilTextField(controller: model.firstController, hint: "First name", isRequired: true),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.lastController, hint: "Last name"),
+    ChannilTextField(controller: model.lastController, hint: "Last name", isRequired: true),
     const SizedBox(height: 16),
-    GoogleAuthButton(onMobile: model.signInGoogleMobile, status: model.authStatus, signUp: true, key: const ValueKey("Athlete")),
+    GoogleAuthButton(signUp: true),
+    if (models.user.hasAccount) 
+      const Text("An account with this email already exists", style: TextStyle(color: Colors.red)),
   ];
 
   List<Widget> _athleteProfile(BuildContext context, AthleteBuilder model) => [
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.collegeController, hint: "College"),
+    ChannilTextField(controller: model.collegeController, hint: "College", isRequired: true),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.gradYearController, hint: "Graduation Year", type: TextInputType.number),
+    ChannilTextField(controller: model.gradYearController, hint: "Graduation Year", type: TextInputType.number, isRequired: true),
     const SizedBox(height: 16),
     Row(children: [
       Expanded(child: DropdownMenu(
-        label: const Text("Sport"),
+        label: addRequiredStar("Sport"),
         expandedInsets: EdgeInsets.zero,
         controller: model.sportController,
         onSelected: (sport) => model.sport = sport,
@@ -72,7 +74,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
       ),),
     ],),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.pronounsController, hint: "Pronouns"),
+    ChannilTextField(controller: model.pronounsController, hint: "Pronouns", isRequired: true),
     const SizedBox(height: 16),
     Text("Socials (Fill in at least one)", style: context.textTheme.titleMedium),
     for (final socialModel in model.socialModels) 
@@ -157,16 +159,28 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     Text("Select all of your preferences", style: context.textTheme.bodyLarge, textAlign: TextAlign.center,),
     const SizedBox(height: 12),
     GridView.count(
-      crossAxisCount: 3,
+      crossAxisCount: 2,
       shrinkWrap: true,
-      childAspectRatio: 0.5,
+      childAspectRatio: 2.5,
+      mainAxisSpacing: 8,
       children: [
-        for (final category in DealCategory.values) CategoryPicker(
-          category: category,
-          isPicked: model.dealPreferences.contains(category),
-          onChanged: (selected) => model.updateDealType(category, selected: selected),
-        ),
+        for (final category in Industry.values) 
+          if (category != Industry.other) ChannilChoice(
+            name: category.displayName,
+            isPicked: model.dealPreferences.contains(category),
+            onChanged: (selected) => model.updateDealType(category, selected: selected),
+            image: AssetImage(category.assetPath!),
+          ),
       ],
+    ),
+    const SizedBox(height: 8),
+    FractionallySizedBox(
+      widthFactor: 1/2,
+      child: SizedBox(height: 80, child: ChannilChoice(
+        name: "Other",
+        isPicked: model.dealPreferences.contains(Industry.other),
+        onChanged: (selected) => model.updateDealType(Industry.other, selected: selected),
+      ),),
     ),
   ];
 
@@ -181,7 +195,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     ),
     // const SizedBox(height: 16),
     CheckboxListTile(
-      title: const Text("Accept the Terms of Service"),
+      title: addRequiredStar("Accept the Terms of Service"),
       value: model.acceptTos, 
       onChanged: (input) => model.toggleTos(input ?? false),
     ),

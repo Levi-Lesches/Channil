@@ -12,7 +12,7 @@ abstract class DataModel with ChangeNotifier {
 }
 
 /// A model to build a value from the UI.
-abstract class BuilderModel<T> with ChangeNotifier {
+abstract class BuilderModel<T> extends ViewModel {
 	/// The value being edited.
 	T get value;
 

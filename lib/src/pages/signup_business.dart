@@ -43,27 +43,26 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
 
   List<Widget> _authInfo(BusinessBuilder model) => [
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.nameController, hint: "Company Name"),
+    ChannilTextField(controller: model.nameController, hint: "Company Name", isRequired: true),
     const SizedBox(height: 16),
-    GoogleAuthButton(onMobile: model.signInGoogleMobile, status: model.authStatus, signUp: true, key: const ValueKey("Business")),
+    GoogleAuthButton(signUp: true),
+      if (models.user.hasAccount) 
+      const Text("An account with this email already exists", style: TextStyle(color: Colors.red)),
   ];
 
   List<Widget> _companyInfo(BuildContext context, BusinessBuilder model) => [
     const SizedBox(height: 16),
     Row(children: [
-      Expanded(child: DropdownMenu(
-        label: const Text("Industry"),
-        expandedInsets: EdgeInsets.zero,
-        controller: model.industryController,
-        onSelected: (industry) => model.industry = industry,
-        dropdownMenuEntries: [
-          for (final category in DealCategory.values) 
-            DropdownMenuEntry(value: category, label: category.displayName),
-        ],
+      Expanded(child: DropdownSelect<Industry>(
+        title: addRequiredStar("Select industries"),
+        getName: (industry) => industry.displayName,
+        items: Industry.values,
+        selectedItems: model.industries,
+        onChanged: model.toggleIndustry,
       ),),
     ],),
     const SizedBox(height: 16),
-    ChannilTextField(controller: model.locationController, hint: "Location"),
+    ChannilTextField(controller: model.locationController, hint: "Location", isRequired: true),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.websiteController, hint: "Website", type: TextInputType.url, capitalization: TextCapitalization.none),
     const SizedBox(height: 16),
@@ -74,7 +73,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
 
   List<Widget> _uploadImages(BuildContext context, BusinessBuilder model) => [
     const SizedBox(height: 16),
-    Text("Add a company logo", style: context.textTheme.titleLarge),
+    addRequiredStar("Add a company logo", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
     if (model.logo.state is! ImageStateEmpty) ImagePicker(
       model.logo,
@@ -123,23 +122,35 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
   List<Widget> _selectSports(BuildContext context, BusinessBuilder model) => [
     Text("Select your preferred sports", style: context.textTheme.headlineMedium, textAlign: TextAlign.center),
     const SizedBox(height: 16),
-    Wrap(
-      runSpacing: 8,
-      spacing: 8,
-      runAlignment: WrapAlignment.center,
-      alignment: WrapAlignment.center,
+    GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      childAspectRatio: 2.5,
       children: [
-        for (final sport in Sport.values) FilterChip.elevated(
-          label: Text(sport.displayName), 
-          onSelected: (value) => model.toggleSport(sport, isSelected: value), 
-          selected: model.sports.contains(sport),
+        for (final sport in Sport.values) ChannilChoice(
+          name: sport.displayName, 
+          image: AssetImage(sport.assetPath),
+          onChanged: (value) => model.toggleSport(sport, isSelected: value), 
+          isPicked: model.sports.contains(sport),
         ),
       ],
     ),
   ];
 
   List<Widget> _confirm(BuildContext context, BusinessBuilder model) => [
-    Center(child: Text("Confirm and Save", style: context.textTheme.displaySmall)),
+    Text("Almost there!", style: context.textTheme.displaySmall, textAlign: TextAlign.center,),
+    const SizedBox(height: 16),
+    CheckboxListTile(
+      title: const Text("Enable notifications"),
+      subtitle: const Text("This is not required to continue"),
+      value: model.enableNotifications, 
+      onChanged: (input) => model.toggleNotifications(input ?? false),
+    ),
+    CheckboxListTile(
+      title: addRequiredStar("Accept the Terms of Service"),
+      value: model.acceptTos, 
+      onChanged: (input) => model.toggleTos(input ?? false),
+    ),
     const SizedBox(height: 24),
     if (model.isLoading) LinearProgressIndicator(value: model.loadingProgress),
     if (model.loadingStatus != null) Text(model.loadingStatus!),

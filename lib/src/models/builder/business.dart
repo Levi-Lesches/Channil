@@ -5,18 +5,17 @@ import "package:channil/data.dart";
 import "package:channil/services.dart";
 import "package:channil/models.dart";
 
-class BusinessBuilder extends ProfileBuilder<Business> {
+class BusinessBuilder extends ProfileBuilder<ChannilUser> {
   // Text fields
   final nameController = TextEditingController();
-  final industryController = TextEditingController();
   final locationController = TextEditingController();
   final websiteController = TextEditingController();
   final Set<Sport> sports = {};
-  DealCategory? industry;
+  final Set<Industry> industries = {};
 
   @override
   List<TextEditingController> get allControllers => [
-    nameController, industryController, locationController, websiteController,
+    nameController, locationController, websiteController,
   ];
 
   @override
@@ -60,14 +59,15 @@ class BusinessBuilder extends ProfileBuilder<Business> {
 
   @override
   bool isPageReady(int page) => switch (page) {
-    0 => nameController.text.isNotEmpty && uid != null && email != null,
-    1 => industryController.text.isNotEmpty
-      && industry != null
+    0 => nameController.text.isNotEmpty 
+      && models.user.isAuthenticated
+      && !models.user.hasAccount,
+    1 => industries.isNotEmpty
       && locationController.text.isNotEmpty
       && socialModels.any((social) => social.isReady),
     2 => logo.getImage() != null,
     3 => true,
-    4 => true,
+    4 => acceptTos,
     _ => true,  // Should not happen but safer to not throw
   };
 
@@ -81,25 +81,36 @@ class BusinessBuilder extends ProfileBuilder<Business> {
     super.dispose();
   }
 
+  void toggleIndustry(Industry industry, {required bool isSelected}) {
+    if (isSelected) { 
+      industries.add(industry);
+    } else {
+      industries.remove(industry);
+    }
+    notifyListeners();
+  }
+
   @override
-  Business get value => Business(
-    id: uid!,
-    name: nameController.text,
-    email: email!,
-    industry: industry!,
-    location: locationController.text,
-    socials: [
-      for (final socialModel in socialModels) 
-        if (socialModel.isReady) socialModel.value,
-    ],
-    website: websiteController.text.isEmpty ? null : websiteController.text,
-    sports: sports,
-    logo: logo.getImage()!,
-    productImage: productImage.getImage(),
-    additionalImages: [
-      for (final model in additionalImages) 
-        model.getImage(),
-    ],
+  ChannilUser get value => ChannilUser(
+    id: models.user.uid!,
+    name: nameController.text.trim(),
+    email: models.user.email!,
+    profile: BusinessProfile(
+      industries: industries,
+      location: locationController.text,
+      socials: [
+        for (final socialModel in socialModels) 
+          if (socialModel.isReady) socialModel.value,
+      ],
+      website: websiteController.text.isEmpty ? null : websiteController.text,
+      sports: sports,
+      logo: logo.getImage()!,
+      productImage: productImage.getImage(),
+      additionalImages: [
+        for (final model in additionalImages) 
+          model.getImage(),
+      ],
+    ),
   );
 
   @override
@@ -108,8 +119,9 @@ class BusinessBuilder extends ProfileBuilder<Business> {
     loadingProgress = null;
     loadingStatus = "Uploading profile...";
     notifyListeners();
-    await services.database.saveBusiness(value);
+    await services.database.saveUser(value);
     isLoading = false;
+    loadingStatus = "Saved";
     notifyListeners();
   }
 }

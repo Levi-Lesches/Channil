@@ -3,6 +3,8 @@ import "package:flutter/material.dart";
 import "package:channil/data.dart";
 import "package:channil/models.dart";
 
+const platformHasFollowers = {SocialMediaPlatform.instagram, SocialMediaPlatform.tikTok};
+
 class SocialMediaBuilder extends BuilderModel<SocialMediaProfile> {
   final SocialMediaPlatform platform;
   SocialMediaBuilder(this.platform) {
@@ -14,6 +16,9 @@ class SocialMediaBuilder extends BuilderModel<SocialMediaProfile> {
   final urlController = TextEditingController();
 
   FollowerRange? followerRange;
+
+  bool get needsFollowers => platformHasFollowers.contains(platform);
+  bool get showUsername => platform != SocialMediaPlatform.linkedin;
 
   @override
   bool get isReady => usernameController.text.isNotEmpty

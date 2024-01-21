@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
+import "package:channil/models.dart";
 import "package:channil/pages.dart";
 import "package:channil/services.dart";
 import "package:channil/widgets.dart";
@@ -9,6 +10,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await services.init();
+  await models.init();
   runApp(const MyApp());
 }
 
@@ -32,29 +34,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) => MaterialApp.router(
-      title: "Flutter Demo",
-      theme: ThemeData(
-        useMaterial3: true,
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.black,
-            minimumSize: const Size(100, 32),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            textStyle: context.textTheme.titleLarge?.copyWith(fontSize: 18),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),      
-          ),
-        ),
-        chipTheme: ChipTheme.of(context).copyWith(
-          checkmarkColor: Colors.white,
-          side: const BorderSide(color: channilGreen),
-          labelStyle: context.textTheme.bodyLarge?.copyWith(color: const ChipLabelColor()),
-          secondaryLabelStyle: const TextStyle(color: Colors.white),
-        ),
-        colorScheme: const ColorScheme.light(
-          primary: channilGreen,
-          secondary: channilGreen,
+    title: "Flutter Demo",
+    theme: ThemeData(
+      useMaterial3: true,
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.black,
+          minimumSize: const Size(100, 32),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          textStyle: context.textTheme.titleLarge?.copyWith(fontSize: 18),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),      
         ),
       ),
-      routerConfig: router,
-    );
+      chipTheme: ChipTheme.of(context).copyWith(
+        checkmarkColor: Colors.white,
+        side: const BorderSide(color: channilGreen),
+        labelStyle: context.textTheme.bodyLarge?.copyWith(color: const ChipLabelColor()),
+        secondaryLabelStyle: const TextStyle(color: Colors.white),
+      ),
+      colorScheme: const ColorScheme.light(
+        primary: channilGreen,
+        secondary: channilGreen,
+      ),
+    ),
+    routerConfig: router,
+  );
 }

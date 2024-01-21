@@ -1,4 +1,4 @@
-import "../model.dart";
+import "package:channil/models.dart";
 
 class LandingViewModel extends ViewModel {
   int state = 0;
@@ -11,11 +11,5 @@ class LandingViewModel extends ViewModel {
   void back() {
     state--;
     notifyListeners();
-  }
-
-  Future<void> signIn() async {
-    isLoading = true;
-    await Future<void>.delayed(const Duration(seconds: 1));
-    isLoading = false;
   }
 }

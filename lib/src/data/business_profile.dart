@@ -1,10 +1,7 @@
 import "package:channil/data.dart";
 
-class Business {
-  final String id;
-  final String name;
-  final String email;
-  final DealCategory industry;
+class BusinessProfile extends Profile {
+  final Set<Industry> industries;
   final List<SocialMediaProfile> socials;
   final String location;
   final String? website;
@@ -14,11 +11,8 @@ class Business {
   final ChannilImage? productImage;
   final List<ChannilImage?> additionalImages;
 
-  Business({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.industry,
+  BusinessProfile({
+    required this.industries,
     required this.location,
     required this.socials,
     required this.website,
@@ -28,11 +22,11 @@ class Business {
     required this.additionalImages,
   });
 
-  Business.fromJson(Json json) : 
-    id = json["id"],
-    name = json["name"],
-    email = json["email"],
-    industry = DealCategory.values.byName(json["industry"]),
+  BusinessProfile.fromJson(Json json) : 
+    industries = {
+      for (final industryJson in json["industries"])
+        Industry.values.byName(industryJson as String),
+    },
     location = json["location"],
     socials = [
       for (final socialJson in json["socialMedia"])
@@ -49,11 +43,12 @@ class Business {
         ChannilImage.fromJson(imageJson),
     ];
   
+  @override
   Json toJson() => {
-    "id": id,
-    "name": name,
-    "email": email,
-    "industry": industry.name,
+    "type": "business",
+    "industries": [
+      for (final industry in industries) industry.name,
+    ],
     "location": location,
     "socials": [
       for (final social in socials) social.toJson(),

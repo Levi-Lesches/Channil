@@ -6,7 +6,7 @@ import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/services.dart";
 
-class AthleteBuilder extends ProfileBuilder<Athlete> {
+class AthleteBuilder extends ProfileBuilder<ChannilUser> {
   final firstController = TextEditingController();
   final lastController = TextEditingController();
   final collegeController = TextEditingController();
@@ -45,10 +45,7 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
   @override
   bool get isBusiness => false;
 
-  final Set<DealCategory> dealPreferences = {};
-
-  bool enableNotifications = false;
-  bool acceptTos = false;
+  final Set<Industry> dealPreferences = {};
 
   late final profilePics = [ 
     for (int index = 0; index < 6; index++) MultipleImageUploader(
@@ -64,14 +61,14 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
 
   @override
   bool isPageReady(int page) => switch (page) {
-    0 => firstController.text.isNotEmpty
-      && lastController.text.isNotEmpty
-      && uid != null
-      && email != null,
-    1 => collegeController.text.isNotEmpty
-      && gradYearController.text.isNotEmpty
-      && sportController.text.isNotEmpty
-      && pronounsController.text.isNotEmpty
+    0 => firstController.text.trim().isNotEmpty
+      && lastController.text.trim().isNotEmpty
+      && models.user.isAuthenticated      
+      && !models.user.hasAccount,
+    1 => collegeController.text.trim().isNotEmpty
+      && gradYearController.text.trim().isNotEmpty
+      && sportController.text.trim().isNotEmpty
+      && pronounsController.text.trim().isNotEmpty
       && socialModels.any((model) => model.isReady)
       && sport != null,
     2 => profilePics.every((model) => model.getImage() != null),
@@ -97,16 +94,15 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
   ).length;
 
   @override
-  Athlete get value => Athlete(
-    id: uid!,
-    first: firstController.text,
-    last: lastController.text,
-    email: email!,
+  ChannilUser get value => ChannilUser(
+    id: models.user.uid!,
+    name: "${firstController.text.trim()} ${lastController.text.trim()}",
+    email: models.user.email!,
     profile: AthleteProfile(
       college: collegeController.text,
-      graduationYear: int.parse(gradYearController.text),
+      graduationYear: int.parse(gradYearController.text.trim()),
       sport: sport!,  // TODO <--
-      pronouns: pronounsController.text,
+      pronouns: pronounsController.text.trim(),
       socials: [
         for (final socialModel in socialModels)
           if (socialModel.isReady)
@@ -122,7 +118,7 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
     ),
   );
 
-  void updateDealType(DealCategory dealType, {required bool selected}) {
+  void updateDealType(Industry dealType, {required bool selected}) {
     if (selected) {
       dealPreferences.add(dealType);
     } else {
@@ -131,17 +127,6 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
     notifyListeners();
   }
 
-  // ignore: avoid_positional_boolean_parameters
-  void toggleNotifications(bool input) {
-    enableNotifications = input;
-    notifyListeners();
-  }
-
-  // ignore: avoid_positional_boolean_parameters
-  void toggleTos(bool input) {
-    acceptTos = input;
-    notifyListeners();
-  }
 
   @override
   Future<void> save() async {
@@ -151,12 +136,13 @@ class AthleteBuilder extends ProfileBuilder<Athlete> {
     loadingStatus = "Uploading profile...";
     
     try { 
-      await services.database.saveAthlete(value);
+      await services.database.saveUser(value);
     } catch (error) {
       errorStatus = "Could not save profile";
       rethrow;
     }
     
+    loadingStatus = "Saved";
     isLoading = false;
     notifyListeners();
   }

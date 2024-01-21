@@ -8,6 +8,7 @@
       "name": "Windows",
       "request": "launch",
       "type": "dart",
+      "program": "lib/main.dart",
       "args": ["-d", "windows"]
     },
     {

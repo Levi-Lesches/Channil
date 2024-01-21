@@ -2,10 +2,9 @@ import "utils.dart";
 
 enum SocialMediaPlatform {
   instagram(displayName: "Instagram", logoUrl: "https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png", urlPrefix: "https://instagram.com/"),
+  tikTok(displayName: "TikTok", logoUrl: "https://www.tiktok.com/favicon.ico", urlPrefix: "https://tiktok.com/@"),
   twitter(displayName: "X (Twitter)", logoUrl: "https://abs.twimg.com/favicons/twitter.3.ico", urlPrefix: "https://x.com/"),
-  linkedin(displayName: "LinkedIn", logoUrl: "https://static.licdn.com/aero-v1/sc/h/3loy7tajf3n0cho89wgg0fjre"),
-  facebook(displayName: "Facebook", logoUrl: "https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico", urlPrefix: "https://facebook.com/"),
-  tikTok(displayName: "TikTok", logoUrl: "https://www.tiktok.com/favicon.ico", urlPrefix: "https://tiktok.com/@");
+  linkedin(displayName: "LinkedIn", logoUrl: "https://static.licdn.com/aero-v1/sc/h/3loy7tajf3n0cho89wgg0fjre");
 
   final String displayName;
   final String logoUrl;

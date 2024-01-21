@@ -1,37 +1,6 @@
 import "package:channil/data.dart";
 
-class Athlete {
-  final String id;
-  final String first;
-  final String last;
-  final String email;
-  final AthleteProfile profile;
-
-  Athlete({
-    required this.id,
-    required this.first,
-    required this.last,
-    required this.email,
-    required this.profile,
-  });
-
-  Json toJson() => {
-    "id": id,
-    "first": first,
-    "last": last,
-    "email": email,
-    "profile": profile.toJson(),
-  };
-
-  Athlete.fromJson(Json json) : 
-    id = json["id"],
-    first = json["first"],
-    last = json["last"],
-    email = json["email"],
-    profile = AthleteProfile.fromJson(json["profile"]);
-}
-
-class AthleteProfile {
+class AthleteProfile extends Profile {
   final String college;
   final int graduationYear;
   final Sport sport;
@@ -39,7 +8,7 @@ class AthleteProfile {
   final List<SocialMediaProfile> socials;
   final List<ChannilImage> profilePics;
   final Map<String, String> prompts;
-  final Set<DealCategory> dealPreferences;
+  final Set<Industry> dealPreferences;
 
   AthleteProfile({
     required this.college,
@@ -52,7 +21,9 @@ class AthleteProfile {
     required this.dealPreferences,
   });
 
+  @override
   Json toJson() => {
+    "type": "athlete",
     "college": college,
     "graduationYear": graduationYear,
     "sport": sport.name,
@@ -83,7 +54,7 @@ class AthleteProfile {
     ],
     prompts = Map<String, String>.from(json["prompts"]),
     dealPreferences = {
-      for (final name in json["categories"]) DealCategory.values.byName(name),
+      for (final name in json["dealPreferences"]) Industry.values.byName(name),
     };
 }
 

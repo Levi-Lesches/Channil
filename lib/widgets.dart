@@ -2,11 +2,12 @@ import "package:flutter/material.dart";
 
 export "package:go_router/go_router.dart";
 
-export "src/widgets/atomic/category.dart";
+export "src/widgets/atomic/choice.dart";
 export "src/widgets/atomic/image.dart";
 export "src/widgets/atomic/social.dart";
 
 export "src/widgets/auth.dart";
+export "src/widgets/generic/dropdown_select.dart";
 export "src/widgets/generic/logo.dart";
 export "src/widgets/generic/reactive_widget.dart";
 export "src/widgets/generic/text_field.dart";

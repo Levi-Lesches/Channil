@@ -4,6 +4,20 @@ import "package:channil/data.dart";
 
 import "service.dart";
 
+extension on CollectionReference {
+  CollectionReference<T> convert<T>({
+    required T Function(Json) fromJson,
+    required Json Function(T) toJson,
+  }) => withConverter(
+    fromFirestore: (snapshot, options) => fromJson(snapshot.data()!), 
+    toFirestore: (item, options) => toJson(item),
+  );
+}
+
+extension <T> on DocumentReference<T> {
+  Future<T?> getData() async => (await get()).data();
+}
+
 class DatabaseService extends Service {
   late final firebase = FirebaseFirestore.instance;
   
@@ -13,23 +27,11 @@ class DatabaseService extends Service {
   @override
   Future<void> dispose() async { }
 
-  CollectionReference<Athlete> get athletes => firebase.collection("athletes").withConverter(
-    fromFirestore: (snapshot, options) => Athlete.fromJson(snapshot.data()!),
-    toFirestore: (athlete, options) => athlete.toJson(),
+  CollectionReference<ChannilUser> get users => firebase.collection("users").convert(
+    fromJson: ChannilUser.fromJson,
+    toJson: (user) => user.toJson(),
   );
 
-  CollectionReference<Business> get businesses => firebase.collection("businesses").withConverter(
-    fromFirestore: (snapshot, options) => Business.fromJson(snapshot.data()!),
-    toFirestore: (business, options) => business.toJson(),
-  );
-
-  Future<void> saveBusiness(Business business) async {
-    final doc = businesses.doc(business.id);
-    await doc.set(business);
-  }
-
-  Future<void> saveAthlete(Athlete athlete) async {
-    final doc = athletes.doc(athlete.id);
-    await doc.set(athlete);
-  }
+  Future<void> saveUser(ChannilUser user) => users.doc(user.id).set(user);
+  Future<ChannilUser?> getUser(UserID id) => users.doc(id).getData(); 
 }

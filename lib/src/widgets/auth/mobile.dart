@@ -1,26 +1,22 @@
 import "package:flutter/material.dart";
 
-class GoogleAuthButton extends StatelessWidget {
-  final VoidCallback onMobile;
-  final String? status;
+import "package:channil/models.dart";
+import "package:channil/widgets.dart";
+
+class GoogleAuthButton extends ReusableReactiveWidget<UserModel> {
   final bool signUp;
-  const GoogleAuthButton({required this.onMobile, required this.signUp, this.status, super.key});
+  GoogleAuthButton({required this.signUp}) : super(models.user);
 
   @override
-  Widget build(BuildContext context) => Row(children: [
-    if (status != null) Expanded(child: SizedBox(width: 150, child: ListTile(
+  Widget build(BuildContext context, UserModel model) => Row(children: [
+    Expanded(flex: 3, child: ListTile(
       title: const Text("Authentication"),
-      subtitle: Text(status!),
-    ),),),
-    if (status == null) Expanded(child: 
-      OutlinedButton(
-        onPressed: onMobile,
-        child: const Text("Sign in with Google"),
-      ),
-    ) else SizedBox(
+      subtitle: Text(model.authStatus, style: context.textTheme.labelMedium),
+    ),),
+    SizedBox(
       width: 200, 
       child: OutlinedButton(
-        onPressed: onMobile,
+        onPressed: model.signInWithGoogle,
         child: const Text("Sign in with Google"),
       ),
     ),

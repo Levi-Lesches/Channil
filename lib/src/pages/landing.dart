@@ -4,6 +4,8 @@ import "package:channil/models.dart";
 import "package:channil/pages.dart";
 import "package:channil/widgets.dart";
 
+const description = "The Ultimate CHANNIL of connection for empowered athletes seeking endorsements and NIL opportunities with passionate businesses.";
+
 extension on Widget {
   Widget widen() => SizedBox(width: double.infinity, child: this);
 }
@@ -22,17 +24,16 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
         children: [
           const SizedBox(height: 48),
           const ChannilLogo(),
-          if (model.isLoading) ...[
-            const SizedBox(height: 24),
-            const CircularProgressIndicator(),
-          ],
-          const Spacer(flex: 3),
-          if (model.state == 0) ...[
-            GoogleAuthButton(
-              onMobile: model.signIn,
-              signUp: false,
-              status: "Sign into your account",
+          Expanded(
+            flex: 3,
+            child: Center(
+              child: Text(description, style: context.textTheme.titleLarge, textAlign: TextAlign.center),
             ),
+          ),
+          if (model.state == 0) ...[
+            GoogleAuthButton(signUp: false),
+            if (models.user.uid != null && !models.user.hasAccount) 
+              const Text("No account exists for that email. Please sign up below", style: TextStyle(color: Colors.red)),
             const SizedBox(height: 8),
             Text(
               "or",
