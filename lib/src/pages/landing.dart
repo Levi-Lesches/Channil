@@ -24,16 +24,12 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
         children: [
           const SizedBox(height: 48),
           const ChannilLogo(),
-          Expanded(
-            flex: 3,
-            child: Center(
-              child: Text(description, style: context.textTheme.titleLarge, textAlign: TextAlign.center),
-            ),
-          ),
+          Text(description, style: context.textTheme.titleLarge, textAlign: TextAlign.center),
+          const Spacer(flex: 3),
           if (model.state == 0) ...[
             GoogleAuthButton(signUp: false),
-            if (models.user.uid != null && !models.user.hasAccount) 
-              const Text("No account exists for that email. Please sign up below", style: TextStyle(color: Colors.red)),
+            if (model.errorText != null) 
+              Text(model.errorText!, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 8),
             Text(
               "or",

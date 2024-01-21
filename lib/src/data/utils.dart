@@ -18,3 +18,9 @@ Iterable<(E1, E2)> zip<E1, E2>(List<E1> list1, List<E2> list2) sync* {
     yield (list1[index], list2[index]);
   }
 }
+
+/// Utils on [Map].
+extension MapUtils<K, V> on Map<K, V> {
+  /// Gets all the keys and values as 2-element records.
+	Iterable<(K, V)> get records => entries.map((entry) => (entry.key, entry.value));
+}

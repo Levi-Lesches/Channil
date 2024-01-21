@@ -10,11 +10,24 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   // -------------------- Page handling --------------------  
   static const pageDelay = Duration(milliseconds: 250);
   static const pageCurve = Curves.easeInOut;
-  final pageController = PageController();
-  int pageIndex = 0;
-  bool isPageReady(int page);
 
-  StreamSubscription<GoogleAccount?>? _authSubscription;
+  late final PageController pageController;
+  late int pageIndex;
+
+  ProfileBuilder() {
+    final prefill = models.user.channilUser;
+    if (prefill == null) {
+      pageController = PageController();
+      pageIndex = 0;
+    } else {
+      pageController = PageController(initialPage: 1);
+      pageIndex = 1;
+      prefillFields(prefill);
+    }
+  }
+
+  void prefillFields(ChannilUser user);
+  bool isPageReady(int page);
 
   @override
   bool get isReady => isPageReady(pageIndex);
@@ -41,6 +54,7 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     for (final socialModel in socialModels) {
       socialModel.addListener(notifyListeners);
     }
+    models.user.addListener(notifyListeners);
     await super.init();
   }
 
@@ -52,7 +66,7 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     for (final socialModel in socialModels) {
       socialModel.dispose();
     }
-    _authSubscription?.cancel();
+    models.user.removeListener(notifyListeners);
     super.dispose();
   }
 

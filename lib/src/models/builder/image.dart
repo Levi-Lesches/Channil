@@ -4,10 +4,17 @@ import "package:flutter/material.dart";
 import "package:channil/data.dart";
 import "package:channil/services.dart";
 
-abstract class ImageUploader with ChangeNotifier {
+class ChannilImageViewModel with ChangeNotifier {
+  ImageState state = const ImageStateEmpty();
+  ChannilImageViewModel();
+  ChannilImageViewModel.view(ChannilImage image) {
+    state = ImageStateOk(image);
+  }
+}
+
+abstract class ImageUploader extends ChannilImageViewModel {
   final String filename;
   final CloudStorageDir Function() getDir;
-  ImageState state = const ImageStateEmpty(); 
   
   ImageUploader({
     required this.filename,
@@ -16,15 +23,6 @@ abstract class ImageUploader with ChangeNotifier {
 
   void startLoading() {
     state = const ImageStateLoading(null);
-    notifyListeners();
-  }
-
-  void _onTaskUpdate(TaskSnapshot snapshot) {
-    if (snapshot.state == TaskState.error) {
-      state = const ImageStateError("Could not upload photo");
-    } else {
-      state = ImageStateLoading(snapshot.progress);
-    }
     notifyListeners();
   }
 
@@ -37,6 +35,15 @@ abstract class ImageUploader with ChangeNotifier {
     ImageStateOk(image: final image) => image,
     _ => null,
   };
+
+  void _onTaskUpdate(TaskSnapshot snapshot) {
+    if (snapshot.state == TaskState.error) {
+      state = const ImageStateError("Could not upload photo");
+    } else {
+      state = ImageStateLoading(snapshot.progress);
+    }
+    notifyListeners();
+  }
 
   Future<void> uploadImage(Uint8List data) async {
     state = const ImageStateLoading(null);

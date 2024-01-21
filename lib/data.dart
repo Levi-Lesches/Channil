@@ -1,7 +1,5 @@
-export "src/data/athlete_profile.dart";
-export "src/data/business_profile.dart";
-export "src/data/industry.dart";
 export "src/data/image.dart";
+export "src/data/industry.dart";
 export "src/data/profile.dart";
 export "src/data/social.dart";
 export "src/data/sport.dart";

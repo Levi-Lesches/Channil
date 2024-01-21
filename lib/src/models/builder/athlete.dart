@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 
 import "package:channil/data.dart";
 import "package:channil/models.dart";
+import "package:channil/pages.dart";
 import "package:channil/services.dart";
 
 class AthleteBuilder extends ProfileBuilder<ChannilUser> {
@@ -17,6 +18,14 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
     for (final _ in allPrompts) TextEditingController(),
   ];
   final captionControllers = List.generate(6, (_) => TextEditingController());
+  Set<Industry> dealPreferences = {};
+  late final profilePics = [ 
+    for (int index = 0; index < 6; index++) MultipleImageUploader(
+      filename: "$index", 
+      handleMultiple: (images) => updateProfilePics(images, index),
+      getDir: getCloudDir,
+    ),
+  ];
 
   bool showPrompt = true;
   Sport? sport;
@@ -24,6 +33,36 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
   AthleteBuilder() {
     for (final imageModel in profilePics) {
       imageModel.addListener(notifyListeners);
+    }
+  }
+
+  @override
+  void prefillFields(ChannilUser user) {
+    final parts = user.name.split(" ");
+    final first = parts.first;
+    final last = parts.last;
+    final profile = user.profile as AthleteProfile;
+    firstController.text = first;
+    lastController.text = last;
+    collegeController.text = profile.college;
+    gradYearController.text = profile.graduationYear.toString();
+    sportController.text = profile.sport.displayName;
+    pronounsController.text = profile.pronouns;
+    sport = profile.sport;
+    dealPreferences = profile.dealPreferences;
+    for (final (prompt, response) in profile.prompts.records) {
+      final index = allPrompts.indexOf(prompt);
+      promptControllers[index].text = response;
+    }
+    for (final (index, image) in profile.profilePics.enumerate) {
+      final controller = captionControllers[index];
+      controller.text = image.caption ?? "";
+      profilePics[index].setImage(image);
+    }
+    for (final socialProfile in profile.socials) {
+      final platform = socialProfile.platform;
+      final model = socialModels.firstWhere((element) => element.platform == platform);
+      model.prefill(socialProfile);
     }
   }
 
@@ -44,16 +83,6 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
 
   @override
   bool get isBusiness => false;
-
-  final Set<Industry> dealPreferences = {};
-
-  late final profilePics = [ 
-    for (int index = 0; index < 6; index++) MultipleImageUploader(
-      filename: "$index", 
-      handleMultiple: (images) => updateProfilePics(images, index),
-      getDir: getCloudDir,
-    ),
-  ];
 
   Future<void> updateProfilePics(List<Uint8List> images, int startIndex) => MultipleImageUploader.uploadMultiple(
     models: profilePics, images: images, startIndex: startIndex,
@@ -101,7 +130,7 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
     profile: AthleteProfile(
       college: collegeController.text,
       graduationYear: int.parse(gradYearController.text.trim()),
-      sport: sport!,  // TODO <--
+      sport: sport!,
       pronouns: pronounsController.text.trim(),
       socials: [
         for (final socialModel in socialModels)
@@ -127,7 +156,6 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
     notifyListeners();
   }
 
-
   @override
   Future<void> save() async {
     isLoading = true;
@@ -145,5 +173,6 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
     loadingStatus = "Saved";
     isLoading = false;
     notifyListeners();
+    router.goNamed(Routes.profile);
   }
 }

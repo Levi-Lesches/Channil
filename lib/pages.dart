@@ -1,45 +1,57 @@
+import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:channil/models.dart";
 
 import "src/pages/landing.dart";
+import "src/pages/profile.dart";
 import "src/pages/signup_business.dart";
 import "src/pages/signup_athlete.dart";
+import "src/pages/settings.dart";
 
 export "package:go_router/go_router.dart";
 
 class Routes {
   static const landing = "/";
+  static const login = "login";
   static const signUpAthlete = "athlete-sign-up";
   static const signUpBusiness = "business-sign-up";
   static const profile = "profile";
+  static const settings = "settings";
 }
 
-String? loginRedirect(_, __) => models.user.isAuthenticated && models.user.hasAccount ? null : Routes.landing;
+String? loginRedirect(BuildContext context, _) => 
+  models.user.isAuthenticated && models.user.hasAccount
+    ? null : "/login";
 
 final router = GoRouter(
   initialLocation: "/profile",
   routes: [
     GoRoute(
-      path: "/",
+      path: "/${Routes.login}",
+      name: Routes.login,
       builder: (_, __) => LandingPage(),
-      routes: [
-        GoRoute(
-          path: Routes.signUpAthlete,
-          name: Routes.signUpAthlete,
-          builder: (_, __) => AthleteSignUpPage(),
-        ),
-        GoRoute(
-          path: Routes.signUpBusiness,
-          name: Routes.signUpBusiness,
-          builder: (_, __) => BusinessSignUpPage(),
-        ),
-        GoRoute(
-          name: Routes.profile,
-          redirect: loginRedirect,
-          path: "profile/:id",
-          builder: (_, __) => BusinessSignUpPage(),
-        ),
-      ],
+    ),
+    GoRoute(
+      path: "/${Routes.signUpAthlete}",
+      name: Routes.signUpAthlete,
+      builder: (_, __) => AthleteSignUpPage(),
+    ),
+    GoRoute(
+      path: "/${Routes.signUpBusiness}",
+      name: Routes.signUpBusiness,
+      builder: (_, __) => BusinessSignUpPage(),
+    ),
+    GoRoute(
+      path: "/${Routes.profile}",
+      name: Routes.profile,
+      redirect: loginRedirect,
+      builder: (_, __) => ProfilePage(),
+    ),
+    GoRoute(
+      path: "/${Routes.settings}",
+      name: Routes.settings,
+      redirect: loginRedirect,
+      builder: (_, __) => SettingsPage(),
     ),
   ],
 );

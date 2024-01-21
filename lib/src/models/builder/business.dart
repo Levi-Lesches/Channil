@@ -2,6 +2,7 @@ import "dart:typed_data";
 import "package:flutter/material.dart";
 
 import "package:channil/data.dart";
+import "package:channil/pages.dart";
 import "package:channil/services.dart";
 import "package:channil/models.dart";
 
@@ -10,8 +11,8 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
   final nameController = TextEditingController();
   final locationController = TextEditingController();
   final websiteController = TextEditingController();
-  final Set<Sport> sports = {};
-  final Set<Industry> industries = {};
+  Set<Sport> sports = {};
+  Set<Industry> industries = {};
 
   @override
   List<TextEditingController> get allControllers => [
@@ -20,6 +21,26 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
 
   @override
   bool get isBusiness => true;
+
+  @override
+  void prefillFields(ChannilUser user) {
+    final profile = user.profile as BusinessProfile;
+    nameController.text = user.name;
+    locationController.text = profile.location;
+    websiteController.text = profile.website ?? "";
+    sports = profile.sports;
+    industries = profile.industries;
+    logo.setImage(profile.logo);
+    productImage.setImage(profile.productImage);
+    for (final (index, image) in profile.additionalImages.enumerate) {
+      additionalImages[index].setImage(image);
+    }
+    for (final socialProfile in profile.socials) {
+      final platform = socialProfile.platform;
+      final model = socialModels.firstWhere((element) => element.platform == platform);
+      model.prefill(socialProfile);
+    }
+  }
 
   // Images
   late final logo = SingleImageUploader(
@@ -122,6 +143,7 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
     await services.database.saveUser(value);
     isLoading = false;
     loadingStatus = "Saved";
+    router.goNamed(Routes.profile);
     notifyListeners();
   }
 }

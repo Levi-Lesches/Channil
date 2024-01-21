@@ -45,4 +45,11 @@ class SocialMediaBuilder extends BuilderModel<SocialMediaProfile> {
     followerRange = range;
     notifyListeners();
   }
+
+  void prefill(SocialMediaProfile profile) {
+    usernameController.text = profile.username;
+    urlController.text = profile.url ?? "";
+    followerRange = profile.followerCount;
+    notifyListeners();
+  }
 }

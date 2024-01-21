@@ -68,7 +68,14 @@ class UserModel extends DataModel {
     if (user == null) {
       authStatus = "Cancelled";
       notifyListeners();
-    } else {
     }
+  }
+
+  Future<void> signOut() async {
+    await services.auth.signOut();
+    email = null;
+    uid = null;
+    channilUser = null;
+    authStatus = "Pending";
   }
 }
