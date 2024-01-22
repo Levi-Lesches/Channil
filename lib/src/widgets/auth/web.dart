@@ -1,62 +1,33 @@
 import "package:flutter/material.dart";
 import "package:google_sign_in_web/web_only.dart";
 
+import "package:channil/models.dart";
+import "package:channil/widgets.dart";
 import "package:channil/services.dart";
 
-class GoogleAuthButton extends StatefulWidget {
-  final VoidCallback onMobile;
-  final String? status;
+class GoogleAuthButton extends ReusableReactiveWidget<UserModel> {
   final bool signUp;
-  GoogleAuthButton({required this.onMobile, required this.signUp, this.status, super.key}) {
+  GoogleAuthButton({required this.signUp}) : super(models.user) {
     services.auth.google.signInSilently();
   }
 
-  @override
-  State<GoogleAuthButton> createState() => _GoogleAuthButtonState();
-}
-
-class _GoogleAuthButtonState extends State<GoogleAuthButton> {
   late final Widget googleWidget;
   void prerenderButton() => googleWidget = renderButton(
     configuration: GSIButtonConfiguration(
-      text: widget.signUp ? GSIButtonText.signupWith : GSIButtonText.signinWith,
+      text: signUp ? GSIButtonText.signupWith : GSIButtonText.signinWith,
       shape: GSIButtonShape.pill,
-      size: widget.status == null ? GSIButtonSize.large : null,
     ),
   );
-  
+    
   @override
-  void initState() {
-    super.initState();
-    prerenderButton();
-  }
-
-  @override
-  void didUpdateWidget(GoogleAuthButton oldWidget) {
-    if (oldWidget.status != widget.status || oldWidget.signUp != widget.signUp) prerenderButton();
-    super.didUpdateWidget(oldWidget);
-  }
-  
-  @override
-  Widget build(BuildContext context) => Row(children: [
-    if (widget.status != null) Expanded(child: SizedBox(width: 150, child: ListTile(
+  Widget build(BuildContext context, UserModel model) => Row(children: [
+    Expanded(child: SizedBox(width: 150, child: ListTile(
       title: const Text("Authentication"),
-      subtitle: Text(widget.status!),
+      subtitle: Text(model.authStatus),
     ),),),
-    if (widget.status != null) SizedBox(
+    SizedBox(
       width: 200, 
-      child: googleWidget,  // renderButton(
-        // configuration: GSIButtonConfiguration(
-        //   text: widget.signUp ? GSIButtonText.signupWith : GSIButtonText.signinWith,
-        //   shape: GSIButtonShape.pill,
-        // ),
-      // ),
-    ) else Expanded(child: googleWidget, // renderButton(
-      // configuration: GSIButtonConfiguration(
-      //   text: widget.signUp ? GSIButtonText.signupWith : GSIButtonText.signinWith,
-      //   shape: GSIButtonShape.pill,
-      //   size: GSIButtonSize.large,
-      // ),
+      child: googleWidget,
     ),
   ],);
 }

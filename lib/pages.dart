@@ -3,7 +3,7 @@ import "package:go_router/go_router.dart";
 import "package:channil/models.dart";
 
 import "src/pages/landing.dart";
-import "src/pages/profile.dart";
+import "src/pages/home/shell.dart";
 import "src/pages/signup_business.dart";
 import "src/pages/signup_athlete.dart";
 import "src/pages/settings.dart";
@@ -45,7 +45,7 @@ final router = GoRouter(
       path: "/${Routes.profile}",
       name: Routes.profile,
       redirect: loginRedirect,
-      builder: (_, __) => ProfilePage(),
+      builder: (_, __) => const HomeShell(ChannilDestination.profile),
     ),
     GoRoute(
       path: "/${Routes.settings}",

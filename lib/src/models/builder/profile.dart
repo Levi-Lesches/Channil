@@ -13,6 +13,7 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
 
   late final PageController pageController;
   late int pageIndex;
+  bool isPrefill = false;
 
   ProfileBuilder() {
     final prefill = models.user.channilUser;
@@ -22,6 +23,7 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     } else {
       pageController = PageController(initialPage: 1);
       pageIndex = 1;
+      isPrefill = true;
       prefillFields(prefill);
     }
   }

@@ -1,15 +1,40 @@
 import "utils.dart";
 
 enum SocialMediaPlatform {
-  instagram(displayName: "Instagram", logoUrl: "https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png", urlPrefix: "https://instagram.com/"),
-  tikTok(displayName: "TikTok", logoUrl: "https://www.tiktok.com/favicon.ico", urlPrefix: "https://tiktok.com/@"),
-  twitter(displayName: "X (Twitter)", logoUrl: "https://abs.twimg.com/favicons/twitter.3.ico", urlPrefix: "https://x.com/"),
-  linkedin(displayName: "LinkedIn", logoUrl: "https://static.licdn.com/aero-v1/sc/h/3loy7tajf3n0cho89wgg0fjre");
+  instagram(
+    displayName: "Instagram",
+    showFollowers: true,
+    assetPath: "assets/logos/instagram.png",
+    urlPrefix: "https://instagram.com/",
+  ),
+  tikTok(
+    displayName: "TikTok",
+    showFollowers: true,
+    assetPath: "assets/logos/tiktok.jpg",
+    urlPrefix: "https://tiktok.com/@",
+  ),
+  twitter(
+    displayName: "X (Twitter)",
+    showFollowers: false,
+    assetPath: "assets/logos/x.webp",
+    urlPrefix: "https://x.com/",
+  ),
+  linkedin(
+    displayName: "LinkedIn",
+    showFollowers: false,
+    assetPath: "assets/logos/linkedin.png",
+  );
 
   final String displayName;
-  final String logoUrl;
   final String? urlPrefix;
-  const SocialMediaPlatform({required this.displayName, required this.logoUrl, this.urlPrefix});
+  final String assetPath;
+  final bool showFollowers;
+  const SocialMediaPlatform({
+    required this.assetPath, 
+    required this.showFollowers, 
+    required this.displayName, 
+    this.urlPrefix,
+  });
 }
 
 class SocialMediaProfile {

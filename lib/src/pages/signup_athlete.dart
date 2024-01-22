@@ -18,7 +18,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
           onPressed: context.pop,
           child: const Text("Cancel"),
         ) else OutlinedButton(
-          onPressed: model.prevPage,
+          onPressed: model.pageIndex == 1 && model.isPrefill ? null : model.prevPage,
           child: const Text("Back"),
         ),
         if (model.pageIndex == 5) OutlinedButton(
@@ -77,8 +77,10 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     ChannilTextField(controller: model.pronounsController, hint: "Pronouns", isRequired: true),
     const SizedBox(height: 16),
     Text("Socials (Fill in at least one)", style: context.textTheme.titleMedium),
-    for (final socialModel in model.socialModels) 
+    for (final socialModel in model.socialModels) ...[
       SocialMediaWidget(socialModel),
+      const SizedBox(height: 8),
+    ],
   ];
 
   List<Widget> _profilePics(BuildContext context, AthleteBuilder model) => [
@@ -87,7 +89,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     Text("Tap a box to select a photo from your gallery", textAlign: TextAlign.center, style: context.textTheme.labelLarge),
     const SizedBox(height: 16),
     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      for (final index in [0, 1, 2]) Expanded(child: ImagePicker(
+      for (final index in [0, 1, 2]) Expanded(child: ChannilImagePicker(
         model.profilePics[index],
         profileModel: model,
         captionController: model.captionControllers[index],
@@ -96,7 +98,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     ],),
     const SizedBox(height: 16),
     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      for (final index in [3, 4, 5]) Expanded(child: ImagePicker(
+      for (final index in [3, 4, 5]) Expanded(child: ChannilImagePicker(
         model.profilePics[index],
         profileModel: model,
         captionController: model.captionControllers[index],

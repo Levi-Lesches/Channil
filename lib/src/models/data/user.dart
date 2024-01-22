@@ -78,4 +78,10 @@ class UserModel extends DataModel {
     channilUser = null;
     authStatus = "Pending";
   }
+
+  Future<void> saveUser(ChannilUser user) async {
+    await services.database.saveUser(user);
+    channilUser = user;
+    notifyListeners();
+  }
 }

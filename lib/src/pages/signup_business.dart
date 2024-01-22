@@ -17,7 +17,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
         onPressed: context.pop,
         child: const Text("Cancel"),
       ) else OutlinedButton(
-        onPressed: model.prevPage,
+        onPressed: model.pageIndex == 1 && model.isPrefill ? null : model.prevPage,
         child: const Text("Back"),
       ),
       if (model.pageIndex == 4) OutlinedButton(
@@ -75,7 +75,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 16),
     addRequiredStar("Add a company logo", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
-    if (model.logo.state is! ImageStateEmpty) ImagePicker(
+    if (model.logo.state is! ImageStateEmpty) ChannilImagePicker(
       model.logo,
       profileModel: model,
     ),
@@ -87,7 +87,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     const SizedBox(height: 24),
     Text("Add a product image", style: context.textTheme.titleLarge),
     const SizedBox(height: 12),
-    if (model.productImage.state is! ImageStateEmpty) ImagePicker(
+    if (model.productImage.state is! ImageStateEmpty) ChannilImagePicker(
       model.productImage,
       profileModel: model,
     ),
@@ -105,14 +105,14 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     ),
     const SizedBox(height: 8),
     Row(children: [
-      for (final index in [0, 1]) Expanded(child: ImagePicker(
+      for (final index in [0, 1]) Expanded(child: ChannilImagePicker(
         model.additionalImages[index],
         profileModel: model,
       ),),
     ],),
     const SizedBox(height: 8),
     Row(children: [
-      for (final index in [2, 3]) Expanded(child: ImagePicker(
+      for (final index in [2, 3]) Expanded(child: ChannilImagePicker(
         model.additionalImages[index],
         profileModel: model,
       ),),

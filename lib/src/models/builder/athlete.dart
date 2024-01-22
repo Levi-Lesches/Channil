@@ -5,7 +5,6 @@ import "package:flutter/material.dart";
 import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/pages.dart";
-import "package:channil/services.dart";
 
 class AthleteBuilder extends ProfileBuilder<ChannilUser> {
   final firstController = TextEditingController();
@@ -164,7 +163,7 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
     loadingStatus = "Uploading profile...";
     
     try { 
-      await services.database.saveUser(value);
+      await models.user.saveUser(value);
     } catch (error) {
       errorStatus = "Could not save profile";
       rethrow;

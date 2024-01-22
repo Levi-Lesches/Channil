@@ -7,17 +7,10 @@ import "package:channil/widgets.dart";
 class SocialMediaWidget extends ReusableReactiveWidget<SocialMediaBuilder> {
   const SocialMediaWidget(super.model);
 
-  ImageProvider get logo => AssetImage(switch (model.platform) {
-    SocialMediaPlatform.instagram => "assets/logos/instagram.png",
-    SocialMediaPlatform.linkedin => "assets/logos/linkedin.png",
-    SocialMediaPlatform.tikTok => "assets/logos/tiktok.jpg",
-    SocialMediaPlatform.twitter => "assets/logos/x.webp",
-  },);
-
   @override
   Widget build(BuildContext context, SocialMediaBuilder model) => Column(children: [
     ListTile(
-      leading: CircleAvatar(backgroundImage: logo),
+      leading: CircleAvatar(backgroundImage: AssetImage(model.platform.assetPath)),
       title: Text(model.platform.displayName),
     ),
     const SizedBox(height: 4),
@@ -49,4 +42,17 @@ class SocialMediaWidget extends ReusableReactiveWidget<SocialMediaBuilder> {
       ),
     ],),
   ],);
+}
+
+class SocialMediaViewer extends StatelessWidget {
+  final SocialMediaProfile social;
+  const SocialMediaViewer(this.social);
+  
+  @override
+  Widget build(BuildContext context) => ListTile(
+    leading: Image.asset(social.platform.assetPath),
+    title: Text(social.username),
+    subtitle: social.platform.showFollowers
+      ? Text("Followers: ${social.followerCount.$1}-${social.followerCount.$2}") : null,
+  );
 }

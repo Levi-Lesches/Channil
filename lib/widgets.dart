@@ -8,6 +8,7 @@ export "src/widgets/atomic/social.dart";
 
 export "src/widgets/auth.dart";
 export "src/widgets/generic/dropdown_select.dart";
+export "src/widgets/generic/info_box.dart";
 export "src/widgets/generic/logo.dart";
 export "src/widgets/generic/reactive_widget.dart";
 export "src/widgets/generic/text_field.dart";

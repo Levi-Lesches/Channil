@@ -1,10 +1,11 @@
 import "src/models/model.dart";
-import "src/models/data/auth.dart";
+import "src/models/data/user.dart";
 
 export "src/models/model.dart";
-export "src/models/data/auth.dart";
+export "src/models/data/user.dart";
 
 export "src/models/view/landing.dart";
+export "src/models/view/home.dart";
 export "src/models/view/profile.dart";
 
 export "src/models/builder/athlete.dart";

@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 
 import "package:channil/data.dart";
 import "package:channil/pages.dart";
-import "package:channil/services.dart";
 import "package:channil/models.dart";
 
 class BusinessBuilder extends ProfileBuilder<ChannilUser> {
@@ -140,7 +139,7 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
     loadingProgress = null;
     loadingStatus = "Uploading profile...";
     notifyListeners();
-    await services.database.saveUser(value);
+    await models.user.saveUser(value);
     isLoading = false;
     loadingStatus = "Saved";
     router.goNamed(Routes.profile);
