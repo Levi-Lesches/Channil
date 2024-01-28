@@ -1,10 +1,15 @@
 import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/services.dart";
+import "package:cloud_firestore/cloud_firestore.dart";
 
 class BrowseViewModel extends ViewModel {
   List<ChannilUser> upcomingUsers = [];
   ChannilUser? currentUser;
+  DocumentSnapshot<ChannilUser>? snapshot;
+
+  final HomeModel home;
+  BrowseViewModel(this.home);
 
   @override
   Future<void> init() async {
@@ -18,20 +23,21 @@ class BrowseViewModel extends ViewModel {
   }
 
   void reject() {
-    rejectedIDs.add(currentUser!.id);
+    home.rejectedIDs.add(currentUser!.id);
     nextUser();
   }
 
-  List<String> get rejectedIDs => models.home.rejectedIDs;
+  List<String> get skipIDs => [...home.rejectedIDs, ...home.matchedIDs];
 
   Future<bool> loadMoreUsers() async {
-    final nextUsers = await models.user.channilUser!.matchProfileType(
-      handleBusiness: (profile) => services.database.queryAthletes(profile, rejectedIDs: rejectedIDs),
-      handleAthlete: (profile) => services.database.queryBusinesses(profile, rejectedIDs: rejectedIDs),
+    final (newSnapshot, nextUsers) = await models.user.channilUser!.matchProfileType(
+      handleBusiness: (profile) => services.database.queryAthletes(profile, startAfter: snapshot),
+      handleAthlete: (profile) => services.database.queryBusinesses(profile, startAfter: snapshot),
     );
+    snapshot = newSnapshot;
     if (nextUsers.isEmpty) {
       errorText = "Could not find any users that match your preferences\nTry making your preferences more broad";
-      models.home.updateAppBarText(null);
+      home.updateAppBarText(null);
       return false;
     } else {
       upcomingUsers = nextUsers;
@@ -44,14 +50,28 @@ class BrowseViewModel extends ViewModel {
       if (!await loadMoreUsers()) return;
     }
     currentUser = upcomingUsers.removeLast();
-    models.home.updateAppBarText(currentUser!.name);
+    if (skipIDs.contains(currentUser!.id)) return nextUser();
+    home.updateAppBarText(currentUser!.name);
     notifyListeners();
   }
 
   Future<void> clearRejections() async {
     isLoading = true;
-    rejectedIDs.clear();
+    home.rejectedIDs.clear();
     errorText = null;
+    await nextUser();
+    isLoading = false;
+  }
+
+  Future<void> connect(Message firstMessage) async {
+    isLoading = true;
+    final connection = Connection.start(
+      from: models.user.channilUser!, 
+      to: currentUser!,
+      firstMessage: firstMessage,
+    );
+    await services.database.saveConnection(connection);
+    await home.getConnections();
     await nextUser();
     isLoading = false;
   }

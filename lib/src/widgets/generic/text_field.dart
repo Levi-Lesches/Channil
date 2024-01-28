@@ -26,6 +26,7 @@ class ChannilTextField extends StatelessWidget {
   final bool autofocus;
   final bool enabled;
   final bool isRequired;
+  final int? maxLines;
 
   const ChannilTextField({
     required this.controller,
@@ -34,11 +35,12 @@ class ChannilTextField extends StatelessWidget {
     this.autofocus = false,
     this.enabled = true,
     this.capitalization = TextCapitalization.sentences,
+    this.isRequired = false,
+    this.maxLines = 1,
     this.type,
     this.onChanged,
     this.error,
     this.prefix,
-    this.isRequired = false,
   });
 
   @override
@@ -50,6 +52,7 @@ class ChannilTextField extends StatelessWidget {
     keyboardType: type,
     textInputAction: action,
     enabled: enabled,
+    maxLines: maxLines,
     inputFormatters: [
       if (type == TextInputType.number) 
         FilteringTextInputFormatter.allow(RegExp(r"\d")),

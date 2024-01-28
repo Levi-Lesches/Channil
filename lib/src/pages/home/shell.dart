@@ -1,15 +1,23 @@
 import "package:flutter/material.dart";
-import "package:channil/pages.dart";
+
+import "package:channil/data.dart";
 import "package:channil/models.dart";
+import "package:channil/pages.dart";
 import "package:channil/widgets.dart";
 
 import "profile.dart";
 import "browse.dart";
+import "matches.dart";
 
-class HomeShell extends ReusableReactiveWidget<HomeModel> {
+class HomeShell extends ReactiveWidget<HomeModel> {
   static const double iconSize = 48;
 
-  HomeShell() : super(models.home);
+  final ChannilDestination destination;
+  final UserID? userID;
+  const HomeShell(this.destination, {this.userID});
+
+  @override
+  HomeModel createModel() => HomeModel(destination, userID: userID);
 
   @override
   Widget build(BuildContext context, HomeModel model) => Scaffold(
@@ -29,7 +37,7 @@ class HomeShell extends ReusableReactiveWidget<HomeModel> {
         ),
       ],
     ),
-    bottomNavigationBar: NavigationBar(
+    bottomNavigationBar: model.userID != null ? null : NavigationBar(
       selectedIndex: model.destination.index,
       indicatorColor: context.colorScheme.primary.withOpacity(0),
       onDestinationSelected: model.updatePageIndex,
@@ -48,10 +56,10 @@ class HomeShell extends ReusableReactiveWidget<HomeModel> {
     body: Center(child: ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 500),
       child: switch (model.destination) {
-        ChannilDestination.swipes => BrowsePage(),
-        ChannilDestination.matches => const Placeholder(),
+        ChannilDestination.swipes => BrowsePage(model),
+        ChannilDestination.matches => MatchesPage(model),
         ChannilDestination.chats => const Placeholder(),
-        ChannilDestination.profile => const ProfilePage(),
+        ChannilDestination.profile => ProfilePage(model, user: model.userID),
       },
     ),),
   );

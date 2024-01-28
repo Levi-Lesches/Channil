@@ -1,18 +1,30 @@
 import "package:channil/data.dart";
 import "package:channil/models.dart";
+import "package:channil/services.dart";
 
 class ProfileViewModel extends ViewModel {
-  ChannilUser user;
-  bool shouldUpdate;
+  late ChannilUser user;
+  late UserID? profileID;
+  late bool shouldUpdate;
 
-  factory ProfileViewModel(ChannilUser? user) => user == null
-    ? ProfileViewModel._(user: models.user.channilUser!, shouldUpdate: true)
-    : ProfileViewModel._(user: user, shouldUpdate: false);
-    
-  ProfileViewModel._({required this.user, required this.shouldUpdate});
-  
+  final HomeModel home;
+  ProfileViewModel(this.home, {this.profileID});      
+
   @override
   Future<void> init() async { 
+    isLoading = true;
+    shouldUpdate = profileID == null;
+    final profile = profileID == null 
+      ? models.user.channilUser!
+      : await services.database.getUser(profileID!);
+    profileID ??= models.user.channilUser!.id;
+    isLoading = false;
+    if (profile == null) {
+      errorText = "Could not load profile ID=$profileID";
+    } else {
+      user = profile;
+      home.appBarText = user.name;
+    }
     if (shouldUpdate) models.user.addListener(updateUser);
   }
 

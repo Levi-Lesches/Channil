@@ -8,6 +8,7 @@ import "src/pages/signup_business.dart";
 import "src/pages/signup_athlete.dart";
 import "src/pages/settings.dart";
 
+export "src/pages/home/confirm.dart";
 export "package:go_router/go_router.dart";
 
 class Routes {
@@ -20,6 +21,7 @@ class Routes {
   static const athletePreferences = "athlete-edit-preferences";
   static const businessPreferences = "business-edit-preferences";
   static const browse = "browse";
+  static const matches = "matches";
 }
 
 String? loginRedirect(BuildContext context, _) => 
@@ -62,19 +64,28 @@ final router = GoRouter(
       path: "/${Routes.profile}",
       name: Routes.profile,
       redirect: loginRedirect,
-      builder: (_, __) {
-        models.home.updatePage(ChannilDestination.profile);
-        return HomeShell();
-      },
+      builder: (_, __) => const HomeShell(ChannilDestination.profile),
+      routes: [
+        GoRoute(
+          path: ":id",
+          builder: (_, state) => HomeShell(
+            ChannilDestination.profile, 
+            userID: state.pathParameters["id"],
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: "/${Routes.browse}",
       name: Routes.browse,
       redirect: loginRedirect,
-      builder: (_, __) {
-        models.home.updatePage(ChannilDestination.swipes);
-        return HomeShell();
-      },
+      builder: (_, __) => const HomeShell(ChannilDestination.swipes),
+    ),
+    GoRoute(
+      path: "/${Routes.matches}",
+      name: Routes.matches,
+      redirect: loginRedirect,
+      builder: (_, __) => const HomeShell(ChannilDestination.matches),
     ),
     GoRoute(
       path: "/${Routes.settings}",

@@ -5,11 +5,12 @@ import "package:channil/models.dart";
 import "package:channil/widgets.dart";
 
 class ProfilePage extends ReactiveWidget<ProfileViewModel> {
-  final ChannilUser? user;
-  const ProfilePage({this.user, super.key});
+  final UserID? user;
+  final HomeModel home;
+  ProfilePage(this.home, {this.user}) : super(key: ValueKey(user));
   
   @override
-  ProfileViewModel createModel() => ProfileViewModel(user);
+  ProfileViewModel createModel() => ProfileViewModel(home, profileID: user);
   
   @override
   Widget build(BuildContext context, ProfileViewModel model) => model.isLoading 
