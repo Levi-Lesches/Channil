@@ -6,6 +6,7 @@ export "src/models/data/user.dart";
 
 export "src/models/view/landing.dart";
 export "src/models/view/home.dart";
+export "src/models/view/browse.dart";
 export "src/models/view/profile.dart";
 
 export "src/models/builder/athlete.dart";

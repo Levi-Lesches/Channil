@@ -4,6 +4,7 @@ import "package:channil/models.dart";
 import "package:channil/widgets.dart";
 
 import "profile.dart";
+import "browse.dart";
 
 class HomeShell extends ReactiveWidget<HomeViewModel> {
   static const double iconSize = 48;
@@ -51,7 +52,7 @@ class HomeShell extends ReactiveWidget<HomeViewModel> {
     body: Center(child: ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 500),
       child: switch (model.destination) {
-        ChannilDestination.swipes => const Placeholder(),
+        ChannilDestination.swipes => BrowsePage(),
         ChannilDestination.matches => const Placeholder(),
         ChannilDestination.chats => const Placeholder(),
         ChannilDestination.profile => ProfilePage(),

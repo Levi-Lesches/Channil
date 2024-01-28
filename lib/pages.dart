@@ -19,6 +19,7 @@ class Routes {
   static const settings = "settings";
   static const athletePreferences = "athlete-edit-preferences";
   static const businessPreferences = "business-edit-preferences";
+  static const browse = "browse";
 }
 
 String? loginRedirect(BuildContext context, _) => 
@@ -62,6 +63,12 @@ final router = GoRouter(
       name: Routes.profile,
       redirect: loginRedirect,
       builder: (_, __) => const HomeShell(ChannilDestination.profile),
+    ),
+    GoRoute(
+      path: "/${Routes.browse}",
+      name: Routes.browse,
+      redirect: loginRedirect,
+      builder: (_, __) => const HomeShell(ChannilDestination.swipes),
     ),
     GoRoute(
       path: "/${Routes.settings}",
