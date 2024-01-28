@@ -62,13 +62,19 @@ final router = GoRouter(
       path: "/${Routes.profile}",
       name: Routes.profile,
       redirect: loginRedirect,
-      builder: (_, __) => const HomeShell(ChannilDestination.profile),
+      builder: (_, __) {
+        models.home.updatePage(ChannilDestination.profile);
+        return HomeShell();
+      },
     ),
     GoRoute(
       path: "/${Routes.browse}",
       name: Routes.browse,
       redirect: loginRedirect,
-      builder: (_, __) => const HomeShell(ChannilDestination.swipes),
+      builder: (_, __) {
+        models.home.updatePage(ChannilDestination.swipes);
+        return HomeShell();
+      },
     ),
     GoRoute(
       path: "/${Routes.settings}",

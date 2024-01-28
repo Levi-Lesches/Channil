@@ -5,7 +5,10 @@ class ProfileViewModel extends ViewModel {
   ChannilUser user;
   bool shouldUpdate;
 
-  factory ProfileViewModel() => ProfileViewModel._(user: models.user.channilUser!, shouldUpdate: false);
+  factory ProfileViewModel(ChannilUser? user) => user == null
+    ? ProfileViewModel._(user: models.user.channilUser!, shouldUpdate: true)
+    : ProfileViewModel._(user: user, shouldUpdate: false);
+    
   ProfileViewModel._({required this.user, required this.shouldUpdate});
   
   @override

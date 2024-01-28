@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 abstract class _ReactiveWidgetInterface<T extends ChangeNotifier> extends StatefulWidget {
-  const _ReactiveWidgetInterface();
+  const _ReactiveWidgetInterface({super.key});
   T createModel();
   bool get shouldDispose;
 
@@ -15,7 +15,7 @@ abstract class _ReactiveWidgetInterface<T extends ChangeNotifier> extends Statef
 /// A widget that listens to a [ChangeNotifier] and rebuilds when the model updates.
 abstract class ReactiveWidget<T extends ChangeNotifier> extends _ReactiveWidgetInterface<T> {
 	/// A const constructor.
-	const ReactiveWidget();
+	const ReactiveWidget({super.key});
 
 	/// A function to create or find the model. This function will only be called once.
   @override

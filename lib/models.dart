@@ -1,11 +1,12 @@
 import "src/models/model.dart";
 import "src/models/data/user.dart";
+import "src/models/data/home.dart";
 
 export "src/models/model.dart";
 export "src/models/data/user.dart";
+export "src/models/data/home.dart";
 
 export "src/models/view/landing.dart";
-export "src/models/view/home.dart";
 export "src/models/view/browse.dart";
 export "src/models/view/profile.dart";
 
@@ -17,7 +18,8 @@ export "src/models/builder/social.dart";
 
 class Models extends DataModel {
   final user = UserModel();
-  List<DataModel> get models => [user]; 
+  final home = HomeModel(ChannilDestination.profile);
+  List<DataModel> get models => [user, home]; 
 
   @override
   Future<void> init() async {

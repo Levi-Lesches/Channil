@@ -30,6 +30,7 @@ Widget loadImage(BuildContext context, ImageState state) => switch(state) {
   ImageStateOk(image: final image) => InkWell(
     onTap: () => zoom(context, image),
     child: Image.network(
+      key: ValueKey(image.url),
       image.url, 
       fit: BoxFit.cover, 
       height: double.infinity, 
@@ -56,7 +57,7 @@ Widget loadImage(BuildContext context, ImageState state) => switch(state) {
 void zoom(BuildContext context, ChannilImage image) => showDialog<void>(
   context: context,
   builder: (context) => AlertDialog(
-    content: InteractiveViewer(child: Image.network(image.url)),
+    content: InteractiveViewer(maxScale: 5, child: Image.network(image.url)),
     actions: [
       TextButton(
         onPressed: () => context.pop(),

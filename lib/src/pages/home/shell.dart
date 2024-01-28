@@ -6,17 +6,13 @@ import "package:channil/widgets.dart";
 import "profile.dart";
 import "browse.dart";
 
-class HomeShell extends ReactiveWidget<HomeViewModel> {
+class HomeShell extends ReusableReactiveWidget<HomeModel> {
   static const double iconSize = 48;
 
-  final ChannilDestination initialDestination;
-  const HomeShell(this.initialDestination);
-  
-  @override
-  HomeViewModel createModel() => HomeViewModel(initialDestination);
+  HomeShell() : super(models.home);
 
   @override
-  Widget build(BuildContext context, HomeViewModel model) => Scaffold(
+  Widget build(BuildContext context, HomeModel model) => Scaffold(
     appBar: AppBar(
       title: Text(model.destination.title),
       bottom: model.appBarText == null ? null : PreferredSize(
@@ -36,7 +32,7 @@ class HomeShell extends ReactiveWidget<HomeViewModel> {
     bottomNavigationBar: NavigationBar(
       selectedIndex: model.destination.index,
       indicatorColor: context.colorScheme.primary.withOpacity(0),
-      onDestinationSelected: model.updatePage,
+      onDestinationSelected: model.updatePageIndex,
       elevation: 16,
       destinations: [
         for (final destination in ChannilDestination.values) NavigationDestination(
@@ -55,7 +51,7 @@ class HomeShell extends ReactiveWidget<HomeViewModel> {
         ChannilDestination.swipes => BrowsePage(),
         ChannilDestination.matches => const Placeholder(),
         ChannilDestination.chats => const Placeholder(),
-        ChannilDestination.profile => ProfilePage(),
+        ChannilDestination.profile => const ProfilePage(),
       },
     ),),
   );

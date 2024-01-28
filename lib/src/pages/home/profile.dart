@@ -5,8 +5,11 @@ import "package:channil/models.dart";
 import "package:channil/widgets.dart";
 
 class ProfilePage extends ReactiveWidget<ProfileViewModel> {
+  final ChannilUser? user;
+  const ProfilePage({this.user, super.key});
+  
   @override
-  ProfileViewModel createModel() => ProfileViewModel();
+  ProfileViewModel createModel() => ProfileViewModel(user);
   
   @override
   Widget build(BuildContext context, ProfileViewModel model) => model.isLoading 
@@ -25,6 +28,7 @@ class BusinessProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.all(48),
+    cacheExtent: MediaQuery.of(context).size.height * 2,
     children: [
       ChannilImageViewer(profile.logo, aspectRatio: 2),
       const SizedBox(height: 24),
@@ -71,6 +75,7 @@ class AthleteProfilePage extends StatelessWidget {
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.all(48),
     shrinkWrap: true,
+    cacheExtent: MediaQuery.of(context).size.height * 8,
     children: [
       ChannilImageViewer(profile.profilePics[0]),
       const SizedBox(height: 24),
