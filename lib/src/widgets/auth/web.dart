@@ -9,6 +9,7 @@ class GoogleAuthButton extends ReusableReactiveWidget<UserModel> {
   final bool signUp;
   GoogleAuthButton({required this.signUp}) : super(models.user) {
     services.auth.google.signInSilently();
+    prerenderButton();
   }
 
   late final Widget googleWidget;
@@ -16,6 +17,7 @@ class GoogleAuthButton extends ReusableReactiveWidget<UserModel> {
     configuration: GSIButtonConfiguration(
       text: signUp ? GSIButtonText.signupWith : GSIButtonText.signinWith,
       shape: GSIButtonShape.pill,
+      size: GSIButtonSize.large,
     ),
   );
     

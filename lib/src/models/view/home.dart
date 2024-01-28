@@ -26,4 +26,9 @@ class HomeViewModel extends ViewModel {
     destination = ChannilDestination.values[index];
     notifyListeners();
   }
+
+  String? get appBarText => switch (destination) {
+    ChannilDestination.profile => models.user.channilUser?.name,
+    _ => null,
+  };
 }

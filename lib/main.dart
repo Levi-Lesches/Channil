@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp.router(
     title: "Flutter Demo",
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(
       useMaterial3: true,
       outlinedButtonTheme: OutlinedButtonThemeData(

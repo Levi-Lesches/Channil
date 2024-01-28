@@ -29,8 +29,6 @@ class BusinessProfilePage extends StatelessWidget {
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.all(48),
     children: [
-      Text(user.name, style: context.textTheme.headlineLarge, textAlign: TextAlign.center),
-      const SizedBox(height: 24),
       ChannilImageViewer(profile.logo, aspectRatio: 2),
       const SizedBox(height: 24),
       InfoBox(children: [
@@ -41,8 +39,8 @@ class BusinessProfilePage extends StatelessWidget {
         boldAndNormal(context, "Location: ", profile.location),
         const Divider(),
         if (profile.website != null) ...[
-          const Divider(),
           boldAndNormal(context, "Website: ", profile.website!),
+          const Divider(),
         ],
         for (final social in profile.socials) 
           SocialMediaViewer(social),          
@@ -78,9 +76,8 @@ class AthleteProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.all(48),
+    shrinkWrap: true,
     children: [
-      Text(user.name, style: context.textTheme.headlineLarge, textAlign: TextAlign.center),
-      const SizedBox(height: 24),
       ChannilImageViewer(profile.profilePics[0]),
       const SizedBox(height: 24),
       InfoBox(children: [

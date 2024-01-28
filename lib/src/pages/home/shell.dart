@@ -18,6 +18,10 @@ class HomeShell extends ReactiveWidget<HomeViewModel> {
   Widget build(BuildContext context, HomeViewModel model) => Scaffold(
     appBar: AppBar(
       title: Text(model.destination.title),
+      bottom: model.appBarText == null ? null : PreferredSize(
+        preferredSize: const Size.fromHeight(36),
+        child: Center(child: Text(model.appBarText!, style: context.textTheme.headlineLarge)),
+      ),
       actions: [
         IconButton(
           icon: const Icon(Icons.settings),
@@ -38,11 +42,14 @@ class HomeShell extends ReactiveWidget<HomeViewModel> {
         ),
       ],
     ),
-    body: switch (model.destination) {
-      ChannilDestination.swipes => const Placeholder(),
-      ChannilDestination.matches => const Placeholder(),
-      ChannilDestination.chats => const Placeholder(),
-      ChannilDestination.profile => ProfilePage(),
-    },
+    body: Center(child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 500),
+      child: switch (model.destination) {
+        ChannilDestination.swipes => const Placeholder(),
+        ChannilDestination.matches => const Placeholder(),
+        ChannilDestination.chats => const Placeholder(),
+        ChannilDestination.profile => ProfilePage(),
+      },
+    ),),
   );
 }
