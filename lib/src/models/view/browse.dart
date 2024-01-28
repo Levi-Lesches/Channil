@@ -47,4 +47,12 @@ class BrowseViewModel extends ViewModel {
     models.home.updateAppBarText(currentUser!.name);
     notifyListeners();
   }
+
+  Future<void> clearRejections() async {
+    isLoading = true;
+    rejectedIDs.clear();
+    errorText = null;
+    await nextUser();
+    isLoading = false;
+  }
 }

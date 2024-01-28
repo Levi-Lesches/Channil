@@ -12,7 +12,17 @@ class BrowsePage extends ReactiveWidget<BrowseViewModel> {
   Widget build(BuildContext context, BrowseViewModel model) => model.isLoading
     ? const Center(child: CircularProgressIndicator())
     : model.errorText != null 
-      ? Center(child: Text(model.errorText!))
+      ? Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(model.errorText!, textAlign: TextAlign.center, style: context.textTheme.bodyLarge),
+          const SizedBox(height: 16),
+          OutlinedButton(
+            onPressed: model.clearRejections, 
+            child: const Text("Clear rejections"),
+          ),
+        ],
+      ),)
       : Stack(children: [
         ProfilePage(user: model.currentUser, key: ValueKey(model.currentUser!.id)),
         BrowseButton(
