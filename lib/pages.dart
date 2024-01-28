@@ -17,6 +17,8 @@ class Routes {
   static const signUpBusiness = "business-sign-up";
   static const profile = "profile";
   static const settings = "settings";
+  static const athletePreferences = "athlete-edit-preferences";
+  static const businessPreferences = "business-edit-preferences";
 }
 
 String? loginRedirect(BuildContext context, _) => 
@@ -34,12 +36,26 @@ final router = GoRouter(
     GoRoute(
       path: "/${Routes.signUpAthlete}",
       name: Routes.signUpAthlete,
-      builder: (_, __) => AthleteSignUpPage(),
+      builder: (_, state) => const AthleteSignUpPage(),
+      routes: [
+        GoRoute(
+          path: "preferences",
+          name: Routes.athletePreferences,
+          builder: (_, __) => const AthleteSignUpPage(editPreferences: true),
+        ),
+      ],
     ),
     GoRoute(
       path: "/${Routes.signUpBusiness}",
       name: Routes.signUpBusiness,
-      builder: (_, __) => BusinessSignUpPage(),
+      builder: (_, __) => const BusinessSignUpPage(),
+      routes: [
+        GoRoute(
+          path: "preferences",
+          name: Routes.businessPreferences,
+          builder: (_, __) => const BusinessSignUpPage(editPreferences: true),
+        ),
+      ],
     ),
     GoRoute(
       path: "/${Routes.profile}",

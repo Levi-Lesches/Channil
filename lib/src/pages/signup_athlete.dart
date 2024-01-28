@@ -7,8 +7,11 @@ import "package:channil/widgets.dart";
 import "signup_base.dart";
 
 class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
+  final bool editPreferences;
+  const AthleteSignUpPage({this.editPreferences = false});
+  
   @override
-  AthleteBuilder createModel() => AthleteBuilder();
+  AthleteBuilder createModel() => AthleteBuilder(editPreferences: editPreferences);
   
   @override
   Widget build(BuildContext context, AthleteBuilder model) => Scaffold(
@@ -18,10 +21,10 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
           onPressed: context.pop,
           child: const Text("Cancel"),
         ) else OutlinedButton(
-          onPressed: model.pageIndex == 1 && model.isPrefill ? null : model.prevPage,
+          onPressed: model.pageIndex == model.startIndex ? null : model.prevPage,
           child: const Text("Back"),
         ),
-        if (model.pageIndex == 5) OutlinedButton(
+        if (model.pageIndex == model.endIndex) OutlinedButton(
           onPressed: model.isReady && !model.isLoading ? model.save : null,
           child: const Text("Save"),
         ) else OutlinedButton(

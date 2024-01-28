@@ -34,11 +34,14 @@ class HomeShell extends ReactiveWidget<HomeViewModel> {
       indicatorColor: context.colorScheme.primary.withOpacity(0),
       onDestinationSelected: model.updatePage,
       elevation: 16,
-      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
       destinations: [
         for (final destination in ChannilDestination.values) NavigationDestination(
-          label: "",
-          icon: SizedBox(width: iconSize, height: iconSize, child: destination.icon),
+          label: destination.title,
+          icon: SizedBox(
+            width: iconSize, 
+            height: iconSize, 
+            child: destination.getIcon(isSelected: model.destination == destination),
+          ),
         ),
       ],
     ),

@@ -56,8 +56,7 @@ Widget loadImage(BuildContext context, ImageState state) => switch(state) {
 void zoom(BuildContext context, ChannilImage image) => showDialog<void>(
   context: context,
   builder: (context) => AlertDialog(
-    title: const Text("View Image"),
-    content: Image.network(image.url),
+    content: InteractiveViewer(child: Image.network(image.url)),
     actions: [
       TextButton(
         onPressed: () => context.pop(),

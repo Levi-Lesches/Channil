@@ -1,8 +1,9 @@
+import "package:channil/main.dart";
 import "package:flutter/material.dart";
 import "package:channil/models.dart";
 
 enum ChannilDestination {
-  swipes("Match"),
+  swipes("Browse"),
   matches("My Matches"),
   chats("Chats"),
   profile("Profile");
@@ -10,11 +11,11 @@ enum ChannilDestination {
   final String title;
   const ChannilDestination(this.title);
 
-  Widget get icon => switch (this) {
-    swipes => Image.asset("assets/logos/channil_small.png"),
-    matches => const Icon(Icons.handshake, size: 36),
-    chats => const Icon(Icons.chat, size: 36),
-    profile => const Icon(Icons.account_circle, size: 36),
+  Widget getIcon({required bool isSelected}) => switch (this) {
+    swipes => Image.asset("assets/logos/channil_small.png", color: isSelected ? channilGreen : Colors.black),
+    matches => Icon(Icons.handshake, size: 36, color: isSelected ? channilGreen : null),
+    chats => Icon(Icons.chat, size: 36, color: isSelected ? channilGreen : null),
+    profile => Icon(Icons.account_circle, size: 36, color: isSelected ? channilGreen : null),
   };
 }
 

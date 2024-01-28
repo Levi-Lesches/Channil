@@ -7,8 +7,11 @@ import "package:channil/widgets.dart";
 import "signup_base.dart";
 
 class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
+  final bool editPreferences;
+  const BusinessSignUpPage({this.editPreferences = false});
+  
   @override
-  BusinessBuilder createModel() => BusinessBuilder();
+  BusinessBuilder createModel() => BusinessBuilder(editPreferences: editPreferences);
   
   @override
   Widget build(BuildContext context, BusinessBuilder model) => SignUpPage(
@@ -17,10 +20,10 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
         onPressed: context.pop,
         child: const Text("Cancel"),
       ) else OutlinedButton(
-        onPressed: model.pageIndex == 1 && model.isPrefill ? null : model.prevPage,
+        onPressed: model.pageIndex == model.startIndex ? null : model.prevPage,
         child: const Text("Back"),
       ),
-      if (model.pageIndex == 4) OutlinedButton(
+      if (model.pageIndex == model.endIndex) OutlinedButton(
         onPressed: model.isReady && !model.isLoading ? model.save : null,
         child: const Text("Save"),
       ) else OutlinedButton(

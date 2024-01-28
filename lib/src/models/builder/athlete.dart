@@ -26,10 +26,16 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
     ),
   ];
 
+  @override
+  int get preferencesIndex => 4;
+
+  @override
+  int get lastPageIndex => 5;
+
   bool showPrompt = true;
   Sport? sport;
 
-  AthleteBuilder() {
+  AthleteBuilder({super.editPreferences}) {
     for (final imageModel in profilePics) {
       imageModel.addListener(notifyListeners);
     }

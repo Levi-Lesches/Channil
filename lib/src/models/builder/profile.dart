@@ -13,19 +13,27 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
 
   late final PageController pageController;
   late int pageIndex;
-  bool isPrefill = false;
+  late int startIndex;
+  late int endIndex;
+  int get preferencesIndex;
+  int get lastPageIndex;
 
-  ProfileBuilder() {
+  ProfileBuilder({bool editPreferences = false}) {
     final prefill = models.user.channilUser;
-    if (prefill == null) {
-      pageController = PageController();
-      pageIndex = 0;
+    if (editPreferences && prefill != null) {
+      startIndex = preferencesIndex;
+      endIndex = preferencesIndex;
+      prefillFields(prefill);
+    } else if (prefill == null) {
+      startIndex = 0;
+      endIndex = lastPageIndex;
     } else {
-      pageController = PageController(initialPage: 1);
-      pageIndex = 1;
-      isPrefill = true;
+      startIndex = 1;
+      endIndex = preferencesIndex - 1;
       prefillFields(prefill);
     }
+    pageIndex = startIndex;
+    pageController = PageController(initialPage: startIndex);
   }
 
   void prefillFields(ChannilUser user);

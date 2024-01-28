@@ -30,6 +30,10 @@ class SettingsPage extends StatelessWidget {
         ListTile(
           title: Text("Deal Preferences", style: context.textTheme.headlineSmall),
           trailing: const Icon(Icons.chevron_right),
+          onTap: () => switch(models.user.channilUser!.profile) {
+            AthleteProfile() => context.pushNamed(Routes.athletePreferences),
+            BusinessProfile() => context.pushNamed(Routes.businessPreferences),
+          },
         ),
         const SizedBox(height: 4),
         ListTile(

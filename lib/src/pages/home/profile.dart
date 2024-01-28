@@ -94,9 +94,9 @@ class AthleteProfilePage extends StatelessWidget {
       ChannilImageViewer(profile.profilePics[1]),
       const SizedBox(height: 24),
       InfoBox(children: [
-        Text(profile.prompts.keys.first, style: context.textTheme.titleLarge),
+        Text(profile.prompts.keys.first, style: context.textTheme.titleMedium),
         const SizedBox(height: 12),
-        Text(profile.prompts.values.first, style: context.textTheme.bodyLarge,),
+        Text(profile.prompts.values.first, style: context.textTheme.titleLarge),
       ],),
       const SizedBox(height: 24),
       ChannilImageViewer(profile.profilePics[2]),
@@ -104,9 +104,9 @@ class AthleteProfilePage extends StatelessWidget {
       ChannilImageViewer(profile.profilePics[3]),
       const SizedBox(height: 24),
       InfoBox(children: [
-        Text(profile.prompts.keys.last, style: context.textTheme.titleLarge),
+        Text(profile.prompts.keys.last, style: context.textTheme.titleMedium),
         const SizedBox(height: 12),
-        Text(profile.prompts.values.last, style: context.textTheme.bodyLarge,),
+        Text(profile.prompts.values.last, style: context.textTheme.titleLarge),
       ],),
       const SizedBox(height: 24),
       ChannilImageViewer(profile.profilePics[4]),
