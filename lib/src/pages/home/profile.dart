@@ -11,19 +11,16 @@ class ProfilePage extends ReactiveWidget<ProfileViewModel> {
   @override
   Widget build(BuildContext context, ProfileViewModel model) => model.isLoading 
     ? const Center(child: CircularProgressIndicator()) 
-    : switch (model.user.profile) {
-      BusinessProfile() => BusinessProfilePage(model),
-      AthleteProfile() => AthleteProfilePage(model),
-    };
+    : model.user.matchProfileType<Widget>(
+      handleBusiness: (profile) => BusinessProfilePage(user: model.user, profile: profile),
+      handleAthlete: (profile) => AthleteProfilePage(user: model.user, profile: profile),
+    );
 }
 
 class BusinessProfilePage extends StatelessWidget {
-  final ProfileViewModel model;
   final BusinessProfile profile;
   final ChannilUser user;
-  BusinessProfilePage(this.model) : 
-    user = model.user,
-    profile = model.user.profile as BusinessProfile;
+  const BusinessProfilePage({required this.user, required this.profile});
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -66,12 +63,9 @@ class BusinessProfilePage extends StatelessWidget {
 }
 
 class AthleteProfilePage extends StatelessWidget {
-  final ProfileViewModel model;
   final AthleteProfile profile;
   final ChannilUser user;
-  AthleteProfilePage(this.model) : 
-    profile = model.user.profile as AthleteProfile,
-    user = model.user;
+  const AthleteProfilePage({required this.user, required this.profile});
 
   @override
   Widget build(BuildContext context) => ListView(

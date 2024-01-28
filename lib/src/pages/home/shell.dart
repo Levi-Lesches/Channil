@@ -20,7 +20,10 @@ class HomeShell extends ReactiveWidget<HomeViewModel> {
       title: Text(model.destination.title),
       bottom: model.appBarText == null ? null : PreferredSize(
         preferredSize: const Size.fromHeight(36),
-        child: Center(child: Text(model.appBarText!, style: context.textTheme.headlineLarge)),
+        child: Padding(
+          padding: const EdgeInsets.all(8), 
+          child: Text(model.appBarText!, style: context.textTheme.headlineLarge),
+        ),
       ),
       actions: [
         IconButton(

@@ -1,7 +1,6 @@
 import "package:channil/widgets.dart";
 import "package:flutter/material.dart";
 
-import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/pages.dart";
 
@@ -21,19 +20,19 @@ class SettingsPage extends StatelessWidget {
         ListTile(
           title: Text("Edit Profile", style: context.textTheme.headlineSmall),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () => switch(models.user.channilUser!.profile) {
-            AthleteProfile() => context.pushNamed(Routes.signUpAthlete),
-            BusinessProfile() => context.pushNamed(Routes.signUpBusiness),
-          },
+          onTap: () => models.user.channilUser?.matchProfileType(
+            handleAthlete: (_) => context.pushNamed(Routes.signUpAthlete),
+            handleBusiness: (_) => context.pushNamed(Routes.signUpBusiness),
+          ),
         ),
         const SizedBox(height: 4),
         ListTile(
           title: Text("Deal Preferences", style: context.textTheme.headlineSmall),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () => switch(models.user.channilUser!.profile) {
-            AthleteProfile() => context.pushNamed(Routes.athletePreferences),
-            BusinessProfile() => context.pushNamed(Routes.businessPreferences),
-          },
+          onTap: () => models.user.channilUser?.matchProfileType(
+            handleAthlete: (_) => context.pushNamed(Routes.athletePreferences),
+            handleBusiness: (_) => context.pushNamed(Routes.businessPreferences),
+          ),
         ),
         const SizedBox(height: 4),
         ListTile(

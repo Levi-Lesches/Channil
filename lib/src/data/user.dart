@@ -28,4 +28,12 @@ class ChannilUser {
     "name": name,
     "profile": profile.toJson(),
   };
+
+  T matchProfileType<T>({
+    required T Function(BusinessProfile) handleBusiness,
+    required T Function(AthleteProfile) handleAthlete,
+  }) => switch (profile) {
+    (final BusinessProfile profile) => handleBusiness(profile),
+    (final AthleteProfile profile) => handleAthlete(profile),
+  };
 }

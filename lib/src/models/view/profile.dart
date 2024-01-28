@@ -2,17 +2,20 @@ import "package:channil/data.dart";
 import "package:channil/models.dart";
 
 class ProfileViewModel extends ViewModel {
-  late ChannilUser user;
+  ChannilUser user;
+  bool shouldUpdate;
+
+  factory ProfileViewModel() => ProfileViewModel._(user: models.user.channilUser!, shouldUpdate: false);
+  ProfileViewModel._({required this.user, required this.shouldUpdate});
   
   @override
   Future<void> init() async { 
-    updateUser();
-    models.user.addListener(updateUser);
+    if (shouldUpdate) models.user.addListener(updateUser);
   }
 
   @override
   void dispose() {
-    models.user.removeListener(updateUser);
+    if (shouldUpdate) models.user.removeListener(updateUser);
     super.dispose();
   }
 
