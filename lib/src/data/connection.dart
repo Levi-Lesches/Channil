@@ -1,6 +1,9 @@
+import "package:channil/models.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 
 import "package:channil/data.dart";
+
+typedef ConnectionID = String;
 
 enum ConnectionStatus {
   pending, 
@@ -10,18 +13,22 @@ enum ConnectionStatus {
 }
 
 class Message {
+  final UserID author;
   final String content;
   final DateTime timestamp;
   const Message({
     required this.content,
     required this.timestamp,
+    required this.author,
   });
 
   Message.fromJson(Json json) : 
+    author = json["author"] ?? models.user.uid,
     content = json["content"],
     timestamp = json["timestamp"].toDate();
 
   Json toJson() => {
+    "author": author,
     "content": content,
     "timestamp": Timestamp.fromDate(timestamp),
   };

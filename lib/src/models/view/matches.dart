@@ -1,5 +1,6 @@
 import "package:channil/data.dart";
 import "package:channil/models.dart";
+import "package:channil/pages.dart";
 import "package:channil/services.dart";
 
 class MatchesViewModel extends ViewModel {
@@ -38,5 +39,5 @@ class MatchesViewModel extends ViewModel {
   }
 
   void chatWith(Connection connection) => 
-    home.updatePageIndex(2);
+    router.go("/chats/${connection.id}");
 }

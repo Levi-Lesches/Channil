@@ -21,5 +21,9 @@ class MessageBuilder extends BuilderModel<Message> {
   bool get isReady => message.isNotEmpty;
 
   @override
-  Message get value => Message(content: message, timestamp: DateTime.now());
+  Message get value => Message(
+    author: models.user.uid!, 
+    content: message, 
+    timestamp: DateTime.now(),
+  );
 }

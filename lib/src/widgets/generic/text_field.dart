@@ -20,6 +20,7 @@ class ChannilTextField extends StatelessWidget {
   final String? error;
   final String? prefix;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
   final TextInputType? type;
   final TextInputAction action;
   final TextCapitalization capitalization;
@@ -41,6 +42,7 @@ class ChannilTextField extends StatelessWidget {
     this.onChanged,
     this.error,
     this.prefix,
+    this.onEditingComplete,
   });
 
   @override
@@ -53,6 +55,7 @@ class ChannilTextField extends StatelessWidget {
     textInputAction: action,
     enabled: enabled,
     maxLines: maxLines,
+    onEditingComplete: onEditingComplete,
     inputFormatters: [
       if (type == TextInputType.number) 
         FilteringTextInputFormatter.allow(RegExp(r"\d")),

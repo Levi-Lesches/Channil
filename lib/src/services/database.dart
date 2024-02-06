@@ -88,6 +88,12 @@ class DatabaseService extends Service {
     .where("between", arrayContains: user)
     .getAll();
 
+  Future<Connection?> getConnection(ConnectionID id) => connections
+    .doc(id).getData();
+
   Future<void> saveConnection(Connection connection) => connections
     .doc(connection.id).set(connection);
+
+  Stream<Connection?> listenToConnection(ConnectionID id) => connections
+    .doc(id).snapshots().map((event) => event.data());
 }

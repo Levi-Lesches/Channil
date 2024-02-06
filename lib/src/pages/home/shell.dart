@@ -8,6 +8,7 @@ import "package:channil/widgets.dart";
 import "profile.dart";
 import "browse.dart";
 import "matches.dart";
+import "chats.dart";
 
 class HomeShell extends ReactiveWidget<HomeModel> {
   static const double iconSize = 48;
@@ -58,7 +59,7 @@ class HomeShell extends ReactiveWidget<HomeModel> {
       child: switch (model.destination) {
         ChannilDestination.swipes => BrowsePage(model),
         ChannilDestination.matches => MatchesPage(model),
-        ChannilDestination.chats => const Placeholder(),
+        ChannilDestination.chats => ChatsPage(),
         ChannilDestination.profile => ProfilePage(model, user: model.userID),
       },
     ),),

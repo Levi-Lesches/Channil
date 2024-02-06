@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:channil/models.dart";
 
+import "src/pages/chat.dart";
 import "src/pages/landing.dart";
 import "src/pages/home/shell.dart";
 import "src/pages/signup_business.dart";
@@ -22,6 +23,7 @@ class Routes {
   static const businessPreferences = "business-edit-preferences";
   static const browse = "browse";
   static const matches = "matches";
+  static const chats = "chats";
 }
 
 String? loginRedirect(BuildContext context, _) => 
@@ -31,6 +33,11 @@ String? loginRedirect(BuildContext context, _) =>
 final router = GoRouter(
   initialLocation: "/profile",
   routes: [
+    GoRoute(
+      path: "/",
+      redirect: loginRedirect,
+      builder: (_, __) => const HomeShell(ChannilDestination.profile),
+    ),
     GoRoute(
       path: "/${Routes.login}",
       name: Routes.login,
@@ -86,6 +93,18 @@ final router = GoRouter(
       name: Routes.matches,
       redirect: loginRedirect,
       builder: (_, __) => const HomeShell(ChannilDestination.matches),
+    ),
+    GoRoute(
+      path: "/${Routes.chats}",
+      name: Routes.chats,
+      redirect: loginRedirect,
+      builder: (_, __) => const HomeShell(ChannilDestination.matches),
+      routes: [
+        GoRoute(
+          path: ":id",
+          builder: (context, state) => ChatPage(state.pathParameters["id"]!),
+        ),
+      ],
     ),
     GoRoute(
       path: "/${Routes.settings}",

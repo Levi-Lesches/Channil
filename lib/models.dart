@@ -9,6 +9,8 @@ export "src/models/view/landing.dart";
 export "src/models/view/browse.dart";
 export "src/models/view/matches.dart";
 export "src/models/view/profile.dart";
+export "src/models/view/chat.dart";
+export "src/models/view/chats.dart";
 
 export "src/models/builder/athlete.dart";
 export "src/models/builder/business.dart";
