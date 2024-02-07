@@ -26,7 +26,9 @@ class BrowsePage extends ReactiveWidget<BrowseViewModel> {
   @override
   Widget build(BuildContext context, BrowseViewModel model) => model.isLoading
     ? const Center(child: CircularProgressIndicator())
-    : model.errorText != null 
+    : Scaffold(
+      appBar: channilAppBar(context: context, title: "Browse", header: model.currentUser?.name),
+      body: model.errorText != null 
       ? Center(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -39,7 +41,7 @@ class BrowsePage extends ReactiveWidget<BrowseViewModel> {
         ],
       ),)
       : Stack(children: [
-        ProfilePage(home, user: model.currentUser!.id),
+        ProfilePage(home, showAppBar: false, user: model.currentUser!.id),
         SquareButton(
           left: 24, 
           icon: const Icon(Icons.close, size: 48, color: Colors.red), 
@@ -50,5 +52,7 @@ class BrowsePage extends ReactiveWidget<BrowseViewModel> {
           icon: const Icon(Icons.handshake, size: 48, color: Colors.green), 
           onPressed: () => accept(context, model),
         ),
-      ],);
+      ],
+    ),
+  );
 }

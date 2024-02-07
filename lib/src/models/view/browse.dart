@@ -37,7 +37,8 @@ class BrowseViewModel extends ViewModel {
     snapshot = newSnapshot;
     if (nextUsers.isEmpty) {
       errorText = "Could not find any users that match your preferences\nTry making your preferences more broad";
-      home.updateAppBarText(null);
+      // home.updateAppBarText(null);
+      currentUser = null;
       return false;
     } else {
       upcomingUsers = nextUsers;
@@ -51,7 +52,7 @@ class BrowseViewModel extends ViewModel {
     }
     currentUser = upcomingUsers.removeLast();
     if (skipIDs.contains(currentUser!.id)) return nextUser();
-    home.updateAppBarText(currentUser!.name);
+    // home.updateAppBarText(currentUser!.name);
     notifyListeners();
   }
 

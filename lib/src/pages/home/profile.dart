@@ -7,7 +7,8 @@ import "package:channil/widgets.dart";
 class ProfilePage extends ReactiveWidget<ProfileViewModel> {
   final UserID? user;
   final HomeModel home;
-  ProfilePage(this.home, {this.user}) : super(key: ValueKey(user));
+  final bool showAppBar;
+  ProfilePage(this.home, {required this.showAppBar, this.user}) : super(key: ValueKey(user));
   
   @override
   ProfileViewModel createModel() => ProfileViewModel(home, profileID: user);
@@ -15,9 +16,12 @@ class ProfilePage extends ReactiveWidget<ProfileViewModel> {
   @override
   Widget build(BuildContext context, ProfileViewModel model) => model.isLoading 
     ? const Center(child: CircularProgressIndicator()) 
-    : model.user.matchProfileType<Widget>(
-      handleBusiness: (profile) => BusinessProfilePage(user: model.user, profile: profile),
-      handleAthlete: (profile) => AthleteProfilePage(user: model.user, profile: profile),
+    : Scaffold(
+      appBar: showAppBar ? channilAppBar(context: context, title: "Profile", header: model.user.name) : null,
+      body: model.user.matchProfileType<Widget>(
+        handleBusiness: (profile) => BusinessProfilePage(user: model.user, profile: profile),
+        handleAthlete: (profile) => AthleteProfilePage(user: model.user, profile: profile),
+      ),
     );
 }
 

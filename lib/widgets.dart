@@ -8,6 +8,8 @@ export "src/widgets/atomic/image.dart";
 export "src/widgets/atomic/message_builder.dart";
 export "src/widgets/atomic/social.dart";
 
+export "src/widgets/navigation/appbar.dart";
+
 export "src/widgets/auth.dart";
 export "src/widgets/generic/dropdown_select.dart";
 export "src/widgets/generic/info_box.dart";

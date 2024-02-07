@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
-abstract class _ReactiveWidgetInterface<T extends ChangeNotifier> extends StatefulWidget {
-  const _ReactiveWidgetInterface({super.key});
+abstract class ReactiveWidgetInterface<T extends ChangeNotifier> extends StatefulWidget {
+  const ReactiveWidgetInterface({super.key});
   T createModel();
   bool get shouldDispose;
 
@@ -10,10 +10,12 @@ abstract class _ReactiveWidgetInterface<T extends ChangeNotifier> extends Statef
 
   /// Builds the UI according to the state in [model].
 	Widget build(BuildContext context, T model);
+
+  void didUpdateWidget(covariant ReactiveWidgetInterface<T> oldWidget, T model) { }
 }
 
 /// A widget that listens to a [ChangeNotifier] and rebuilds when the model updates.
-abstract class ReactiveWidget<T extends ChangeNotifier> extends _ReactiveWidgetInterface<T> {
+abstract class ReactiveWidget<T extends ChangeNotifier> extends ReactiveWidgetInterface<T> {
 	/// A const constructor.
 	const ReactiveWidget({super.key});
 
@@ -25,7 +27,7 @@ abstract class ReactiveWidget<T extends ChangeNotifier> extends _ReactiveWidgetI
   bool get shouldDispose => true;
 }
 
-abstract class ReusableReactiveWidget<T extends ChangeNotifier> extends _ReactiveWidgetInterface<T> {
+abstract class ReusableReactiveWidget<T extends ChangeNotifier> extends ReactiveWidgetInterface<T> {
   final T model;
   const ReusableReactiveWidget(this.model);
 
@@ -37,7 +39,7 @@ abstract class ReusableReactiveWidget<T extends ChangeNotifier> extends _Reactiv
 }
 
 /// A state for [ReactiveWidget] that manages the [model].
-class ReactiveWidgetState<T extends ChangeNotifier> extends State<_ReactiveWidgetInterface<T>>{
+class ReactiveWidgetState<T extends ChangeNotifier> extends State<ReactiveWidgetInterface<T>>{
 	/// The model to listen to.
 	late final T model;
 
@@ -54,6 +56,12 @@ class ReactiveWidgetState<T extends ChangeNotifier> extends State<_ReactiveWidge
     if (widget.shouldDispose) model.dispose();
 		super.dispose();
 	}
+
+  @override
+  void didUpdateWidget(covariant ReactiveWidgetInterface<T> oldWidget) {
+    widget.didUpdateWidget(oldWidget, model);
+    super.didUpdateWidget(oldWidget);
+  }
 
 	/// Updates the UI when [model] updates.
 	void listener() => setState(() {});

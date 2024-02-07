@@ -1,3 +1,7 @@
+import "package:channil/src/pages/home/browse.dart";
+import "package:channil/src/pages/home/chats.dart";
+import "package:channil/src/pages/home/matches.dart";
+import "package:channil/src/pages/home/profile.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:channil/models.dart";
@@ -35,8 +39,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: "/",
-      redirect: loginRedirect,
-      builder: (_, __) => const HomeShell(ChannilDestination.profile),
+      redirect: (_, __) => Routes.profile,
     ),
     GoRoute(
       path: "/${Routes.login}",
@@ -67,42 +70,59 @@ final router = GoRouter(
         ),
       ],
     ),
-    GoRoute(
-      path: "/${Routes.profile}",
-      name: Routes.profile,
-      redirect: loginRedirect,
-      builder: (_, __) => const HomeShell(ChannilDestination.profile),
-      routes: [
-        GoRoute(
-          path: ":id",
-          builder: (_, state) => HomeShell(
-            ChannilDestination.profile, 
-            userID: state.pathParameters["id"],
-          ),
+    StatefulShellRoute.indexedStack(
+      pageBuilder: (context, state, child) => NoTransitionPage(
+        child: HomeShell(
+          name: state.uri.pathSegments.first,
+          child: child,
         ),
-      ],
-    ),
-    GoRoute(
-      path: "/${Routes.browse}",
-      name: Routes.browse,
-      redirect: loginRedirect,
-      builder: (_, __) => const HomeShell(ChannilDestination.swipes),
-    ),
-    GoRoute(
-      path: "/${Routes.matches}",
-      name: Routes.matches,
-      redirect: loginRedirect,
-      builder: (_, __) => const HomeShell(ChannilDestination.matches),
-    ),
-    GoRoute(
-      path: "/${Routes.chats}",
-      name: Routes.chats,
-      redirect: loginRedirect,
-      builder: (_, __) => const HomeShell(ChannilDestination.matches),
-      routes: [
-        GoRoute(
-          path: ":id",
-          builder: (context, state) => ChatPage(state.pathParameters["id"]!),
+      ),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: "/${Routes.profile}",
+              name: Routes.profile,
+              redirect: loginRedirect,
+              builder: (_, __) => ProfilePage(showAppBar: true, HomeModel(ChannilDestination.profile)),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: "/${Routes.browse}",
+              name: Routes.browse,
+              redirect: loginRedirect,
+              builder: (_, __) => BrowsePage(HomeModel(ChannilDestination.swipes)),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: "/${Routes.matches}",
+              name: Routes.matches,
+              redirect: loginRedirect,
+              builder: (_, __) => MatchesPage(HomeModel(ChannilDestination.matches)),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: "/${Routes.chats}",
+              name: Routes.chats,
+              redirect: loginRedirect,
+              builder: (_, __) => ChatsPage(),
+              routes: [
+                GoRoute(
+                  path: ":id",
+                  builder: (context, state) => ChatPage(state.pathParameters["id"]!),
+                ),
+              ],
+            ),
+          ],
         ),
       ],
     ),

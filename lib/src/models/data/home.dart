@@ -51,38 +51,28 @@ class HomeModel extends ViewModel {
 
   void updatePageIndex(int index) {
     userID = null;
-    destination = ChannilDestination.values[index];
+    final dest = ChannilDestination.values[index];
+    router.goNamed(switch (dest) {
+      ChannilDestination.profile => Routes.profile,
+      ChannilDestination.swipes => Routes.browse,
+      ChannilDestination.chats => Routes.chats,
+      ChannilDestination.matches => Routes.matches,
+    },);
+  }
+
+  void updateDestination(ChannilDestination newDestination) {
+    destination = newDestination;
     appBarText = switch (destination) {
       ChannilDestination.profile => models.user.channilUser?.name,
       ChannilDestination.chats => null,
       ChannilDestination.matches => null,
       ChannilDestination.swipes => appBarText,
     };
-    router.replaceNamed<void>(switch (destination) {
-      ChannilDestination.profile => Routes.profile,
-      ChannilDestination.swipes => Routes.browse,
-      ChannilDestination.chats => Routes.profile,
-      ChannilDestination.matches => Routes.matches,
-    },);
+    notifyListeners();
   }
-
-  // void updatePage(ChannilDestination value) {
-  //   destination = value;
-  //   appBarText = switch (destination) {
-  //     ChannilDestination.profile => models.user.channilUser?.name,
-  //     ChannilDestination.chats => null,
-  //     ChannilDestination.matches => null,
-  //     ChannilDestination.swipes => appBarText,
-  //   };
-  // }
 
   void updateAppBarText(String? value) {
     appBarText = value;
     notifyListeners();
   }
-
-  // Future<void> goToProfile(String? id) async {
-  //   userID = id;
-  //   updatePage(ChannilDestination.profile);
-  // }
 }

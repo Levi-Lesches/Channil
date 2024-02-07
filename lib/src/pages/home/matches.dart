@@ -12,20 +12,23 @@ class MatchesPage extends ReactiveWidget<MatchesViewModel> {
   MatchesViewModel createModel() => MatchesViewModel(home);
 
   @override
-  Widget build(BuildContext context, MatchesViewModel model) => DefaultTabController(
-    length: 2,
-    child: Column(
-      children: [
-        if (model.needsConfirmation) Expanded(
-          child: ConfirmConnectionPage(model: model, connection: model.toConfirm!),
-        ) else ...[
-          const TabBar(tabs: [Tab(child: Text("Pending")), Tab(child: Text("Accepted"))]),
-          Expanded(child: TabBarView(children: [
-            PendingConnectionsView(model: model, connections: model.pendingConnections),
-            AcceptedConnectionsView(model: model, connections: model.acceptedConnections),
-          ],),),
+  Widget build(BuildContext context, MatchesViewModel model) => Scaffold(
+    appBar: channilAppBar(context: context, title: "My Matches"),
+    body: DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          if (model.needsConfirmation) Expanded(
+            child: ConfirmConnectionPage(model: model, connection: model.toConfirm!),
+          ) else ...[
+            const TabBar(tabs: [Tab(child: Text("Pending")), Tab(child: Text("Accepted"))]),
+            Expanded(child: TabBarView(children: [
+              PendingConnectionsView(model: model, connections: model.pendingConnections),
+              AcceptedConnectionsView(model: model, connections: model.acceptedConnections),
+            ],),),
+          ],
         ],
-      ],
+      ),
     ),
   );
 }
