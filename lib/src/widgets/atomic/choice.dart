@@ -25,12 +25,14 @@ class ChannilChoice extends StatelessWidget {
         child: image == null 
           ? Text(
             name, 
-            style: context.textTheme.bodyLarge?.copyWith(
+            style: context.textTheme.bodyMedium?.copyWith(
               color: isPicked ? Colors.white : null,
             ),
           ) 
           : ListTile(
-            title: Text(name),
+            title: Text(name, style: context.textTheme.bodyMedium?.copyWith(
+              color: isPicked ? Colors.white : null,
+            ),),
             leading: Image(
               image: image!, 
               fit: BoxFit.cover, 

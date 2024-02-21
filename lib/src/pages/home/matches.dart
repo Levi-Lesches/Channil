@@ -4,26 +4,30 @@ import "package:channil/pages.dart";
 import "package:channil/widgets.dart";
 import "package:flutter/material.dart";
 
-class MatchesPage extends ReactiveWidget<MatchesViewModel> {
-  final HomeModel home;
-  const MatchesPage(this.home);
-  
+class MatchesPage extends ReactiveWidget<MatchesViewModel> {  
   @override
-  MatchesViewModel createModel() => MatchesViewModel(home);
+  MatchesViewModel createModel() => MatchesViewModel();
 
   @override
   Widget build(BuildContext context, MatchesViewModel model) => Scaffold(
     appBar: channilAppBar(context: context, title: "My Matches"),
     body: DefaultTabController(
-      length: 2,
-      child: Column(
+      length: 3,
+      child: model.isLoading
+      ? const Center(child: CircularProgressIndicator())
+      : Column(
         children: [
           if (model.needsConfirmation) Expanded(
             child: ConfirmConnectionPage(model: model, connection: model.toConfirm!),
           ) else ...[
-            const TabBar(tabs: [Tab(child: Text("Pending")), Tab(child: Text("Accepted"))]),
+            const TabBar(tabs: [
+              Tab(child: Text("Incoming")), 
+              Tab(child: Text("Outgoing")), 
+              Tab(child: Text("Accepted")),
+            ],),
             Expanded(child: TabBarView(children: [
-              PendingConnectionsView(model: model, connections: model.pendingConnections),
+              PendingConnectionsView(model: model, connections: model.incomingConnections),
+              PendingConnectionsView(model: model, connections: model.outgoingConnections),
               AcceptedConnectionsView(model: model, connections: model.acceptedConnections),
             ],),),
           ],

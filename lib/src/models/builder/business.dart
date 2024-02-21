@@ -14,11 +14,7 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
   Set<Industry> industries = {};
 
   @override
-  int get preferencesIndex => 3;
-
-  @override
   int get lastPageIndex => 4;
-
 
   @override
   List<TextEditingController> get allControllers => [
@@ -69,7 +65,7 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
     models: additionalImages, images: images, startIndex: index,
   );
 
-  BusinessBuilder({super.editPreferences}) {
+  BusinessBuilder({super.startIndex, super.endIndex}) {
     for (final imageModel in [logo, productImage, ...additionalImages]) {
       imageModel.addListener(notifyListeners);
     }

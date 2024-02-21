@@ -24,9 +24,11 @@ enum ChannilDestination {
 }
 
 class HomeModel extends ViewModel {
+  int index;
   ChannilDestination destination;
   UserID? userID;
-  HomeModel(this.destination, {this.userID});
+  HomeModel(this.index, {this.userID}) : 
+    destination = ChannilDestination.values[index];
 
   List<Connection> connections = [];
   final List<UserID> rejectedIDs = [];
@@ -42,6 +44,12 @@ class HomeModel extends ViewModel {
   @override
   Future<void> init() async {
     await getConnections();
+  }
+
+  void updateIndex(int value) {
+    index = value;
+    destination = ChannilDestination.values[index];
+    notifyListeners();
   }
   
   Future<void> getConnections() async {

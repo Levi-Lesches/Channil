@@ -12,18 +12,36 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: [
         ListTile(
-          title: Text("Account", style: context.textTheme.headlineSmall),
+          title: Text("Account Info", style: context.textTheme.headlineSmall),
           trailing: const Icon(Icons.chevron_right),
           subtitle: Text("${models.user.channilUser!.name}\n${models.user.channilUser!.email}"),
         ),
         const SizedBox(height: 4),
         ListTile(
           title: Text("Edit Profile", style: context.textTheme.headlineSmall),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () => models.user.channilUser?.matchProfileType(
-            handleAthlete: (_) => context.pushNamed(Routes.signUpAthlete),
-            handleBusiness: (_) => context.pushNamed(Routes.signUpBusiness),
-          ),
+        ),
+        ...models.user.channilUser!.matchProfileType<List<Widget>>(
+          handleAthlete: (_) => [
+            ListTile(
+              title: const Text("Basic information"),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push("/${Routes.signUpAthlete}/info"),
+              visualDensity: VisualDensity.compact,
+            ),
+            ListTile(
+              title: const Text("Images"),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push("/${Routes.signUpAthlete}/images"),
+              visualDensity: VisualDensity.compact,
+            ),
+            ListTile(
+              title: const Text("Prompts"),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push("/${Routes.signUpAthlete}/prompts"),
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+          handleBusiness: (_) => [],
         ),
         const SizedBox(height: 4),
         ListTile(
@@ -56,6 +74,24 @@ class SettingsPage extends StatelessWidget {
             style: context.textTheme.headlineSmall?.copyWith(color: Colors.red),
           ),
           onTap: () async { 
+            final result = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Confirm"),
+                content: const Text("Are you sure you want to log out?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("Cancel"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Confirm"),
+                  ),
+                ],
+              ),
+            );
+            if (result != true) return;
             await models.user.signOut();
             if (!context.mounted) return;
             context.goNamed(Routes.login);

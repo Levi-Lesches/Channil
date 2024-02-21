@@ -85,11 +85,14 @@ class ChannilImageViewer extends ReactiveWidget<ChannilImageViewModel> {
         aspectRatio: aspectRatio, 
         child: loadImage(context, model.state),
       ),
-      if (hasCaption) ...[
-        const SizedBox(height: 12),
-        Text(image.caption!, style: context.textTheme.headlineSmall),
-        const SizedBox(height: 8),
-      ],
+      if (hasCaption) 
+        // const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(image.caption!, style: context.textTheme.headlineSmall),
+        ),
+        // const SizedBox(height: 8),
+      // ],
     ],),
   );
 }

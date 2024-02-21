@@ -17,6 +17,8 @@ class ConfirmationModel extends ViewModel {
     notifyListeners();
   }
 
+  Future<void> reject() => model.reject(connection);
+
   void chat() => model.chatWith(connection);
 }
 
@@ -52,17 +54,17 @@ class ConfirmConnectionPage extends ReactiveWidget<ConfirmationModel> {
           ),
         ],),
       ),
-      if (model.status != ConnectionStatus.accepted) rejectButton(onPressed: () { }),
+      if (model.status != ConnectionStatus.accepted) rejectButton(onPressed: model.reject),
       if (model.status != ConnectionStatus.accepted) acceptButton(onPressed: model.accept),
       AnimatedPositioned(
         left: model.status == ConnectionStatus.accepted
-          ? 25
+          ? 50
           : -350,
         bottom: 200,
         duration: const Duration(milliseconds: 250),
         child: SizedBox(
-          height: 250, 
-          width: 250, 
+          height: 150, 
+          width: 150, 
           child: Transform.rotate(
             angle: -pi/10,
             child: Column(children: [
@@ -79,13 +81,13 @@ class ConfirmConnectionPage extends ReactiveWidget<ConfirmationModel> {
       ),
       AnimatedPositioned(
         right: model.status == ConnectionStatus.accepted
-          ? 25
+          ? 50
           : -350,
         bottom: 200,
         duration: const Duration(milliseconds: 250),
         child: SizedBox(
-          height: 250, 
-          width: 250, 
+          height: 150, 
+          width: 150, 
           child: Transform.rotate(
             angle: pi/10,
             child: Column(children: [

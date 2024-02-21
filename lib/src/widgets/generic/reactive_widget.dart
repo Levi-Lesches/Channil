@@ -11,6 +11,7 @@ abstract class ReactiveWidgetInterface<T extends ChangeNotifier> extends Statefu
   /// Builds the UI according to the state in [model].
 	Widget build(BuildContext context, T model);
 
+  @mustCallSuper
   void didUpdateWidget(covariant ReactiveWidgetInterface<T> oldWidget, T model) { }
 }
 

@@ -14,7 +14,7 @@ class SquareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Positioned(
-    bottom: 72, 
+    bottom: 48, 
     left: left, 
     right: right,
     child: SizedBox(

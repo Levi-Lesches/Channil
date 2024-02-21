@@ -10,7 +10,11 @@ class SocialMediaWidget extends ReusableReactiveWidget<SocialMediaBuilder> {
   @override
   Widget build(BuildContext context, SocialMediaBuilder model) => Column(children: [
     ListTile(
-      leading: CircleAvatar(backgroundImage: AssetImage(model.platform.assetPath)),
+      leading: CircleAvatar(
+        backgroundImage: AssetImage(model.platform.assetPath),
+        backgroundColor: Colors.transparent,
+        radius: 16,
+      ),
       title: Text(model.platform.displayName),
     ),
     const SizedBox(height: 4),

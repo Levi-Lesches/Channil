@@ -5,14 +5,17 @@ import "package:channil/services.dart";
 
 class MatchesViewModel extends ViewModel {
   late ChannilUser user;
-  List<Connection> get allConnections => home.connections;
+  late List<Connection> allConnections;
+
   Connection? toConfirm;
 
-  final HomeModel home;
-  MatchesViewModel(this.home);
-
-  Iterable<Connection> get pendingConnections => allConnections.where(
+  Iterable<Connection> get incomingConnections => allConnections.where(
     (connection) => connection.to == user.id 
+      && connection.status == ConnectionStatus.pending,
+  );
+
+  Iterable<Connection> get outgoingConnections => allConnections.where(
+    (connection) => connection.from == user.id 
       && connection.status == ConnectionStatus.pending,
   );
 
@@ -24,6 +27,7 @@ class MatchesViewModel extends ViewModel {
   Future<void> init() async { 
     isLoading = true;
     user = models.user.channilUser!;
+    allConnections = await services.database.getConnections(user.id);    
     isLoading = false;
   }
 
@@ -36,6 +40,13 @@ class MatchesViewModel extends ViewModel {
   Future<void> accept(Connection connection) async {
     connection.status = ConnectionStatus.accepted;
     await services.database.saveConnection(connection);
+  }
+
+  Future<void> reject(Connection connection) async {
+    connection.status = ConnectionStatus.rejected;
+    await services.database.saveConnection(connection);
+    toConfirm = null;
+    notifyListeners();
   }
 
   void chatWith(Connection connection) => 

@@ -7,11 +7,12 @@ import "package:channil/widgets.dart";
 import "signup_base.dart";
 
 class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
-  final bool editPreferences;
-  const AthleteSignUpPage({this.editPreferences = false});
+  final int? startIndex;
+  final int? endIndex;
+  const AthleteSignUpPage({this.startIndex, this.endIndex});
   
   @override
-  AthleteBuilder createModel() => AthleteBuilder(editPreferences: editPreferences);
+  AthleteBuilder createModel() => AthleteBuilder(startIndex: startIndex, endIndex: endIndex);
   
   @override
   Widget build(BuildContext context, AthleteBuilder model) => Scaffold(
@@ -145,7 +146,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
   }
 
   List<Widget> _prompts(BuildContext context, AthleteBuilder model) => [
-    Text("Choose at least two prompts", style: context.textTheme.titleLarge, textAlign: TextAlign.center),
+    Text("Answer two prompts", style: context.textTheme.titleLarge, textAlign: TextAlign.center),
     const SizedBox(height: 16),
     for (final (prompt, controller) in zip(allPrompts, model.promptControllers)) ...[
       Text(prompt, style: controller.text.isEmpty ? null : const TextStyle(fontWeight: FontWeight.bold)), 

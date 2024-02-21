@@ -7,11 +7,12 @@ import "package:channil/widgets.dart";
 import "signup_base.dart";
 
 class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
-  final bool editPreferences;
-  const BusinessSignUpPage({this.editPreferences = false});
+  final int? startIndex;
+  final int? endIndex;
+  const BusinessSignUpPage({this.startIndex, this.endIndex});
   
   @override
-  BusinessBuilder createModel() => BusinessBuilder(editPreferences: editPreferences);
+  BusinessBuilder createModel() => BusinessBuilder(startIndex: startIndex, endIndex: endIndex);
   
   @override
   Widget build(BuildContext context, BusinessBuilder model) => SignUpPage(

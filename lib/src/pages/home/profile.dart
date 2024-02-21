@@ -32,9 +32,11 @@ class BusinessProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.all(48),
+    padding: const EdgeInsets.all(24),
     cacheExtent: MediaQuery.of(context).size.height * 2,
     children: [
+      Text("Tap images to enlarge", textAlign: TextAlign.center, style: context.textTheme.titleLarge),
+      const SizedBox(height: 24),
       ChannilImageViewer(profile.logo, aspectRatio: 2),
       const SizedBox(height: 24),
       InfoBox(children: [
@@ -78,10 +80,12 @@ class AthleteProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.all(48),
+    padding: const EdgeInsets.all(24),
     shrinkWrap: true,
     cacheExtent: MediaQuery.of(context).size.height * 8,
     children: [
+      Text("Tap images to enlarge", textAlign: TextAlign.center, style: context.textTheme.titleLarge),
+      const SizedBox(height: 24),
       ChannilImageViewer(profile.profilePics[0]),
       const SizedBox(height: 24),
       InfoBox(children: [

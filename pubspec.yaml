@@ -20,6 +20,7 @@ dependencies:
   google_sign_in_web: ^0.12.3+2
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
   very_good_analysis: ^5.1.0
@@ -36,14 +37,14 @@ flutter:
     - assets/categories/home_goods.png
     - assets/categories/lifestyle.png
     - assets/categories/tech.png
-    - assets/logos/instagram.png
-    - assets/logos/linkedin.png
     - assets/logos/channil_square.png
     - assets/logos/channil_small.png
+    - assets/logos/channil_icon.png
     - assets/logos/channil_rectangle.png
-    - assets/logos/facebook.png
-    - assets/logos/tiktok.jpg
-    - assets/logos/x.webp
+    - assets/logos/instagram.png
+    - assets/logos/linkedin.png
+    - assets/logos/tiktok.png
+    - assets/logos/twitter.png
     - assets/sports/baseball.png
     - assets/sports/basketball.png
     - assets/sports/cross_country.png
@@ -76,3 +77,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons: 
+  image_path: "assets/logos/channil_icon.png"
+  android: 
+    generate: true
+  ios: 
+    generate: true
+    remove_alpha_ios: true
+  web: 
+    generate: true

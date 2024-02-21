@@ -21,7 +21,7 @@ class Routes {
   static const login = "login";
   static const signUpAthlete = "athlete-sign-up";
   static const signUpBusiness = "business-sign-up";
-  static const profile = "profile";
+  static const profile = "/profile";
   static const settings = "settings";
   static const athletePreferences = "athlete-edit-preferences";
   static const businessPreferences = "business-edit-preferences";
@@ -35,7 +35,6 @@ String? loginRedirect(BuildContext context, _) =>
     ? null : "/login";
 
 final router = GoRouter(
-  initialLocation: "/profile",
   routes: [
     GoRoute(
       path: "/",
@@ -52,9 +51,21 @@ final router = GoRouter(
       builder: (_, state) => const AthleteSignUpPage(),
       routes: [
         GoRoute(
+          path: "info",
+          builder: (_, __) => const AthleteSignUpPage(startIndex: 1, endIndex: 1),
+        ),
+        GoRoute(
+          path: "images",
+          builder: (_, __) => const AthleteSignUpPage(startIndex: 2, endIndex: 2,),
+        ),
+        GoRoute(
+          path: "prompts",
+          builder: (_, __) => const AthleteSignUpPage(startIndex: 3, endIndex: 3),
+        ),
+        GoRoute(
           path: "preferences",
           name: Routes.athletePreferences,
-          builder: (_, __) => const AthleteSignUpPage(editPreferences: true),
+          builder: (_, __) => const AthleteSignUpPage(startIndex: 4, endIndex: 4),
         ),
       ],
     ),
@@ -66,35 +77,22 @@ final router = GoRouter(
         GoRoute(
           path: "preferences",
           name: Routes.businessPreferences,
-          builder: (_, __) => const BusinessSignUpPage(editPreferences: true),
+          builder: (_, __) => const BusinessSignUpPage(startIndex: 3, endIndex: 3),
         ),
       ],
     ),
     StatefulShellRoute.indexedStack(
       pageBuilder: (context, state, child) => NoTransitionPage(
-        child: HomeShell(
-          name: state.uri.pathSegments.first,
-          child: child,
-        ),
+        child: HomeShell(child: child),
       ),
       branches: [
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: "/${Routes.profile}",
-              name: Routes.profile,
-              redirect: loginRedirect,
-              builder: (_, __) => ProfilePage(showAppBar: true, HomeModel(ChannilDestination.profile)),
-            ),
-          ],
-        ),
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: "/${Routes.browse}",
               name: Routes.browse,
               redirect: loginRedirect,
-              builder: (_, __) => BrowsePage(HomeModel(ChannilDestination.swipes)),
+              builder: (_, __) => BrowsePage(HomeModel(1)),
             ),
           ],
         ),
@@ -104,7 +102,7 @@ final router = GoRouter(
               path: "/${Routes.matches}",
               name: Routes.matches,
               redirect: loginRedirect,
-              builder: (_, __) => MatchesPage(HomeModel(ChannilDestination.matches)),
+              builder: (_, __) => MatchesPage(),
             ),
           ],
         ),
@@ -121,6 +119,16 @@ final router = GoRouter(
                   builder: (context, state) => ChatPage(state.pathParameters["id"]!),
                 ),
               ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.profile,
+              name: Routes.profile,
+              redirect: loginRedirect,
+              builder: (_, __) => ProfilePage(showAppBar: true, HomeModel(0)),
             ),
           ],
         ),

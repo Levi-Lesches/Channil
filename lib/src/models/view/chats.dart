@@ -15,12 +15,16 @@ extension ConnectionUtils on Connection {
 }
 
 class ChatsViewModel extends ViewModel {
-  late List<Connection> connections;
+  late List<Connection> allConnections;
+
+  Iterable<Connection> get connections => allConnections.where(
+    (connection) => connection.status == ConnectionStatus.accepted,
+  );
 
   @override
   Future<void> init() async {
     isLoading = true;
-    connections = await services.database.getConnections(models.user.uid!);
+    allConnections = await services.database.getConnections(models.user.uid!);
     isLoading = false;
   }
 

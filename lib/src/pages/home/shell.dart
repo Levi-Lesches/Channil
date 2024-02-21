@@ -2,39 +2,33 @@ import "package:flutter/material.dart";
 
 import "package:channil/data.dart";
 import "package:channil/models.dart";
-import "package:channil/pages.dart";
 import "package:channil/widgets.dart";
 
 class HomeShell extends ReactiveWidget<HomeModel> {
-  static const double iconSize = 48;
+  static const double iconSize = 36;
 
-  final ChannilDestination destination;
+  final int index;
   final UserID? userID;
-  final Widget child;
-  HomeShell({required String? name, required this.child, this.userID}) : 
-    destination = switch (name) {
-      Routes.profile => ChannilDestination.profile,
-      Routes.chats => ChannilDestination.chats,
-      Routes.matches => ChannilDestination.matches,
-      Routes.browse => ChannilDestination.swipes,
-      _ => throw ArgumentError("Unknown name"),
-    };
+  final StatefulNavigationShell child;
+  HomeShell({required this.child, this.userID}) : 
+    index = child.currentIndex;
 
   @override
-  HomeModel createModel() => HomeModel(destination, userID: userID);
+  HomeModel createModel() => HomeModel(child.currentIndex, userID: userID);
 
   @override
   void didUpdateWidget(HomeShell oldWidget, HomeModel model) {
-    model.updateDestination(destination);
+    model.updateIndex(index);
+    super.didUpdateWidget(oldWidget, model);
   }
 
   @override
   Widget build(BuildContext context, HomeModel model) => Scaffold(
     body: child,
     bottomNavigationBar: model.userID != null ? null : NavigationBar(
-      selectedIndex: model.destination.index,
+      selectedIndex: model.index,
       indicatorColor: context.colorScheme.primary.withOpacity(0),
-      onDestinationSelected: model.updatePageIndex,
+      onDestinationSelected: child.goBranch,
       elevation: 16,
       destinations: [
         for (final destination in ChannilDestination.values) NavigationDestination(

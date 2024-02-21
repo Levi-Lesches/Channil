@@ -10,13 +10,13 @@ enum SocialMediaPlatform {
   tikTok(
     displayName: "TikTok",
     showFollowers: true,
-    assetPath: "assets/logos/tiktok.jpg",
+    assetPath: "assets/logos/tiktok.png",
     urlPrefix: "https://tiktok.com/@",
   ),
   twitter(
     displayName: "X (Twitter)",
     showFollowers: false,
-    assetPath: "assets/logos/x.webp",
+    assetPath: "assets/logos/twitter.png",
     urlPrefix: "https://x.com/",
   ),
   linkedin(
