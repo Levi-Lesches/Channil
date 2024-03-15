@@ -13,7 +13,6 @@ class SettingsPage extends StatelessWidget {
       children: [
         ListTile(
           title: Text("Account Info", style: context.textTheme.headlineSmall),
-          trailing: const Icon(Icons.chevron_right),
           subtitle: Text("${models.user.channilUser!.name}\n${models.user.channilUser!.email}"),
         ),
         const SizedBox(height: 4),

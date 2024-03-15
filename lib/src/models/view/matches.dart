@@ -37,6 +37,11 @@ class MatchesViewModel extends ViewModel {
     notifyListeners();
   }
 
+  void cancel() {
+    toConfirm = null;
+    notifyListeners();
+  }
+
   Future<void> accept(Connection connection) async {
     connection.status = ConnectionStatus.accepted;
     await services.database.saveConnection(connection);

@@ -10,7 +10,14 @@ class MatchesPage extends ReactiveWidget<MatchesViewModel> {
 
   @override
   Widget build(BuildContext context, MatchesViewModel model) => Scaffold(
-    appBar: channilAppBar(context: context, title: "My Matches"),
+    appBar: channilAppBar(
+      context: context, 
+      title: "My Matches",
+      leading: !model.needsConfirmation ? null : IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: model.cancel,
+      ),
+    ),
     body: DefaultTabController(
       length: 3,
       child: model.isLoading
@@ -27,7 +34,7 @@ class MatchesPage extends ReactiveWidget<MatchesViewModel> {
             ],),
             Expanded(child: TabBarView(children: [
               PendingConnectionsView(model: model, connections: model.incomingConnections),
-              PendingConnectionsView(model: model, connections: model.outgoingConnections),
+              OutgoingConnectionsView(model: model, connections: model.outgoingConnections),
               AcceptedConnectionsView(model: model, connections: model.acceptedConnections),
             ],),),
           ],
@@ -53,6 +60,23 @@ class PendingConnectionsView extends StatelessWidget {
             connection: connection, 
             onTap: () => model.confirm(connection),
           ),
+      ],
+    );
+}
+
+class OutgoingConnectionsView extends StatelessWidget {
+  final Iterable<Connection> connections;
+  final MatchesViewModel model;
+  const OutgoingConnectionsView({required this.model, required this.connections});
+
+  @override
+  Widget build(BuildContext context) => connections.isEmpty 
+    ? Center(child: Text("You have no pending connections", style: context.textTheme.bodyLarge))
+    : ListView(
+      shrinkWrap: true,
+      children: [
+        for (final connection in connections)
+          OutgoingConnectionWidget(connection),
       ],
     );
 }

@@ -70,11 +70,11 @@ class ConfirmConnectionPage extends ReactiveWidget<ConfirmationModel> {
             child: Column(children: [
               Text(connection.fromName),
               const SizedBox(height: 8),
-              Material(
+              Expanded(child: Material(
                 shape: Border.all(),
                 elevation: 16,
                 child: Image.network(connection.fromImageUrl),
-              ),
+              ),),
             ],),
           ),
         ),
@@ -93,11 +93,11 @@ class ConfirmConnectionPage extends ReactiveWidget<ConfirmationModel> {
             child: Column(children: [
               Text(connection.toName),
               const SizedBox(height: 8),
-              Material(
+              Expanded(child: Material(
                 shape: Border.all(),
                 elevation: 16,
                 child: Image.network(connection.toImageUrl),
-              ),
+              ),),
             ],),
           ),
         ),

@@ -129,6 +129,12 @@ final router = GoRouter(
               name: Routes.profile,
               redirect: loginRedirect,
               builder: (_, __) => ProfilePage(showAppBar: true, HomeModel(0)),
+              routes: [
+                GoRoute(
+                  path: ":id",
+                  builder: (context, state) => ProfilePage(HomeModel(0), showAppBar: true, user: state.pathParameters["id"]!),
+                ),
+              ]
             ),
           ],
         ),

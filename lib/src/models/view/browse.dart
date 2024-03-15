@@ -18,7 +18,9 @@ class BrowseViewModel extends ViewModel {
       errorText = "You must sign in to browse other profiles";
       return;
     }
+    print("Need to skip: $skipIDs");
     await nextUser();
+    print("Need to skip: $skipIDs");
     isLoading = false;
   }
 
@@ -35,6 +37,7 @@ class BrowseViewModel extends ViewModel {
       handleAthlete: (profile) => services.database.queryBusinesses(profile, startAfter: snapshot),
     );
     snapshot = newSnapshot;
+    print("Got more users: $nextUsers");
     if (nextUsers.isEmpty) {
       errorText = "Could not find any users that match your preferences\nTry making your preferences more broad";
       // home.updateAppBarText(null);

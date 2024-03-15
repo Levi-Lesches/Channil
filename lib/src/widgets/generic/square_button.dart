@@ -18,8 +18,8 @@ class SquareButton extends StatelessWidget {
     left: left, 
     right: right,
     child: SizedBox(
-      height: 100, 
-      width: 100, 
+      height: 72, 
+      width: 72, 
       child: Material(
         elevation: 16,
         borderRadius: BorderRadius.circular(24),
@@ -36,11 +36,11 @@ class SquareButton extends StatelessWidget {
 Widget rejectButton({required VoidCallback onPressed}) => SquareButton(
   left: 24,
   onPressed: onPressed, 
-  icon: const Icon(Icons.close, size: 48, color: Colors.red),
+  icon: const Icon(Icons.close, size: 36, color: Colors.red),
 );
 
 Widget acceptButton({required VoidCallback onPressed}) => SquareButton(
   right: 24,
   onPressed: onPressed, 
-  icon: const Icon(Icons.handshake, size: 48, color: Colors.green),
+  icon: const Icon(Icons.handshake, size: 36, color: Colors.green),
 );
