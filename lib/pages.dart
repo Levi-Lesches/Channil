@@ -132,9 +132,9 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                   path: ":id",
-                  builder: (context, state) => ProfilePage(HomeModel(0), showAppBar: true, user: state.pathParameters["id"]!),
+                  builder: (context, state) => ProfilePage(HomeModel(0), showAppBar: true, user: state.pathParameters["id"]),
                 ),
-              ]
+              ],
             ),
           ],
         ),
