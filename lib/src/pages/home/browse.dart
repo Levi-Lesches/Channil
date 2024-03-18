@@ -29,16 +29,19 @@ class BrowsePage extends ReactiveWidget<BrowseViewModel> {
     : Scaffold(
       appBar: channilAppBar(context: context, title: "Browse", header: model.currentUser?.name),
       body: model.errorText != null 
-      ? Center(child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(model.errorText!, textAlign: TextAlign.center, style: context.textTheme.bodyLarge),
-          const SizedBox(height: 16),
-          OutlinedButton(
-            onPressed: model.clearRejections, 
-            child: const Text("Clear rejections"),
-          ),
-        ],
+      ? Padding(
+        padding: const EdgeInsets.all(8),
+        child: Center(child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(model.errorText!, textAlign: TextAlign.center, style: context.textTheme.bodyLarge),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              onPressed: model.clearRejections, 
+              child: const Text("Clear rejections"),
+            ),
+          ],
+        ),
       ),)
       : Stack(children: [
         ProfilePage(home, showAppBar: false, user: model.currentUser!.id),

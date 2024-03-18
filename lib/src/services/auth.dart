@@ -11,7 +11,9 @@ typedef GoogleAccount = GoogleSignInAccount;
 class AuthService extends Service {
   // Must be late so it happens after FirebaseService.init
   late final firebase = FirebaseAuth.instance;
-  final google = GoogleSignIn();
+  final google = GoogleSignIn(
+    clientId: "1092469922144-6ppr705pb528p7vt9aminvr2h20k5ljr.apps.googleusercontent.com",
+  );
 
   @override
   Future<void> init() async { }

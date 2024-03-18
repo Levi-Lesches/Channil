@@ -36,7 +36,7 @@ class BrowseViewModel extends ViewModel {
     );
     snapshot = newSnapshot;
     if (nextUsers.isEmpty) {
-      errorText = "Could not find any users that match your preferences\nTry making your preferences more broad";
+      errorText = "Could not find any users that match your preferences. Try making your preferences more broad.";
       // home.updateAppBarText(null);
       currentUser = null;
       return false;

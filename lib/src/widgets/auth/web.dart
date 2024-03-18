@@ -7,7 +7,11 @@ import "package:channil/services.dart";
 
 class GoogleAuthButton extends ReusableReactiveWidget<UserModel> {
   final bool signUp;
-  GoogleAuthButton({required this.signUp}) : super(models.user) {
+  final bool expanded;
+  GoogleAuthButton({
+    required this.signUp,
+    this.expanded = false,
+  }) : super(models.user) {
     services.auth.google.signInSilently();
     prerenderButton();
   }

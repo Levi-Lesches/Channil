@@ -27,7 +27,7 @@ class LandingPage extends ReactiveWidget<LandingViewModel> {
           Text(description, style: context.textTheme.titleLarge, textAlign: TextAlign.center),
           const Spacer(flex: 3),
           if (model.state == 0) ...[
-            GoogleAuthButton(signUp: false),
+            GoogleAuthButton(signUp: false, expanded: true),
             if (model.errorText != null) 
               Text(model.errorText!, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 8),

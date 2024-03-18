@@ -75,6 +75,14 @@ final router = GoRouter(
       builder: (_, __) => const BusinessSignUpPage(),
       routes: [
         GoRoute(
+          path: "info",
+          builder: (_, __) => const BusinessSignUpPage(startIndex: 1, endIndex: 1),
+        ),
+        GoRoute(
+          path: "images",
+          builder: (_, __) => const BusinessSignUpPage(startIndex: 2, endIndex: 2,),
+        ),
+        GoRoute(
           path: "preferences",
           name: Routes.businessPreferences,
           builder: (_, __) => const BusinessSignUpPage(startIndex: 3, endIndex: 3),

@@ -40,7 +40,20 @@ class SettingsPage extends StatelessWidget {
               visualDensity: VisualDensity.compact,
             ),
           ],
-          handleBusiness: (_) => [],
+          handleBusiness: (_) => [
+            ListTile(
+              title: const Text("Basic information"),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push("/${Routes.signUpBusiness}/info"),
+              visualDensity: VisualDensity.compact,
+            ),
+            ListTile(
+              title: const Text("Images"),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push("/${Routes.signUpBusiness}/images"),
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
         ),
         const SizedBox(height: 4),
         ListTile(
