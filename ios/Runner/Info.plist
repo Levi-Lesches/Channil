@@ -59,5 +59,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app allows you to upload photos of yourself or your business to better show off your brand</string>
 </dict>
 </plist>
