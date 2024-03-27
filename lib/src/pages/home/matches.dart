@@ -15,8 +15,16 @@ class MatchesPage extends ReactiveWidget<MatchesViewModel> {
       title: "My Matches",
       leading: !model.needsConfirmation ? null : IconButton(
         icon: const Icon(Icons.arrow_back),
+        tooltip: "Cancel",
         onPressed: model.cancel,
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          tooltip: "Refresh",
+          onPressed: model.init,
+        ),
+      ],
     ),
     body: DefaultTabController(
       length: 3,
@@ -93,10 +101,7 @@ class AcceptedConnectionsView extends StatelessWidget {
       shrinkWrap: true,
       children: [
         for (final connection in connections)
-          AcceptedConnectionWidget(
-            connection: connection,
-            onChat: () => model.chatWith(connection),
-          ),
+          AcceptedConnectionWidget(connection),
       ],
   );
 }

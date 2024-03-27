@@ -41,7 +41,12 @@ class ChatPage extends ReactiveWidget<ChatViewModel> {
 
   @override
   Widget build(BuildContext context, ChatViewModel model) => Scaffold(
-    appBar: AppBar(title: Text(model.isLoading ? "Loading..." : model.connection.otherName)),
+    appBar: AppBar(
+      title: TextButton(
+        onPressed: model.isLoading ? null : () => context.push("/profile/${model.connection.otherID}"),
+        child: Text(model.isLoading ? "Loading..." : model.connection.otherName),
+      ),
+    ),
     body: model.isLoading
       ? const Center(child: CircularProgressIndicator())
       : Column(

@@ -12,12 +12,6 @@ class PendingConnectionWidget extends StatelessWidget {
     required this.onTap,
   });
   
-  String get otherImage => models.user.channilUser!.id == connection.from
-    ? connection.toImageUrl : connection.fromImageUrl;
-
-  String get otherName => models.user.channilUser!.id == connection.from
-    ? connection.toName : connection.fromName;
-  
   @override
   Widget build(BuildContext context) => AspectRatio(
     aspectRatio: 1,
@@ -29,9 +23,9 @@ class PendingConnectionWidget extends StatelessWidget {
         onTap: onTap,
         child: Column(children: [
           const SizedBox(height: 8),
-          Text(otherName, style: context.textTheme.headlineMedium),
+          Text(connection.otherName, style: context.textTheme.headlineMedium),
           const SizedBox(height: 8),
-          Expanded(child: Image.network(otherImage, fit: BoxFit.contain)),
+          Expanded(child: Image.network(connection.otherImage, fit: BoxFit.contain)),
           const SizedBox(height: 16),
         ],),
       ),
@@ -41,22 +35,7 @@ class PendingConnectionWidget extends StatelessWidget {
 
 class AcceptedConnectionWidget extends StatelessWidget {
   final Connection connection;
-  // final VoidCallback onView;
-  final VoidCallback onChat;
-  const AcceptedConnectionWidget({
-    required this.connection,
-    required this.onChat,
-    // required this.onView,
-  });
-
-  String get otherImage => models.user.channilUser!.id == connection.from
-    ? connection.toImageUrl : connection.fromImageUrl;
-
-  String get otherName => models.user.channilUser!.id == connection.from
-    ? connection.toName : connection.fromName;
-
-  UserID get otherID => models.user.channilUser!.id == connection.from
-    ? connection.to : connection.from;
+  const AcceptedConnectionWidget(this.connection);
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -68,17 +47,17 @@ class AcceptedConnectionWidget extends StatelessWidget {
       child: InkWell( 
         child: Row(children: [
           const SizedBox(width: 16),
-          CircleAvatar(backgroundImage: NetworkImage(otherImage)),
+          CircleAvatar(backgroundImage: NetworkImage(connection.otherImage)),
           const SizedBox(width: 16),
-          Text(otherName, style: context.textTheme.bodyLarge),
+          Text(connection.otherName, style: context.textTheme.bodyLarge),
           const Spacer(),
           IconButton(
             icon: const Icon(Icons.account_circle), 
-            onPressed: () => context.go("/profile/$otherID"),
+            onPressed: () => context.push("/profile/${connection.otherID}"),
           ),
           IconButton(
             icon: const Icon(Icons.chat),
-            onPressed: onChat,
+            onPressed: () => context.push("/chats/${connection.id}"),
           ),
           const SizedBox(width: 16),
         ],),
@@ -91,15 +70,6 @@ class OutgoingConnectionWidget extends StatelessWidget {
   final Connection connection;
   const OutgoingConnectionWidget(this.connection);
 
-  String get otherImage => models.user.channilUser!.id == connection.from
-    ? connection.toImageUrl : connection.fromImageUrl;
-
-  String get otherName => models.user.channilUser!.id == connection.from
-    ? connection.toName : connection.fromName;
-
-  UserID get otherID => models.user.channilUser!.id == connection.from
-    ? connection.to : connection.from;
-
   @override
   Widget build(BuildContext context) => SizedBox(
     height: 100, 
@@ -110,13 +80,13 @@ class OutgoingConnectionWidget extends StatelessWidget {
       child: InkWell( 
         child: Row(children: [
           const SizedBox(width: 16),
-          CircleAvatar(backgroundImage: NetworkImage(otherImage)),
+          CircleAvatar(backgroundImage: NetworkImage(connection.otherImage)),
           const SizedBox(width: 16),
-          Text(otherName, style: context.textTheme.bodyLarge),
+          Text(connection.otherName, style: context.textTheme.bodyLarge),
           const Spacer(),
           IconButton(
             icon: const Icon(Icons.account_circle), 
-            onPressed: () => context.go("/profile/$otherID"),
+            onPressed: () => context.push("/profile/${connection.otherID}"),
           ),
           const SizedBox(width: 16),
         ],),

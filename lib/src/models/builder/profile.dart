@@ -84,6 +84,10 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
   String? emailError;
   String? passwordError;
   bool accountCreated = false;
+  bool get enableAccountCreation => !accountCreated
+    && !models.user.isAuthenticated      
+    && !models.user.hasAccount;
+
   Future<void> createAccount() async {
     emailError = null;
     passwordError = null;

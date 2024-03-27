@@ -35,7 +35,9 @@ class ProfileViewModel extends ViewModel {
   }
 
   void updateUser() {
-    user = models.user.channilUser!;
+    final newUser = models.user.channilUser;
+    if (newUser == null) return;
+    user = newUser;
     notifyListeners();
   }
 }

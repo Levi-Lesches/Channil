@@ -24,7 +24,10 @@ class HomeShell extends ReactiveWidget<HomeModel> {
 
   @override
   Widget build(BuildContext context, HomeModel model) => Scaffold(
-    body: child,
+    body: Center(child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 500),
+      child: child,
+    ),),
     bottomNavigationBar: model.userID != null ? null : NavigationBar(
       selectedIndex: model.index,
       indicatorColor: context.colorScheme.primary.withOpacity(0),

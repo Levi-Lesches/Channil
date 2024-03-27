@@ -57,6 +57,6 @@ class SocialMediaViewer extends StatelessWidget {
     leading: Image.asset(social.platform.assetPath),
     title: Text(social.username),
     subtitle: social.platform.showFollowers
-      ? Text("Followers: ${social.followerCount.$1}-${social.followerCount.$2}") : null,
+      ? Text("Followers: ${social.followerCount.displayName}") : null,
   );
 }

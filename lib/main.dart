@@ -14,7 +14,7 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-const channilGreen = Color(0xff005A43);
+const channilColor = Color(0xff1166BA);
 
 class ChipLabelColor extends Color implements MaterialStateColor {
   const ChipLabelColor() : super(0xff000000);
@@ -49,13 +49,13 @@ class MyApp extends StatelessWidget {
       ),
       chipTheme: ChipTheme.of(context).copyWith(
         checkmarkColor: Colors.white,
-        side: const BorderSide(color: channilGreen),
+        side: const BorderSide(color: channilColor),
         labelStyle: context.textTheme.bodyLarge?.copyWith(color: const ChipLabelColor()),
         secondaryLabelStyle: const TextStyle(color: Colors.white),
       ),
       colorScheme: const ColorScheme.light(
-        primary: channilGreen,
-        secondary: channilGreen,
+        primary: channilColor,
+        secondary: channilColor,
       ),
     ),
     routerConfig: router,

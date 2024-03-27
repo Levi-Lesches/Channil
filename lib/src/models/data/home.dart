@@ -16,10 +16,10 @@ enum ChannilDestination {
   const ChannilDestination(this.title);
 
   Widget getIcon({required bool isSelected}) => switch (this) {
-    swipes => Image.asset("assets/logos/channil_small.png", color: isSelected ? channilGreen : Colors.black),
-    matches => Icon(Icons.handshake, size: 36, color: isSelected ? channilGreen : null),
-    chats => Icon(Icons.chat, size: 36, color: isSelected ? channilGreen : null),
-    profile => Icon(Icons.account_circle, size: 36, color: isSelected ? channilGreen : null),
+    swipes => Image.asset("assets/logos/channil_small.png", color: isSelected ? channilColor : Colors.black),
+    matches => Icon(Icons.handshake, size: 36, color: isSelected ? channilColor : null),
+    chats => Icon(Icons.chat, size: 36, color: isSelected ? channilColor : null),
+    profile => Icon(Icons.account_circle, size: 36, color: isSelected ? channilColor : null),
   };
 }
 
@@ -60,7 +60,7 @@ class HomeModel extends ViewModel {
   void updatePageIndex(int index) {
     userID = null;
     final dest = ChannilDestination.values[index];
-    router.goNamed(switch (dest) {
+    router.go(switch (dest) {
       ChannilDestination.profile => Routes.profile,
       ChannilDestination.swipes => Routes.browse,
       ChannilDestination.chats => Routes.chats,

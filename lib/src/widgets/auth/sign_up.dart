@@ -20,7 +20,7 @@ class SignUpWidget extends ReusableReactiveWidget<ProfileBuilder<dynamic>> {
       ),
       const SizedBox(height: 8),
       ChannilTextField(
-        enabled: !model.accountCreated,
+        enabled: model.enableAccountCreation,
         controller: model.emailController,
         capitalization: TextCapitalization.none,
         type: TextInputType.emailAddress,
@@ -29,7 +29,7 @@ class SignUpWidget extends ReusableReactiveWidget<ProfileBuilder<dynamic>> {
       ),
       const SizedBox(height: 8),
       ChannilTextField(
-        enabled: !model.accountCreated,
+        enabled: model.enableAccountCreation,
         controller: model.passwordController,
         hint: "Password",
         capitalization: TextCapitalization.none,
@@ -40,7 +40,7 @@ class SignUpWidget extends ReusableReactiveWidget<ProfileBuilder<dynamic>> {
       ),
       const SizedBox(height: 8),
       ChannilTextField(
-        enabled: !model.accountCreated,
+        enabled: model.enableAccountCreation,
         controller: model.confirmPasswordController,
         hint: "Confirm password",
         obscureText: model.obscureText,
@@ -52,7 +52,7 @@ class SignUpWidget extends ReusableReactiveWidget<ProfileBuilder<dynamic>> {
       ),
       const SizedBox(height: 8),
       OutlinedButton(
-        onPressed: model.accountCreated ? null : model.createAccount,
+        onPressed: model.enableAccountCreation ? model.createAccount : null,
         child: const Text("Sign up with email and password"),
       ),
     ],

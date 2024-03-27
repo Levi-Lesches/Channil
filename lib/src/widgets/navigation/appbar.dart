@@ -8,6 +8,7 @@ AppBar channilAppBar({
   required String title,
   Widget? leading,
   String? header,
+  List<Widget> actions = const [],
 }) => AppBar(
   title: Text(title),
   leading: leading,
@@ -18,9 +19,11 @@ AppBar channilAppBar({
     child: Text(header, style: context.textTheme.displaySmall),
   ),
   actions: [
+    ...actions,
     IconButton(
       icon: const Icon(Icons.settings),
-      onPressed: () => context.pushNamed(Routes.settings),
+      tooltip: "Settings",
+      onPressed: () => context.go(Routes.settings),
     ),
   ],
 );

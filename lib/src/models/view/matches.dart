@@ -1,6 +1,5 @@
 import "package:channil/data.dart";
 import "package:channil/models.dart";
-import "package:channil/pages.dart";
 import "package:channil/services.dart";
 
 class MatchesViewModel extends ViewModel {
@@ -53,7 +52,4 @@ class MatchesViewModel extends ViewModel {
     toConfirm = null;
     notifyListeners();
   }
-
-  void chatWith(Connection connection) => 
-    router.go("/chats/${connection.id}");
 }

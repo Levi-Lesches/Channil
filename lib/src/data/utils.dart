@@ -1,7 +1,7 @@
 typedef Json = Map<String, dynamic>;
 extension type ConnectionID(String id) { }
 extension type UserID(String id) { }
-extension type Email(String email) { }
+// extension type Email(String email) { }
 
 extension ListUtils<E> on List<E> {
   Iterable<(int, E)> get enumerate sync* {

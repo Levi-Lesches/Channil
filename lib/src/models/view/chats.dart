@@ -9,6 +9,9 @@ extension ConnectionUtils on Connection {
 
   String get otherName => models.user.channilUser!.id == from
     ? toName : fromName;
+
+  UserID get otherID => models.user.channilUser!.id == from
+    ? to : from;
 }
 
 class ChatsViewModel extends ViewModel {

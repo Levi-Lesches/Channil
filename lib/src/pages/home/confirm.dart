@@ -18,8 +18,6 @@ class ConfirmationModel extends ViewModel {
   }
 
   Future<void> reject() => model.reject(connection);
-
-  void chat() => model.chatWith(connection);
 }
 
 class ConfirmConnectionPage extends ReactiveWidget<ConfirmationModel> {
@@ -107,7 +105,7 @@ class ConfirmConnectionPage extends ReactiveWidget<ConfirmationModel> {
           ? const Alignment(0, 0.85) : const Alignment(0, 2),
         duration: const Duration(milliseconds: 250),
         child: OutlinedButton(
-          onPressed: model.chat,
+          onPressed: () => context.go("/chats/${connection.id}"),
           child: const Text("Chat"),
         ),
       ),

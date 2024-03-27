@@ -68,3 +68,10 @@ const List<FollowerRange> followerRanges = [
   (5000, 10000), 
   (10000, null),
 ];
+
+extension FollowerRangeUtils on FollowerRange {
+  int get min => $1;
+  int? get max => $2;
+  
+  String get displayName => max == null ? ">$min" : "$min - $max";
+}

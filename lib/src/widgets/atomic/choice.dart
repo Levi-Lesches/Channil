@@ -17,7 +17,7 @@ class ChannilChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    color: isPicked ? channilGreen : context.colorScheme.surface,
+    color: isPicked ? channilColor : context.colorScheme.surface,
     child: InkWell(
       onTap: () => onChanged(!isPicked),
       child: Container(
@@ -39,7 +39,7 @@ class ChannilChoice extends StatelessWidget {
               color: !isPicked ? null : Colors.white,
             ),
             selected: isPicked,
-            selectedTileColor: channilGreen,
+            selectedTileColor: channilColor,
             selectedColor: Colors.white,
           ),
       ),

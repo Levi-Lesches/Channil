@@ -3,7 +3,6 @@ import "dart:async";
 import "package:channil/data.dart";
 import "package:channil/models.dart";
 import "package:channil/services.dart";
-import "package:flutter/material.dart";
 
 class UserModel extends DataModel {
   String? email;
@@ -17,7 +16,6 @@ class UserModel extends DataModel {
   StreamSubscription<FirebaseUser?>? _firebaseSubscription;
   
   @override
-  @mustCallSuper
   Future<void> init() async {
     _googleSubscription = services.auth.google.onCurrentUserChanged.listen(_onGoogleSignIn);
     _firebaseSubscription = services.auth.authStates.listen(updateUser);
@@ -36,7 +34,6 @@ class UserModel extends DataModel {
     if (account == null) return;
     final user = await services.auth.signInWithGoogleWeb(account);
     if (user == null) return;
-    await updateUser(user);
   }
 
   Future<void> updateUser(FirebaseUser? user) async {
@@ -62,7 +59,6 @@ class UserModel extends DataModel {
     final FirebaseUser? user;
     try {
       user = await services.auth.signIn();
-      await updateUser(user);
     } catch (error) {
       authStatus = "Error signing in";
       notifyListeners();

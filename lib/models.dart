@@ -21,7 +21,6 @@ export "src/models/builder/message.dart";
 
 class Models extends DataModel {
   final user = UserModel();
-  // final home = HomeModel(ChannilDestination.profile);
   List<DataModel> get models => [user]; 
 
   @override

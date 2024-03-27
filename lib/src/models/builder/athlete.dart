@@ -175,6 +175,6 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
     loadingStatus = "Saved";
     isLoading = false;
     notifyListeners();
-    router.goNamed(Routes.profile);
+    router.go("/profile");
   }
 }

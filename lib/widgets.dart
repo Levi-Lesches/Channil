@@ -30,3 +30,7 @@ extension ContextUtils on BuildContext {
 	/// Formats a time according to the user's locale.
 	String formatTime(DateTime time) => MaterialLocalizations.of(this).formatTimeOfDay(TimeOfDay.fromDateTime(time));
 }
+
+extension WidgetUtils on Widget {
+  Widget widen() => SizedBox(width: double.infinity, child: this);
+}

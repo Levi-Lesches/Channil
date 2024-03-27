@@ -145,7 +145,7 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
     await models.user.saveUser(value);
     isLoading = false;
     loadingStatus = "Saved";
-    router.goNamed(Routes.profile);
+    router.go("/profile");
     notifyListeners();
   }
 }
