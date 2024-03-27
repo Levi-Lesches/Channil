@@ -126,7 +126,7 @@ class AthleteBuilder extends ProfileBuilder<ChannilUser> {
 
   @override
   ChannilUser get value => ChannilUser(
-    id: models.user.uid!,
+    id: models.user.uid as UserID,
     name: "${firstController.text.trim()} ${lastController.text.trim()}",
     email: models.user.email!,
     profile: AthleteProfile(

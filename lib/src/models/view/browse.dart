@@ -27,7 +27,7 @@ class BrowseViewModel extends ViewModel {
     nextUser();
   }
 
-  List<String> get skipIDs => [...home.rejectedIDs, ...home.matchedIDs];
+  List<UserID> get skipIDs => [...home.rejectedIDs, ...home.matchedIDs];
 
   Future<bool> loadMoreUsers() async {
     final (newSnapshot, nextUsers) = await models.user.channilUser!.matchProfileType(

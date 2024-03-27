@@ -17,9 +17,6 @@ class PendingConnectionWidget extends StatelessWidget {
 
   String get otherName => models.user.channilUser!.id == connection.from
     ? connection.toName : connection.fromName;
-
-  UserID get otherID => models.user.channilUser!.id == connection.from
-    ? connection.toName : connection.fromName;
   
   @override
   Widget build(BuildContext context) => AspectRatio(

@@ -3,8 +3,6 @@ import "package:cloud_firestore/cloud_firestore.dart";
 
 import "package:channil/data.dart";
 
-typedef ConnectionID = String;
-
 enum ConnectionStatus {
   pending, 
   accepted,
@@ -88,7 +86,7 @@ class Connection {
         Message.fromJson(messageJson),
     ];
 
-  String get id => "$from--$to";
+  ConnectionID get id => "$from--$to" as ConnectionID;
 
   Json toJson() => {
     "from": from,

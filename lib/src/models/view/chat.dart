@@ -11,7 +11,7 @@ extension MessageUtils on Message {
 }
 
 class ChatViewModel extends ViewModel {
-  final String id;
+  final ConnectionID id;
   final controller = TextEditingController();
   ChatViewModel(this.id);
   

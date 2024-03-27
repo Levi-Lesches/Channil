@@ -1,8 +1,5 @@
 import "package:channil/data.dart";
 
-typedef UserID = String;
-typedef Email = String;
-
 class ChannilUser {
   final UserID id;
   final String name;

@@ -115,7 +115,7 @@ class BusinessBuilder extends ProfileBuilder<ChannilUser> {
 
   @override
   ChannilUser get value => ChannilUser(
-    id: models.user.uid!,
+    id: models.user.uid as UserID,
     name: nameController.text.trim(),
     email: models.user.email!,
     profile: BusinessProfile(

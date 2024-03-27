@@ -8,6 +8,12 @@ import "service.dart";
 typedef FirebaseUser = User;
 typedef GoogleAccount = GoogleSignInAccount;
 
+enum DeleteAccountResult {
+  ok,
+  reauthenticate,
+  unknownError,
+}
+
 class AuthService extends Service {
   // Must be late so it happens after FirebaseService.init
   late final firebase = FirebaseAuth.instance;
@@ -22,20 +28,28 @@ class AuthService extends Service {
   Stream<FirebaseUser?> get authStates => firebase.authStateChanges();
   FirebaseUser? get user => firebase.currentUser;
 
+  Future<DeleteAccountResult> deleteAccount() async {
+    final tempUser = user!;
+    try {
+      await tempUser.delete();
+      return DeleteAccountResult.ok;
+    } on FirebaseAuthException catch (error) {
+      return switch (error.code) {
+        "requires-recent-login" => DeleteAccountResult.reauthenticate,
+        _ => DeleteAccountResult.unknownError,
+      };
+    }
+  }
+
   Future<FirebaseUser?> signIn() async {
-    print("Hola2");
     final account = await google.signIn();
-    print("Hola part dos");
-    print("Account: $account");
     if (account == null) return null;
-    print("Here");
     final auth = await account.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: auth.accessToken,
       idToken: auth.idToken,
     );
-    final credential2 = await firebase.signInWithCredential(credential);
-    print("Done: ${credential2.user?.uid}");
+    await firebase.signInWithCredential(credential);
     return user;
   }
 
@@ -45,8 +59,7 @@ class AuthService extends Service {
       accessToken: auth.accessToken,
       idToken: auth.idToken,
     );
-    final credential2 = await firebase.signInWithCredential(credential);
-    print("Done: ${credential2.user?.uid}");
+    await firebase.signInWithCredential(credential);
     return user;
   }
 

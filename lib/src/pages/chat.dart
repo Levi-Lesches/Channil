@@ -33,7 +33,7 @@ final class MessageWidget extends StatelessWidget {
 }
 
 class ChatPage extends ReactiveWidget<ChatViewModel> {
-  final String id;
+  final ConnectionID id;
   const ChatPage(this.id);
   
   @override

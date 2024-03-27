@@ -18,7 +18,7 @@ class CloudStorageService extends Service {
   late final firebase = FirebaseStorage.instance;
   late final root = firebase.ref();
 
-  Reference getAssetsDir({required String uid, required bool isBusiness}) => 
+  Reference getAssetsDir({required UserID uid, required bool isBusiness}) => 
     root.child("userAssets/$uid/${isBusiness ? 'business' : 'athlete'}");
 
   @override

@@ -7,7 +7,7 @@ import "package:flutter/material.dart";
 
 class UserModel extends DataModel {
   String? email;
-  String? uid;
+  UserID? uid;
   ChannilUser? channilUser;
   String authStatus = "Pending";
   bool get hasAccount => channilUser != null;
@@ -47,9 +47,9 @@ class UserModel extends DataModel {
       channilUser = null; 
     } else {
       email = user.email;
-      uid = user.uid;
+      uid = user.uid as UserID;
       authStatus = "Authenticated as\n$email";
-      channilUser = await services.database.getUser(user.uid);
+      channilUser = await services.database.getUser(user.uid as UserID);
     }
     notifyListeners();
   }
@@ -61,7 +61,6 @@ class UserModel extends DataModel {
     await services.auth.signOut();
     final FirebaseUser? user;
     try {
-      print("Now, signing in");
       user = await services.auth.signIn();
       await updateUser(user);
     } catch (error) {

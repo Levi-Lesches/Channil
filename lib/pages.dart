@@ -16,6 +16,8 @@ import "src/pages/settings.dart";
 export "src/pages/home/confirm.dart";
 export "package:go_router/go_router.dart";
 
+import "package:channil/data.dart";
+
 class Routes {
   static const landing = "/";
   static const login = "login";
@@ -124,7 +126,7 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                   path: ":id",
-                  builder: (context, state) => ChatPage(state.pathParameters["id"]!),
+                  builder: (context, state) => ChatPage(state.pathParameters["id"] as ConnectionID),
                 ),
               ],
             ),
@@ -140,7 +142,7 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                   path: ":id",
-                  builder: (context, state) => ProfilePage(HomeModel(0), showAppBar: true, user: state.pathParameters["id"]),
+                  builder: (context, state) => ProfilePage(HomeModel(0), showAppBar: true, user: state.pathParameters["id"] as UserID),
                 ),
               ],
             ),
