@@ -36,7 +36,7 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
       physics: const NeverScrollableScrollPhysics(),
       controller: model.pageController,
       children: [
-        ListView(children: _authInfo(model)),
+        ListView(children: _authInfo(context, model)),
         ListView(children: _companyInfo(context, model)),
         ListView(children: _uploadImages(context, model)),
         ListView(children: _selectSports(context, model)),
@@ -45,13 +45,49 @@ class BusinessSignUpPage extends ReactiveWidget<BusinessBuilder> {
     ),
   );
 
-  List<Widget> _authInfo(BusinessBuilder model) => [
+  List<Widget> _authInfo(BuildContext context, BusinessBuilder model) => [
     const SizedBox(height: 16),
     ChannilTextField(controller: model.nameController, hint: "Company Name", isRequired: true),
     const SizedBox(height: 16),
+    const Divider(),
+    const SizedBox(height: 16),
     GoogleAuthButton(signUp: true),
       if (models.user.hasAccount) 
-      const Text("An account with this email already exists", style: TextStyle(color: Colors.red)),
+        const Text("An account with this email already exists", style: TextStyle(color: Colors.red)),
+    const SizedBox(height: 8),
+    Text(
+      "or\n",
+      textAlign: TextAlign.center,
+      style: context.textTheme.titleLarge,
+    ),
+    const SizedBox(height: 8),
+    ChannilTextField(
+      controller: model.emailController,
+      capitalization: TextCapitalization.none,
+      type: TextInputType.emailAddress,
+      hint: "Email",
+      error: model.emailError,
+    ),
+    const SizedBox(height: 8),
+    ChannilTextField(
+      controller: model.passwordController,
+      hint: "Password",
+      obscureText: model.obscureText,
+      onObscure: model.updateObscurity,
+      action: TextInputAction.done,
+      capitalization: TextCapitalization.none,
+      type: TextInputType.visiblePassword,
+      error: model.passwordError,
+      onEditingComplete: model.createAccount,
+    ),
+    const SizedBox(height: 8),
+    OutlinedButton(
+      onPressed: model.createAccount,
+      child: Text(
+        "Sign up with email and password", 
+        style: context.textTheme.titleLarge?.copyWith(fontSize: 20),
+      ),
+    ),
   ];
 
   List<Widget> _companyInfo(BuildContext context, BusinessBuilder model) => [

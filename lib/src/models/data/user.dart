@@ -13,19 +13,22 @@ class UserModel extends DataModel {
   bool get hasAccount => channilUser != null;
   bool get isAuthenticated => uid != null && email != null;
   
-  StreamSubscription<GoogleAccount?>? _authSubscription;
+  StreamSubscription<GoogleAccount?>? _googleSubscription;
+  StreamSubscription<FirebaseUser?>? _firebaseSubscription;
   
   @override
   @mustCallSuper
   Future<void> init() async {
-    _authSubscription = services.auth.google.onCurrentUserChanged.listen(_onGoogleSignIn);
+    _googleSubscription = services.auth.google.onCurrentUserChanged.listen(_onGoogleSignIn);
+    _firebaseSubscription = services.auth.authStates.listen(updateUser);
     final user = services.auth.user;
     await updateUser(user);
   }
 
   @override
   void dispose() {
-    _authSubscription?.cancel();
+    _googleSubscription?.cancel();
+    _firebaseSubscription?.cancel();
     super.dispose();
   }
 
@@ -58,6 +61,7 @@ class UserModel extends DataModel {
     await services.auth.signOut();
     final FirebaseUser? user;
     try {
+      print("Now, signing in");
       user = await services.auth.signIn();
       await updateUser(user);
     } catch (error) {

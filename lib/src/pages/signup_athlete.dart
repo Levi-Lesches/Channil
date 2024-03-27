@@ -37,7 +37,7 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
         controller: model.pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          ListView(children: _basicInfo(model)),
+          ListView(children: _basicInfo(context, model)),
           ListView(children: _athleteProfile(context, model)),
           ListView(children: _profilePics(context, model)),
           ListView(children: _prompts(context, model)),
@@ -48,15 +48,15 @@ class AthleteSignUpPage extends ReactiveWidget<AthleteBuilder> {
     ),
   );
 
-  List<Widget> _basicInfo(AthleteBuilder model) => [
+  List<Widget> _basicInfo(BuildContext context, AthleteBuilder model) => [
     const SizedBox(height: 16),
     ChannilTextField(controller: model.firstController, hint: "First name", isRequired: true),
     const SizedBox(height: 16),
     ChannilTextField(controller: model.lastController, hint: "Last name", isRequired: true),
     const SizedBox(height: 16),
-    GoogleAuthButton(signUp: true),
-    if (models.user.hasAccount) 
-      const Text("An account with this email already exists", style: TextStyle(color: Colors.red)),
+    const Divider(),
+    const SizedBox(height: 16),
+    SignUpWidget(model),
   ];
 
   List<Widget> _athleteProfile(BuildContext context, AthleteBuilder model) => [

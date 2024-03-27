@@ -70,6 +70,54 @@ abstract class ProfileBuilder<T> extends BuilderModel<T> {
     super.dispose();
   }
 
+  // -------------------- Authentication --------------------  
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  bool obscureText = true;
+  void updateObscurity(bool input) {  // ignore: avoid_positional_boolean_parameters
+    obscureText = input;
+    notifyListeners();
+  }
+
+  String? emailError;
+  String? passwordError;
+  bool accountCreated = false;
+  Future<void> createAccount() async {
+    emailError = null;
+    passwordError = null;
+    notifyListeners();
+    final email = emailController.text;
+    final password = passwordController.text;
+    final confirmation = confirmPasswordController.text;
+    if (email.isEmpty) {
+      emailError = "Email must not be empty";
+      notifyListeners();
+      return;
+    }
+    if (password.isEmpty) {
+      passwordError = "Password must not be empty";
+      notifyListeners();
+      return;
+    }
+    if (password != confirmation) {
+      passwordError = "Passwords do not match";
+      notifyListeners();
+      return;
+    }
+    final result = await services.auth.signUpWithEmailAndPassword(email: email, password: password);
+    switch (result) {
+      case SignUpResult.accountExists: emailError = "There is already an account with this email";
+      case SignUpResult.invalidEmail: emailError = "Invalid email";
+      case SignUpResult.notAllowed: emailError = "New accounts are not accepted at this time";
+      case SignUpResult.unknownError: passwordError = "An unknown error occurred";
+      case SignUpResult.weakPassword: passwordError = "Password is too weak";
+      case SignUpResult.ok: accountCreated = true;
+    }
+    notifyListeners();
+  }
+
   // -------------------- Loading --------------------  
   String? errorStatus;
   String? loadingStatus;

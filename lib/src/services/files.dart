@@ -1,6 +1,7 @@
 import "dart:typed_data";
 
 import "package:file_picker/file_picker.dart";
+import "package:permission_handler/permission_handler.dart";
 
 import "service.dart";
 
@@ -11,7 +12,11 @@ class FilesService extends Service {
   @override
   Future<void> dispose() async { }
 
+  Future<bool> requestFilesPermission() async => 
+    Permission.photos.request().isGranted;
+
   Future<Uint8List?> pickImage() async {
+    if (!await requestFilesPermission()) return null;
     final result = await FilePicker.platform.pickFiles(
       dialogTitle: "Select an image",
       type: FileType.image,
@@ -23,6 +28,7 @@ class FilesService extends Service {
   }
 
   Future<List<Uint8List>?> pickImages() async {
+    if (!await requestFilesPermission()) return null;
     final result = await FilePicker.platform.pickFiles(
       dialogTitle: "Select images",
       type: FileType.image,

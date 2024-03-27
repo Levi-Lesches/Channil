@@ -27,7 +27,9 @@ class ChannilTextField extends StatelessWidget {
   final bool autofocus;
   final bool enabled;
   final bool isRequired;
+  final bool obscureText;
   final int? maxLines;
+  final ValueChanged<bool>? onObscure;
 
   const ChannilTextField({
     required this.controller,
@@ -37,6 +39,8 @@ class ChannilTextField extends StatelessWidget {
     this.enabled = true,
     this.capitalization = TextCapitalization.sentences,
     this.isRequired = false,
+    this.obscureText = false,
+    this.onObscure,
     this.maxLines = 1,
     this.type,
     this.onChanged,
@@ -56,6 +60,7 @@ class ChannilTextField extends StatelessWidget {
     enabled: enabled,
     maxLines: maxLines,
     onEditingComplete: onEditingComplete,
+    obscureText: obscureText,
     inputFormatters: [
       if (type == TextInputType.number) 
         FilteringTextInputFormatter.allow(RegExp(r"\d")),
@@ -66,7 +71,14 @@ class ChannilTextField extends StatelessWidget {
       label: isRequired && hint != null 
         ? addRequiredStar(hint!) : null, 
       errorText: error,
+      focusedErrorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+      errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+      errorStyle: const TextStyle(color: Colors.red),
       prefixText: prefix,
+      suffixIcon: onObscure == null ? null : IconButton(
+        icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+        onPressed: () => onObscure!(!obscureText),
+      ),
     ),
   );
 }
